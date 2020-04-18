@@ -1,8 +1,8 @@
 {
   "name": "namemcwrapper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ES6 Promise based wrapper for NameMC.com",
-  "main": "./src/index.mjs",
+  "main": "./index.mjs",
   "scripts": {
     "test": "mocha --reporter spec"
   },

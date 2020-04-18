@@ -16,6 +16,17 @@
 ## Install 📦
 `npm i namemcwrapper`
 
+## Use 🔧
+```js
+import { NameMC } from "namemcwrapper";
+
+const nameMc = new NameMC();
+
+nameMc.skinHistory("MrZillaGold")
+    .then(skins => console.log(skins))
+    .catch(error => console.log(error));
+```
+
 ## Warning ⚠
 Since NameMC does not provide an open API, this library is based on the parsing of HTML site pages. If the changes affect the HTML used for parsing, the library may break at any time and not give the expected result. I will try to update it as soon as possible. Use at your own risk!
 
