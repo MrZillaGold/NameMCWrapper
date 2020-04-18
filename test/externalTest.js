@@ -2,7 +2,7 @@ import assert from "assert";
 
 import {
     NameMC
-} from "../src/index.mjs";
+} from "../index.mjs";
 import ErrorHandler from "../src/error.mjs";
 
 const nameMc = new NameMC();
