@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/MrZillaGold/NameMCWrapper/raw/master/docs/logo.png" alt="...">
+</p>
+
 <p align="center"><b>NameMCWrapper</b></p>
 <p align="center">ES6 основананная на Promise библиотека для NameMC.com</p>
 <p align="center">
