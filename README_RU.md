@@ -9,7 +9,9 @@
 </p>
 
 <p align="center">
+ <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
    <img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="...">
+ </a>
 </p>
 
 ## Установка 📦
