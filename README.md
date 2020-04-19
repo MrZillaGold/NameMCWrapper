@@ -8,6 +8,10 @@
   <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/DOCS.md">Documentation</a>
 </p>
 
+<p align="center">
+   <img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="...">
+</p>
+
 <p align="center">This page is available in other languages:</p>
 <p align="center">
   <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/README_RU.md">🇷🇺</a>

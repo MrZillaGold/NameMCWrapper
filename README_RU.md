@@ -8,6 +8,10 @@
   <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/RU.md">Документация</a>
 </p>
 
+<p align="center">
+   <img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="...">
+</p>
+
 ## Установка 📦
 `npm i namemcwrapper`
 
