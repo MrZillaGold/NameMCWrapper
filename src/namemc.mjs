@@ -12,9 +12,11 @@ const WrapperError = new ErrorHandler();
 
 export default class NameMC {
 
-    options = {
-        endpoint: "namemc.com"
-    };
+    constructor() {
+        this.options = {
+            endpoint: "namemc.com"
+        };
+    }
 
     /**
      * @description Sets options
@@ -41,7 +43,7 @@ export default class NameMC {
 
                 await axios.get(`${this.getEndpoint()}/profile/${nickname}`)
                     .then(response => {
-                        if (response.request.res.responseUrl.match(profileRegExp)) {
+                        if ((response.request.res || response.request).responseUrl.match(profileRegExp)) {
 
                             const skins = response.data.match(/<\s*canvas class="skin-2d align-top (?:skin-button|skin-button skin-button-selected) title-time" width="32" height="32" title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
@@ -91,7 +93,7 @@ export default class NameMC {
 
                 await axios.get(`${this.getEndpoint()}/profile/${nickname}`)
                     .then(response => {
-                        if (response.request.res.responseUrl.match(profileRegExp)) {
+                        if ((response.request.res || response.request).responseUrl.match(profileRegExp)) {
 
                             const capes = response.data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
@@ -187,7 +189,7 @@ export default class NameMC {
                 }
             })
                 .then(response => {
-                    const hash = response.request.res.responseUrl.match(skinRegExp);
+                    const hash = (response.request.res || response.request).responseUrl.match(skinRegExp);
 
                     if (hash) {
                         resolve(`${endpoint}/texture/${hash[1]}.png`);
