@@ -131,15 +131,30 @@ export default class NameMC {
      * @param {(number|string)} [options.width=600] - Width for 3d render image
      * @param {(number|string)} [options.height=300] - Height for 3d render image
      * @param {(number|string)} [options.theta=-30] - Angle to rotate the 3d model in a circle. (-360 - 360)
-     * @param {boolean} [options.front_and_back=false] - Render 3d model with back and front view
      * @param {(number|string)} [options.scale=4] - Scale for 2d face render, 32 max (8px * scale)
      * @param {boolean} [options.overlay=true] - Use skin overlay on 2d face render
      * @returns {Object} Object with renders skin
      */
-    getRenders({ skin, model, width, height, scale, overlay, front_and_back, theta }) {
+    getRenders({ skin, model, width, height, scale, overlay, theta }) {
+        const endpoint = this.getEndpoint("render");
+
+        skin = skin || "12b92a9206470fe2";
+        model = model || "classic";
+        overlay = overlay || overlay !== false ? "&overlay" : "";
+
+        width = width || 600;
+        height = height || 300;
+
+        theta = theta || theta === 0 ? `&theta=${theta}` : "";
+
+        scale = scale || 4;
+
         return {
-            body: `${this.getEndpoint("render")}/skin/3d/body.png?skin=${skin || "12b92a9206470fe2"}&model=${model || "classic"}&width=${width || 600}&height=${height || 300}${front_and_back ? "&front_and_back" : ""}${theta || theta === 0 ? `&theta=${theta}` : ""}`,
-            face: `${this.getEndpoint("render")}/skin/2d/face.png?skin=${skin || "12b92a9206470fe2"}${overlay || overlay !== false ? "&overlay" : ""}&scale=${scale || 4}`
+            body: {
+                front: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}${theta}`,
+                front_and_back: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}&front_and_back${theta}`
+            },
+            face: `${endpoint}/skin/2d/face.png?skin=${skin}${overlay}&scale=${scale}`
         };
     }
 
@@ -151,6 +166,8 @@ export default class NameMC {
      * @returns {Promise} Promise url string on transformed skin
      */
     transformSkin({ skin, transformation }) {
+        const endpoint = this.getEndpoint();
+
         return new Promise((resolve, reject) => {
             const data = {
                 skin,
@@ -163,7 +180,7 @@ export default class NameMC {
 
             if (!transformations.includes(transformation)) reject(WrapperError.get(6, transformation));
 
-            axios.post(`${this.getEndpoint()}/transform-skin`, qs.stringify(data), {
+            axios.post(`${endpoint}/transform-skin`, qs.stringify(data), {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -174,7 +191,7 @@ export default class NameMC {
                     const hash = response.request.res.responseUrl.match(skinRegExp);
 
                     if (hash) {
-                        resolve(`${this.getEndpoint()}/texture/${hash[1]}.png`);
+                        resolve(`${endpoint}/texture/${hash[1]}.png`);
                     } else {
                         reject(WrapperError.get(4));
                     }

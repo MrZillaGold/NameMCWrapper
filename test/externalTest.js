@@ -21,15 +21,18 @@ describe("Skin", function() {
                     hash: "5d5eb6d84b57ea29",
                     isSlim: false,
                     renders: {
-                        body: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300",
+                        body: {
+                            front: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300",
+                            front_and_back: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&front_and_back"
+                        },
                         face: "https://render.namemc.com/skin/2d/face.png?skin=5d5eb6d84b57ea29&overlay&scale=4"
                     }
                 }
             ];
 
             nameMc.skinHistory("Notch")
-                .then(response => {
-                    assert.equal(JSON.stringify(response), JSON.stringify(pattern));
+                .then(skins => {
+                    assert.equal(JSON.stringify(skins), JSON.stringify(pattern));
 
                     done();
                 })

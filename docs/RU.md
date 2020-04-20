@@ -80,8 +80,7 @@
 | options.width                                 | `number` `string`    | `600`                | Ширина 3d рендера                                            |
 | options.height                                | `number` `string`    | `300`                | Высота 3d рендера                                            |
 | options.theta                                 | `number` `string`    | `-30`                | Угол для поворота 3d модели по кругу (-360 - 360)            |
-| options.front_and_back                        | `boolean`            | `false`              | Использовать вид спереди и сзади при генерации рендера       |
-| options.scale                                 | `number` `string`    | `4`                 | Маштаб для 2d рендера лица, 32 макс. (8px * маштаб)          |
+| options.scale                                 | `number` `string`    | `4`                 | Маштаб для 2d рендера лица, 32 макс. (8px * маштаб)           |
 | options.overlay                               | `boolean`            | `true`               | Использовать второй слой скина при генерации 2d рендера лица |
 
 <a name="transformSkin"></a>

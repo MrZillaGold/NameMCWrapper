@@ -80,7 +80,6 @@ Get skin renders
 | options.width                                 | `number` `string`    | `600`                | Width for 3d render image                             |
 | options.height                                | `number` `string`    | `300`                | Height for 3d render image                            |
 | options.theta                                 | `number` `string`    | `-30`                | Angle to rotate the 3d model in a circle (-360 - 360) |
-| options.front_and_back                        | `boolean`            | `false`              | Render 3d model with back and front view              |
 | options.scale                                 | `number` `string`    | `4`                  | Scale for 2d face render, 32 max (8px * scale)        |
 | options.overlay                               | `boolean`            | `true`               | Use skin overlay on 2d face render                    |
 
