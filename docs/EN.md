@@ -37,6 +37,15 @@ Sets options
 | options.proxy      | `string` |                | Proxy for requests                    |
 | options.endpoint   | `string` | `"namemc.com"` | NameMC Endpoint                       |
 
+**Example**:
+
+```js
+nameMc.setOptions({
+    proxy: "https://cors-anywhere.herokuapp.com",
+    endpoint: "ru.namemc.com"
+});
+```
+
 <a name="skinHistory"></a>
 
 ## skinHistory(nickname) ⇒ `Promise`;
@@ -50,6 +59,14 @@ Get skin history by nickname
 | -------- | -------- | --------------- |
 | nickname | `string` | Player nickname |
 
+**Example**:
+
+```js
+nameMc.skinHistory("MrZillaGold")
+    .then(skins => console.log(skins))
+    .catch(error => console.log(error));
+```
+
 <a name="getCapes"></a>
 
 ## getCapes(nickname) ⇒ `Promise`;
@@ -62,6 +79,14 @@ Get capes by nickname
 | Param    | Type     | Description     |
 | -------- | -------- | --------------- |
 | nickname | `string` | Player nickname |
+
+**Example**:
+
+```js
+nameMc.skinHistory("Twennnn")
+    .then(capes => console.log(capes))
+    .catch(error => console.log(error));
+```
 
 <a name="getRenders"></a>
 
@@ -83,6 +108,17 @@ Get skin renders
 | options.scale                                 | `number` `string`    | `4`                  | Scale for 2d face render, 32 max (8px * scale)        |
 | options.overlay                               | `boolean`            | `true`               | Use skin overlay on 2d face render                    |
 
+**Example**:
+
+```js
+nameMc.getRenders({
+    skin: "c178117c21bd0a1c",
+    model: "slim"
+})
+    .then(renders => console.log(renders))
+    .catch(error => console.log(error));
+```
+
 <a name="transformSkin"></a>
 
 ## transformSkin(options) ⇒ `Promise`;
@@ -98,6 +134,17 @@ Transform skin method
 | options.skin           | `string`                                                                               | Skin hash                                      |
 | options.transformation | `"grayscale"` `"invert"` `"rotate-hue-180"` `"rotate-head-left"` `"rotate-head-right"` | Transformation type                            |
 
+**Example**:
+
+```js
+nameMc.transformSkin({
+    skin: "c178117c21bd0a1c",
+    transformation: "grayscale"
+})
+    .then(url => console.log(url))
+    .catch(error => console.log(error));
+```
+
 <a name="getCapeType"></a>
 
 ## getCapeType(hash) ⇒ `Object`;
@@ -111,6 +158,14 @@ Get cape type by cape hash
 | ----- | -------- | ----------- |
 | hash  | `string` | Cape hash   |
 
+**Example**:
+
+```js
+nameMc.getCapeType("1981aad373fa9754")
+    .then(cape => console.log(cape))
+    .catch(error => console.log(error));
+```
+
 <a name="getFriends"></a>
 
 ## getFriends(nickname) ⇒ `Promise`;
@@ -123,3 +178,11 @@ Get player friends by nickname
 | Param    | Type     | Description     |
 | -------- | -------- | --------------- |
 | nickname | `string` | Player nickname |
+
+**Example**:
+
+```js
+nameMc.getFriends("spoodov")
+    .then(cape => console.log(cape))
+    .catch(error => console.log(error));
+```

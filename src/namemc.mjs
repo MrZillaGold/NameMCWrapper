@@ -58,8 +58,7 @@ export default class NameMC {
                                         isSlim: exec[2] !== "classic",
                                         renders: this.getRenders({
                                             skin: exec[1],
-                                            model: exec[2],
-                                            overlay: true
+                                            model: exec[2]
                                         })
                                     });
                                 })

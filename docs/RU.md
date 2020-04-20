@@ -37,6 +37,15 @@
 | options.proxy    | `string` |                | Прокси для запросов                |
 | options.endpoint | `string` | `"namemc.com"` | Конечная точка NameMC для запросов |
 
+**Пример**:
+
+```js
+nameMc.setOptions({
+    proxy: "https://cors-anywhere.herokuapp.com",
+    endpoint: "ru.namemc.com"
+});
+```
+
 <a name="skinHistory"></a>
 
 ## skinHistory(nickname) ⇒ <code>Promise</code>;
@@ -50,6 +59,14 @@
 | --------- | -------- | -------------- |
 | nickname  | `string` | Никнейм игрока |
 
+**Пример**:
+
+```js
+nameMc.skinHistory("MrZillaGold")
+    .then(skins => console.log(skins))
+    .catch(error => console.log(error));
+```
+
 <a name="getCapes"></a>
 
 ## getCapes(nickname) ⇒ <code>Promise</code>;
@@ -62,6 +79,14 @@
 | Параметры | Тип      | Описание       |
 | --------- | -------- | -------------- |
 | nickname  | `string` | Никнейм игрока |
+
+**Пример**:
+
+```js
+nameMc.skinHistory("Twennnn")
+    .then(capes => console.log(capes))
+    .catch(error => console.log(error));
+```
 
 <a name="getRenders"></a>
 
@@ -83,6 +108,17 @@
 | options.scale                                 | `number` `string`    | `4`                 | Маштаб для 2d рендера лица, 32 макс. (8px * маштаб)           |
 | options.overlay                               | `boolean`            | `true`               | Использовать второй слой скина при генерации 2d рендера лица |
 
+**Пример**:
+
+```js
+nameMc.getRenders({
+    skin: "c178117c21bd0a1c",
+    model: "slim"
+})
+    .then(renders => console.log(renders))
+    .catch(error => console.log(error));
+```
+
 <a name="transformSkin"></a>
 
 ## transformSkin(options) ⇒ <code>Promise</code>;
@@ -98,6 +134,17 @@
 | options.skin                             | `string`                                                                               | Хеш скина                                    |
 | options.transformation                   | `"grayscale"` `"invert"` `"rotate-hue-180"` `"rotate-head-left"` `"rotate-head-right"` | Тип трансформации                            |
 
+**Пример**:
+
+```js
+nameMc.transformSkin({
+    skin: "c178117c21bd0a1c",
+    transformation: "grayscale"
+})
+    .then(url => console.log(url))
+    .catch(error => console.log(error));
+```
+
 <a name="getCapeType"></a>
 
 ## getCapeType(hash) ⇒ <code>Object</code>;
@@ -111,6 +158,14 @@
 | --------- | -------- | --------- |
 | hash      | `string` | Хеш плаща |
 
+**Пример**:
+
+```js
+nameMc.getCapeType("1981aad373fa9754")
+    .then(cape => console.log(cape))
+    .catch(error => console.log(error));
+```
+
 <a name="getFriends"></a>
 
 ## getFriends(nickname) ⇒ <code>Promise</code>;
@@ -123,3 +178,11 @@
 | Параметры | Тип      | Описание        |
 | --------- | -------- | --------------- |
 | nickname  | `string` | Никнейм игрока  |
+
+**Пример**:
+
+```js
+nameMc.getFriends("spoodov")
+    .then(cape => console.log(cape))
+    .catch(error => console.log(error));
+```
