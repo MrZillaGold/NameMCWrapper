@@ -22,17 +22,17 @@ describe("Skin", function() {
                     isSlim: false,
                     renders: {
                         body: {
-                            front: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300",
-                            front_and_back: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&front_and_back"
+                            front: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&theta=-30",
+                            front_and_back: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&front_and_back&theta=-30"
                         },
-                        face: "https://render.namemc.com/skin/2d/face.png?skin=5d5eb6d84b57ea29&overlay&scale=4"
+                        face: "https://render.namemc.com/skin/2d/face.png?skin=5d5eb6d84b57ea29&overlay=true&scale=4"
                     }
                 }
             ];
 
             nameMc.skinHistory("Notch")
                 .then(skins => {
-                    assert.equal(JSON.stringify(skins), JSON.stringify(pattern));
+                    assert.strictEqual(JSON.stringify(skins), JSON.stringify(pattern));
 
                     done();
                 })
