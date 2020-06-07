@@ -4,9 +4,7 @@ import qs from "qs";
 import minecraftCapes from "./minecraftCapes.mjs"
 import ErrorHandler from "./error.mjs";
 
-import {
-    nameRegExp, profileRegExp, skinRegExp
-} from "./utils.mjs";
+import { nameRegExp, profileRegExp, skinRegExp } from "./utils.mjs";
 
 const WrapperError = new ErrorHandler();
 
@@ -39,8 +37,6 @@ export default class NameMC {
     skinHistory(nickname) {
         return new Promise(async (resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                const skinHistory = [];
-
                 await axios.get(`${this.getEndpoint()}/profile/${nickname}`)
                     .then(response => {
                         if (((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(profileRegExp)) {
@@ -48,22 +44,25 @@ export default class NameMC {
                             const skins = response.data.match(/<\s*canvas class="skin-2d align-top (?:skin-button|skin-button skin-button-selected) title-time" width="32" height="32" title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
                             if (skins) {
-                                skins.forEach(skin => {
-                                    const regExp = /title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"/;
+                                resolve(
+                                    skins.map(skin => {
+                                        const regExp = /title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"/;
 
-                                    const exec = regExp.exec(skin).slice(1, 4);
+                                        const [date, hash, model] = regExp.exec(skin)
+                                            .slice(1, 4);
 
-                                    skinHistory.push({
-                                        date: exec[0],
-                                        url: `${this.getEndpoint()}/texture/${exec[1]}.png`,
-                                        hash: exec[1],
-                                        isSlim: exec[2] !== "classic",
-                                        renders: this.getRenders({
-                                            skin: exec[1],
-                                            model: exec[2]
-                                        })
-                                    });
-                                })
+                                        return {
+                                            date,
+                                            url: `${this.getEndpoint()}/texture/${hash}.png`,
+                                            hash,
+                                            isSlim: model !== "classic",
+                                            renders: this.getRenders({
+                                                skin: hash,
+                                                model
+                                            })
+                                        };
+                                    })
+                                );
                             } else {
                                 reject(WrapperError.get(4));
                             }
@@ -73,8 +72,6 @@ export default class NameMC {
                         }
                     })
                     .catch(error => reject(WrapperError.get(1, error)));
-
-                return resolve(skinHistory);
             } else {
                 reject(WrapperError.get(2))
             }
@@ -89,8 +86,6 @@ export default class NameMC {
     getCapes(nickname) {
         return new Promise(async (resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                const capesData = [];
-
                 await axios.get(`${this.getEndpoint()}/profile/${nickname}`)
                     .then(response => {
                         if (((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(profileRegExp)) {
@@ -98,17 +93,19 @@ export default class NameMC {
                             const capes = response.data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
                             if (capes) {
-                                capes.forEach(cape => {
-                                    const regExp = /data-cape-hash="([^]+?)"/;
+                                resolve(
+                                    capes.map(cape => {
+                                        const regExp = /data-cape-hash="([^]+?)"/;
 
-                                    const exec = regExp.exec(cape);
+                                        const [, hash] = regExp.exec(cape);
 
-                                    capesData.push({
-                                        hash: exec[1],
-                                        url: `${this.getEndpoint()}/texture/${exec[1]}.png`,
-                                        ...this.getCapeType(exec[1])
-                                    });
-                                })
+                                        return {
+                                            hash,
+                                            url: `${this.getEndpoint()}/texture/${hash}.png`,
+                                            ...this.getCapeType(hash)
+                                        };
+                                    })
+                                );
                             }
 
                         } else {
@@ -116,8 +113,6 @@ export default class NameMC {
                         }
                     })
                     .catch(error => reject(WrapperError.get(1, error)));
-
-                return resolve(capesData);
             } else {
                 reject(WrapperError.get(2))
             }
@@ -136,26 +131,15 @@ export default class NameMC {
      * @param {boolean} [options.overlay=true] - Use skin overlay on 2d face render
      * @returns {Object} Object with renders skin
      */
-    getRenders({ skin, model, width, height, scale, overlay, theta }) {
+    getRenders({ skin = "12b92a9206470fe2", model = "classic", width = 600, height = 300, scale = 4, overlay = true, theta = -30 }) {
         const endpoint = this.getEndpoint("render");
-
-        skin = skin || "12b92a9206470fe2";
-        model = model || "classic";
-        overlay = overlay || overlay !== false ? "&overlay" : "";
-
-        width = width || 600;
-        height = height || 300;
-
-        theta = theta || theta === 0 ? `&theta=${theta}` : "";
-
-        scale = scale || 4;
 
         return {
             body: {
-                front: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}${theta}`,
-                front_and_back: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}&front_and_back${theta}`
+                front: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}&theta=${theta}`,
+                front_and_back: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}&front_and_back&theta=${theta}`
             },
-            face: `${endpoint}/skin/2d/face.png?skin=${skin}${overlay}&scale=${scale}`
+            face: `${endpoint}/skin/2d/face.png?skin=${skin}&overlay=${overlay}&scale=${scale}`
         };
     }
 
@@ -189,10 +173,10 @@ export default class NameMC {
                 }
             })
                 .then(response => {
-                    const hash = ((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(skinRegExp);
+                    const [, hash] = ((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(skinRegExp);
 
                     if (hash) {
-                        resolve(`${endpoint}/texture/${hash[1]}.png`);
+                        resolve(`${endpoint}/texture/${hash}.png`);
                     } else {
                         reject(WrapperError.get(4));
                     }
