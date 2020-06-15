@@ -1,8 +1,6 @@
 import assert from "assert";
 
-import {
-    NameMC
-} from "../index.mjs";
+import { NameMC } from "../index.mjs";
 import ErrorHandler from "../src/error.mjs";
 
 const nameMc = new NameMC();
@@ -123,6 +121,7 @@ describe("Friends", function() {
             this.timeout(5000);
 
             const pattern = [
+                { uuid: "fbf6be42-7ace-4478-bae9-e3903e03143f", name: "Coachest" },
                 { uuid: "15c28191-b1c9-443c-a3a2-b44795c741a6", name: "loner01" },
                 { uuid: "61f99982-77db-4dbd-be29-0737dc708c0d", name: "spoodov" },
                 { uuid: "a372a0e9-d6c1-4754-9e1d-01fa9339e71d", name: "Vyacheslav" }
