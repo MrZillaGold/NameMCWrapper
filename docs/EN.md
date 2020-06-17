@@ -79,11 +79,11 @@ Get skins from a specific tab of the site
 
 **Returns**: `Promise` - Promise array with skins objects
 
-| Param   | Type                                    | Description                                 |
-| ------- | --------------------------------------- | ------------------------------------------- |
-| tab     | `"trending"` `"new"` `"tag"` `"random"` | Tab with which to get skins                 |
-| page    | `number` `string`                       | Tab page (1 - 100)                          |
-| section | `string`                                | Section, used when getting `trending` skins |
+| Param   | Type                            | Description                                 |
+| ------- | ------------------------------- | ------------------------------------------- |
+| tab     | `"trending"` `"new"` `"random"` | Tab with which to get skins                 |
+| page    | `number` `string`               | Tab page (1 - 100)                          |
+| section | `string`                        | Section, used when getting `trending` skins |
 
 **Example**:
 
