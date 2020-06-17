@@ -1,8 +1,8 @@
 {
   "name": "namemcwrapper",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "ES6 Promise based wrapper for NameMC.com",
-  "main": "./index.mjs",
+  "main": "index.mjs",
   "scripts": {
     "test": "mocha --reporter spec"
   },
@@ -15,10 +15,7 @@
     "wrapper",
     "namemc"
   ],
-  "author": {
-    "name": "MrZillaGold <Pronin Egor>",
-    "url": "https://vk.com/mrzillagold"
-  },
+  "author": "MrZillaGold <Pronin Egor | mrzillagold@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/MrZillaGold/NameMCWrapper/issues"
