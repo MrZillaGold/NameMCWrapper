@@ -57,7 +57,21 @@ describe("Skin", function() {
                 transformation: "grayscale"
             })
                 .then(url => {
-                    assert.equal(url, "https://namemc.com/texture/d1bf6a06a65d674a.png");
+                    assert.strictEqual(url, "https://namemc.com/texture/d1bf6a06a65d674a.png");
+
+                    done();
+                })
+                .catch(done);
+        });
+    });
+
+    describe("getSkins();", function() {
+        it("Receive data and check array size", function(done) {
+            this.timeout(5000);
+
+            nameMc.getSkins()
+                .then(skins => {
+                    assert.strictEqual(skins.length, 30);
 
                     done();
                 })
@@ -82,7 +96,7 @@ describe("Cape", function() {
 
             nameMc.getCapes("dannyBstyle")
                 .then(capes => {
-                    assert.equal(JSON.stringify(capes), JSON.stringify(pattern));
+                    assert.strictEqual(JSON.stringify(capes), JSON.stringify(pattern));
 
                     done();
                 })
@@ -109,7 +123,7 @@ describe("Cape", function() {
 
             const capeType = nameMc.getCapeType("7ac79667ca6d906d");
 
-            assert.equal(JSON.stringify(capeType), JSON.stringify(pattern))
+            assert.strictEqual(JSON.stringify(capeType), JSON.stringify(pattern))
         });
     });
 });
@@ -129,7 +143,7 @@ describe("Friends", function() {
 
             nameMc.getFriends("MrZillaGold")
                 .then(friends => {
-                    assert.equal(JSON.stringify(friends), JSON.stringify(pattern));
+                    assert.strictEqual(JSON.stringify(friends), JSON.stringify(pattern));
 
                     done();
                 })
@@ -159,8 +173,8 @@ describe("Options", function() {
                 endpoint
             });
 
-            assert.equal(proxy, nameMc.options.proxy);
-            assert.equal(endpoint, nameMc.options.endpoint);
+            assert.strictEqual(proxy, nameMc.options.proxy);
+            assert.strictEqual(endpoint, nameMc.options.endpoint);
         });
     });
 });
