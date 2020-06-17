@@ -7,6 +7,9 @@
 <dt><a href="#skinHistory">skinHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить историю скинов по никнейму</p>
 </dd>
+<dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получить скины с определенной вкладки сайта</p>
+</dd>
 <dt><a href="#getCapes">getCapes(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить плащи игрока по никнейму</p>
 </dd>
@@ -63,6 +66,29 @@ nameMc.setOptions({
 
 ```js
 nameMc.skinHistory("MrZillaGold")
+    .then(skins => console.log(skins))
+    .catch(error => console.log(error));
+```
+
+<a name="getSkins"></a>
+
+## getSkins(tab, page, section)⇒ <code>Promise</code>;
+Получить скины с определенной вкладки сайта
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise` - Обещание массива с объектами скинов
+
+| Параметры | Тип                                     | Описание                                                        |
+| --------- | --------------------------------------- | --------------------------------------------------------------- |
+| tab       | `"trending"` `"new"` `"tag"` `"random"` | Вкладка с которой получить скины                                |
+| page      | `number` `string`                       | Страница вкладки (1 - 100)                                      |
+| section   | `string`                                | Секция, используется при получении скинов из вкладки `trending` |
+
+**Пример**:
+
+```js
+nameMc.getSkins("new", 2)
     .then(skins => console.log(skins))
     .catch(error => console.log(error));
 ```

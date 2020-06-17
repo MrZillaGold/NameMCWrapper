@@ -8,7 +8,7 @@ export default class WrapperError {
             `Nickname $params does not exist.`, // 3
             `There is no useful information in the data received, if the problem repeats please report this to the Github issue.`, // 4
             `Skin hash $params does not exist.`, // 5
-            `Invalid transformation type $params. Check available types in docs.`, // 6
+            `Invalid argument type $params. Check available types in docs.`, // 6
             `The required parameters were not passed to the method. Check the necessary parameters in docs.` // 7
         ];
     }

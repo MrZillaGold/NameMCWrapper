@@ -7,6 +7,9 @@
 <dt><a href="#skinHistory">skinHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skin history by nickname</p>
 </dd>
+<dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get skins from a specific tab of the site</p>
+</dd>
 <dt><a href="#getCapes">getCapes(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get capes by nickname</p>
 </dd>
@@ -63,6 +66,29 @@ Get skin history by nickname
 
 ```js
 nameMc.skinHistory("MrZillaGold")
+    .then(skins => console.log(skins))
+    .catch(error => console.log(error));
+```
+
+<a name="getSkins"></a>
+
+## getSkins(tab, page, section)⇒ <code>Promise</code>;
+Get skins from a specific tab of the site
+
+**Kind**: global function
+
+**Returns**: `Promise` - Promise array with skins objects
+
+| Param   | Type                                    | Description                                 |
+| ------- | --------------------------------------- | ------------------------------------------- |
+| tab     | `"trending"` `"new"` `"tag"` `"random"` | Tab with which to get skins                 |
+| page    | `number` `string`                       | Tab page (1 - 100)                          |
+| section | `string`                                | Section, used when getting `trending` skins |
+
+**Example**:
+
+```js
+nameMc.getSkins("new", 2)
     .then(skins => console.log(skins))
     .catch(error => console.log(error));
 ```

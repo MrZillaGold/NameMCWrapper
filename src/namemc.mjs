@@ -35,13 +35,13 @@ export default class NameMC {
      * @returns {Promise} Promise array with skins objects
      */
     skinHistory(nickname) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                await axios.get(`${this.getEndpoint()}/profile/${nickname}`)
-                    .then(response => {
-                        if (((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(profileRegExp)) {
+                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                    .then(({ request, data })  => {
+                        if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
 
-                            const skins = response.data.match(/<\s*canvas class="skin-2d align-top (?:skin-button|skin-button skin-button-selected) title-time" width="32" height="32" title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
+                            const skins = data.match(/<\s*canvas class="skin-2d align-top (?:skin-button|skin-button skin-button-selected) title-time" width="32" height="32" title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
                             if (skins) {
                                 resolve(
@@ -84,13 +84,13 @@ export default class NameMC {
      * @returns {Promise} Promise array with capes objects
      */
     getCapes(nickname) {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                await axios.get(`${this.getEndpoint()}/profile/${nickname}`)
-                    .then(response => {
-                        if (((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(profileRegExp)) {
+                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                    .then(({ request, data }) => {
+                        if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
 
-                            const capes = response.data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
+                            const capes = data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
                             if (capes) {
                                 resolve(
@@ -122,8 +122,8 @@ export default class NameMC {
     /**
      * @description Get skin renders
      * @param {Object} options - Object with parameters for generating renders
-     * @param {string} options.skin=12b92a9206470fe2 - Skin hash
-     * @param {"classic"|"slim"} [options.model=classic] - Skin type for model
+     * @param {string} options.skin="12b92a9206470fe2" - Skin hash
+     * @param {"classic"|"slim"} [options.model="classic"] - Skin type for model
      * @param {(number|string)} [options.width=600] - Width for 3d render image
      * @param {(number|string)} [options.height=300] - Height for 3d render image
      * @param {(number|string)} [options.theta=-30] - Angle to rotate the 3d model in a circle. (-360 - 360)
@@ -153,6 +153,8 @@ export default class NameMC {
     transformSkin({ skin, transformation }) {
         const endpoint = this.getEndpoint();
 
+        const transformations = ["grayscale", "invert", "rotate-hue-180", "rotate-head-left", "rotate-head-right"];
+
         return new Promise((resolve, reject) => {
             const data = {
                 skin,
@@ -160,8 +162,6 @@ export default class NameMC {
             };
 
             if (!(skin && transformation)) reject(WrapperError.get(7));
-
-            const transformations = ["grayscale", "invert", "rotate-hue-180", "rotate-head-left", "rotate-head-right"];
 
             if (!transformations.includes(transformation)) reject(WrapperError.get(6, transformation));
 
@@ -172,8 +172,8 @@ export default class NameMC {
                     "origin": "https://ru.namemc.com"
                 }
             })
-                .then(response => {
-                    const [, hash] = ((response.request.res && response.request.res.responseUrl) || response.request.responseURL).match(skinRegExp);
+                .then(({ request }) => {
+                    const [, hash] = ((request.res && request.res.responseUrl) || request.responseURL).match(skinRegExp);
 
                     if (hash) {
                         resolve(`${endpoint}/texture/${hash}.png`);
@@ -239,6 +239,53 @@ export default class NameMC {
                 reject(WrapperError.get(2))
             }
         })
+    }
+
+    /**
+     * @description Get skins from a specific tab of the site
+     * @param {"trending"|"new"|"random"} [tab="trending"] - Tab with which to get skins
+     * @param {(number|string)} [page=1] - Tab page (1 - 100)
+     * @param {"daily"|"weekly"|"monthly"|"top"} [section="weekly"] - Section, used when getting trending skins
+     * @returns {Promise} Promise array with skins objects
+     */
+    getSkins(tab = "trending", page = 1, section = "weekly") {
+        const tabs = ["trending", "new", "random"];
+        const sections = ["daily", "weekly", "monthly", "top"];
+
+        return new Promise(((resolve, reject) => {
+            if (!tabs.includes(tab)) reject(WrapperError.get(6, tab));
+            if (!sections.includes(section)) reject(WrapperError.get(6, section));
+
+            axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
+                .then(({ data }) => {
+                    const skins = data.match(/<\s*a href="\/skin\/([^]+?)"[^>]*>/g);
+
+                    const models = data.match(/model=(classic|slim)/g);
+
+                    const ratings = data.match(/★([\d]+)/g);
+
+                    resolve(
+                        skins.map((skin, index) => {
+                            const [, hash] = /\/skin\/([\da-z]+)/.exec(skin);
+                            const [, model] = /model=(classic|slim)/.exec(models[index]);
+
+                            const [, rating] = /★([\d]+)/.exec(ratings[index]);
+
+                            return {
+                                url: `${this.getEndpoint()}/texture/${hash}.png`,
+                                hash,
+                                isSlim: model !== "classic",
+                                renders: this.getRenders({
+                                    skin: hash,
+                                    model
+                                }),
+                                rating: parseInt(rating)
+                            }
+                        })
+                    );
+                })
+                .catch(error => reject(WrapperError.get(1, error)))
+        }));
     }
 
     /**
