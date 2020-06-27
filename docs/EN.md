@@ -154,11 +154,11 @@ Transform skin method
 
 **Returns**: `Promise` - Promise url string on transformed skin
 
-| Param                  | Type                                                                                   | Description                                    |
-| ---------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| options                | `Object`                                                                               | Object with parameters for skin transformation |
-| options.skin           | `string`                                                                               | Skin hash                                      |
-| options.transformation | `"grayscale"` `"invert"` `"rotate-hue-180"` `"rotate-head-left"` `"rotate-head-right"` | Transformation type                            |
+| Param                  | Type                                                                                                                                                                                                                                     | Description                                    |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| options                | `Object`                                                                                                                                                                                                                                 | Object with parameters for skin transformation |
+| options.skin           | `string`                                                                                                                                                                                                                                 | Skin hash                                      |
+| options.transformation | `"grayscale"` `"invert"` `"rotate-hue-180"` `"rotate-head-left"` `"rotate-head-right"` `"hat-pumpkin-mask-1"` `"hat-pumpkin-mask-2"` `"hat-pumpkin-mask-3"` `"hat-pumpkin-mask-4"` `"hat-pumpkin"` `"hat-pumpkin-creeper"` `"hat-santa"` | Transformation type                            |
 
 **Example**:
 

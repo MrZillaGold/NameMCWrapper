@@ -147,13 +147,17 @@ export default class NameMC {
      * @description Transform skin method
      * @param {Object} options - Object with parameters for skin transformation
      * @param {string} options.skin - Skin hash
-     * @param {"grayscale"|"invert"|"rotate-hue-180"|"rotate-head-left"|"rotate-head-right"} options.transformation - Transformation type
+     * @param {"grayscale"|"invert"|"rotate-hue-180"|"rotate-head-left"|"rotate-head-right"|"hat-pumpkin-mask-1"|"hat-pumpkin-mask-2"|"hat-pumpkin-mask-3"|"hat-pumpkin-mask-4"|"hat-pumpkin"|"hat-pumpkin-creeper"|"hat-santa"} options.transformation - Transformation type
      * @returns {Promise} Promise url string on transformed skin
      */
     transformSkin({ skin, transformation }) {
         const endpoint = this.getEndpoint();
 
-        const transformations = ["grayscale", "invert", "rotate-hue-180", "rotate-head-left", "rotate-head-right"];
+        const transformations = [
+            "grayscale", "invert", "rotate-hue-180", "rotate-head-left",
+            "rotate-head-right", "hat-pumpkin-mask-1", "hat-pumpkin-mask-2", "hat-pumpkin-mask-3",
+            "hat-pumpkin-mask-4", "hat-pumpkin", "hat-pumpkin-creeper", "hat-santa"
+        ];
 
         return new Promise((resolve, reject) => {
             const data = {
