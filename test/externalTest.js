@@ -131,27 +131,16 @@ describe("Cape", function() {
 describe("Friends", function() {
     describe("getFriends();", function() {
 
-        it("Check for equality of results to a pattern", function(done) {
+        it("Checking the method for errors", function(done) {
             this.timeout(5000);
 
-            const pattern = [
-                { uuid: "fbf6be42-7ace-4478-bae9-e3903e03143f", name: "Coachest" },
-                { uuid: "15c28191-b1c9-443c-a3a2-b44795c741a6", name: "loner01" },
-                { uuid: "61f99982-77db-4dbd-be29-0737dc708c0d", name: "spoodov" },
-                { uuid: "a372a0e9-d6c1-4754-9e1d-01fa9339e71d", name: "Vyacheslav" }
-            ];
-
-            nameMc.getFriends("MrZillaGold")
-                .then(friends => {
-                    assert.strictEqual(JSON.stringify(friends), JSON.stringify(pattern));
-
-                    done();
-                })
+            assert.doesNotReject(() => nameMc.getFriends("MrZillaGold"))
+                .then(done)
                 .catch(done);
         });
 
-        it("Check for an error with an incorrect nickname format", async function() {
-            await assert.rejects(async (done) => {
+        it("Check for an error with an incorrect nickname format", function() {
+            assert.rejects(async (done) => {
 
                 await nameMc.getFriends("1 2 3");
 
