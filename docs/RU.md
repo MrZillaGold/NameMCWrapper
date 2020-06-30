@@ -4,7 +4,7 @@
 <dt><a href="#setOptions">setOptions(options);</a></dt>
 <dd><p>Установить опции</p>
 </dd>
-<dt><a href="#skinHistory">skinHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dt><a href="#skinHistory">skinHistory(nickname, page)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить историю скинов по никнейму</p>
 </dd>
 <dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
@@ -58,14 +58,15 @@ nameMc.setOptions({
 
 **Возвращает**: `Promise` - Обещание массива с объектами скинов
 
-| Параметры | Тип      | Описание       |
-| --------- | -------- | -------------- |
-| nickname  | `string` | Никнейм игрока |
+| Параметры | Тип               | По умолчанию | Описание       |
+| --------- | ----------------- | ------------ | -------------- |
+| nickname  | `string`          |              | Никнейм игрока |
+| page      | `number` `string` | 1            | Номер страницы |
 
 **Пример**:
 
 ```js
-nameMc.skinHistory("MrZillaGold")
+nameMc.skinHistory("MrZillaGold", 2)
     .then(skins => console.log(skins))
     .catch(error => console.log(error));
 ```
@@ -209,6 +210,6 @@ nameMc.getCapeType("1981aad373fa9754")
 
 ```js
 nameMc.getFriends("spoodov")
-    .then(cape => console.log(cape))
+    .then(friends => console.log(friends))
     .catch(error => console.log(error));
 ```

@@ -4,7 +4,7 @@
 <dt><a href="#setOptions">setOptions(options);</a></dt>
 <dd><p>Sets options</p>
 </dd>
-<dt><a href="#skinHistory">skinHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dt><a href="#skinHistory">skinHistory(nickname, page)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skin history by nickname</p>
 </dd>
 <dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
@@ -51,21 +51,22 @@ nameMc.setOptions({
 
 <a name="skinHistory"></a>
 
-## skinHistory(nickname) ⇒ `Promise`;
+## skinHistory(nickname, page) ⇒ `Promise`;
 Get skin history by nickname
 
 **Kind**: global function
 
 **Returns**: `Promise` - Promise array with skins objects
 
-| Param    | Type     | Description     |
-| -------- | -------- | --------------- |
-| nickname | `string` | Player nickname |
+| Param    | Type              | Default | Description     |
+| -------- | ----------------- | ------- | --------------- |
+| nickname | `string`          |         | Player nickname |
+| page     | `number` `string` | 1       | Page number     |
 
 **Example**:
 
 ```js
-nameMc.skinHistory("MrZillaGold")
+nameMc.skinHistory("MrZillaGold", 2)
     .then(skins => console.log(skins))
     .catch(error => console.log(error));
 ```
@@ -209,6 +210,6 @@ Get player friends by nickname
 
 ```js
 nameMc.getFriends("spoodov")
-    .then(cape => console.log(cape))
+    .then(friends => console.log(friends))
     .catch(error => console.log(error));
 ```

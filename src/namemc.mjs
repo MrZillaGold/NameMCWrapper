@@ -32,36 +32,21 @@ export default class NameMC {
     /**
      * @description Get skin history by nickname
      * @param {string} nickname - Player nickname
+     * @param {(number|string)} [page=1] - Page number
      * @returns {Promise} Promise array with skins objects
      */
-    skinHistory(nickname) {
+    skinHistory(nickname, page = 1) {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${nickname}.1?page=${page}`)
                     .then(({ request, data })  => {
                         if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
 
-                            const skins = data.match(/<\s*canvas class="skin-2d align-top (?:skin-button|skin-button skin-button-selected) title-time" width="32" height="32" title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
+                            const skins = this.parseSkins(data);
 
                             if (skins) {
                                 resolve(
-                                    skins.map(skin => {
-                                        const regExp = /title="([^]+?)" data-skin-hash="([^]+?)" data-model="([^]+?)"/;
-
-                                        const [date, hash, model] = regExp.exec(skin)
-                                            .slice(1, 4);
-
-                                        return {
-                                            date,
-                                            url: `${this.getEndpoint()}/texture/${hash}.png`,
-                                            hash,
-                                            isSlim: model !== "classic",
-                                            renders: this.getRenders({
-                                                skin: hash,
-                                                model
-                                            })
-                                        };
-                                    })
+                                    skins
                                 );
                             } else {
                                 reject(WrapperError.get(4));
@@ -261,33 +246,9 @@ export default class NameMC {
             if (!sections.includes(section)) reject(WrapperError.get(6, section));
 
             axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
-                .then(({ data }) => {
-                    const skins = data.match(/<\s*a href="\/skin\/([^]+?)"[^>]*>/g);
-
-                    const models = data.match(/model=(classic|slim)/g);
-
-                    const ratings = data.match(/★([\d]+)/g);
-
-                    resolve(
-                        skins.map((skin, index) => {
-                            const [, hash] = /\/skin\/([\da-z]+)/.exec(skin);
-                            const [, model] = /model=(classic|slim)/.exec(models[index]);
-
-                            const [, rating] = /★([\d]+)/.exec(ratings[index]);
-
-                            return {
-                                url: `${this.getEndpoint()}/texture/${hash}.png`,
-                                hash,
-                                isSlim: model !== "classic",
-                                renders: this.getRenders({
-                                    skin: hash,
-                                    model
-                                }),
-                                rating: parseInt(rating)
-                            }
-                        })
-                    );
-                })
+                .then(({ data }) =>
+                    resolve(this.parseSkins(data))
+                )
                 .catch(error => reject(WrapperError.get(1, error)))
         }));
     }
@@ -304,4 +265,37 @@ export default class NameMC {
         return `${proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 
+    /**
+     * @class
+     * @ignore
+     */
+    parseSkins(data) {
+        const skins = data.match(/<\s*a href="\/skin\/([^]+?)"[^>]*>/g);
+
+        const models = data.match(/model=(classic|slim)/g);
+
+        const ratings = data.match(/★([\d]+)/g);
+
+        if (skins) {
+            return skins.map((skin, index) => {
+                const [, hash] = /\/skin\/([\da-z]+)/.exec(skin);
+                const [, model] = /model=(classic|slim)/.exec(models[index]);
+
+                const [, rating] = /★([\d]+)/.exec(ratings[index]);
+
+                return {
+                    url: `${this.getEndpoint()}/texture/${hash}.png`,
+                    hash,
+                    isSlim: model !== "classic",
+                    renders: this.getRenders({
+                        skin: hash,
+                        model
+                    }),
+                    rating: parseInt(rating)
+                }
+            });
+        } else {
+            return null;
+        }
+    }
 }

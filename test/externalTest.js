@@ -14,7 +14,6 @@ describe("Skin", function() {
 
             const pattern = [
                 {
-                    date: "2016-03-14T15:37:05.756Z",
                     url: "https://namemc.com/texture/5d5eb6d84b57ea29.png",
                     hash: "5d5eb6d84b57ea29",
                     isSlim: false,
@@ -24,7 +23,8 @@ describe("Skin", function() {
                             front_and_back: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&front_and_back&theta=-30"
                         },
                         face: "https://render.namemc.com/skin/2d/face.png?skin=5d5eb6d84b57ea29&overlay=true&scale=4"
-                    }
+                    },
+                    rating: 1259
                 }
             ];
 
