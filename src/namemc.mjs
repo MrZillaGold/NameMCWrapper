@@ -38,25 +38,34 @@ export default class NameMC {
     skinHistory(nickname, page = 1) {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${nickname}.1?page=${page}`)
-                    .then(({ request, data })  => {
+                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                    .then(({ request, data }) => {
                         if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
 
-                            const skins = this.parseSkins(data);
+                            const [, userId] = /<\s*a href="\/minecraft-skins\/profile\/([^]+?)"[^>]*>(?:.*?)<\s*\/\s*a>/.exec(data);
 
-                            if (skins) {
-                                resolve(
-                                    skins
-                                );
-                            } else {
-                                reject(WrapperError.get(4));
-                            }
+                            axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${userId}?page=${page}`)
+                                .then(({ data })  => {
+                                        const skins = this.parseSkins(data);
 
+                                        if (skins) {
+                                            resolve(
+                                                skins
+                                            );
+                                        } else {
+                                            reject(WrapperError.get(4));
+                                        }
+                                })
+                                .catch(error => reject(WrapperError.get(1, error)));
                         } else {
                             reject(WrapperError.get(3, nickname));
                         }
                     })
-                    .catch(error => reject(WrapperError.get(1, error)));
+                    .catch(error => {
+                        console.log(error)
+
+                        reject(WrapperError.get(1, error))
+                    });
             } else {
                 reject(WrapperError.get(2))
             }
