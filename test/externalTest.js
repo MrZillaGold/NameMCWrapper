@@ -9,31 +9,11 @@ const WrapperError = new ErrorHandler();
 
 describe("Skin", function() {
     describe("skinHistory();", function() {
-        it("Check for equality of results to a pattern", function(done) {
+        it("Checking the method for errors", function(done) {
             this.timeout(5000);
 
-            const pattern = [
-                {
-                    url: "https://namemc.com/texture/5d5eb6d84b57ea29.png",
-                    hash: "5d5eb6d84b57ea29",
-                    isSlim: false,
-                    renders: {
-                        body: {
-                            front: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&theta=-30",
-                            front_and_back: "https://render.namemc.com/skin/3d/body.png?skin=5d5eb6d84b57ea29&model=classic&width=600&height=300&front_and_back&theta=-30"
-                        },
-                        face: "https://render.namemc.com/skin/2d/face.png?skin=5d5eb6d84b57ea29&overlay=true&scale=4"
-                    },
-                    rating: 1259
-                }
-            ];
-
-            nameMc.skinHistory("Notch")
-                .then(skins => {
-                    assert.strictEqual(JSON.stringify(skins), JSON.stringify(pattern));
-
-                    done();
-                })
+            assert.doesNotReject(() => nameMc.skinHistory("Notch"))
+                .then(done)
                 .catch(done);
         });
 
