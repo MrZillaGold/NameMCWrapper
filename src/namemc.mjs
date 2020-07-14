@@ -42,7 +42,11 @@ export default class NameMC {
                     .then(({ request, data }) => {
                         if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
 
-                            const [, userId] = /<\s*a href="\/minecraft-skins\/profile\/([^]+?)"[^>]*>(?:.*?)<\s*\/\s*a>/.exec(data);
+                            const user = /<\s*a href="\/minecraft-skins\/profile\/([^]+?)"[^>]*>(?:.*?)<\s*\/\s*a>/.exec(data);
+
+                            if (!user) return resolve([]);
+
+                            const [, userId] = user;
 
                             axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${userId}?page=${page}`)
                                 .then(({ data })  => {
