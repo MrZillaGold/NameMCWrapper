@@ -1,5 +1,4 @@
 import axios from "axios";
-import qs from "qs";
 
 import minecraftCapes from "./minecraftCapes.mjs"
 import ErrorHandler from "./error.mjs";
@@ -158,16 +157,11 @@ export default class NameMC {
         ];
 
         return new Promise((resolve, reject) => {
-            const data = {
-                skin,
-                transformation
-            };
-
             if (!(skin && transformation)) reject(WrapperError.get(7));
 
             if (!transformations.includes(transformation)) reject(WrapperError.get(6, transformation));
 
-            axios.post(`${endpoint}/transform-skin`, qs.stringify(data), {
+            axios.post(`${endpoint}/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
