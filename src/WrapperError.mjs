@@ -1,4 +1,4 @@
-export default class WrapperError {
+export class WrapperError {
 
     constructor() {
         this.errors = [

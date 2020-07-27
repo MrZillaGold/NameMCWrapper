@@ -1,11 +1,9 @@
 import axios from "axios";
 
-import minecraftCapes from "./minecraftCapes.mjs"
-import ErrorHandler from "./error.mjs";
+import { DataParser } from "./DataParser.mjs";
+import { WrapperError } from "./WrapperError.mjs";
 
-import { nameRegExp, profileRegExp, skinRegExp } from "./utils.mjs";
-
-const WrapperError = new ErrorHandler();
+import { nameRegExp, profileRegExp, skinRegExp, capes } from "./utils.mjs";
 
 export default class NameMC {
 
@@ -49,28 +47,39 @@ export default class NameMC {
 
                             axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${userId}?page=${page}`)
                                 .then(({ data })  => {
-                                        const skins = this.parseSkins(data);
+                                    const skins = new DataParser(data, this)
+                                        .parseSkins();
 
-                                        if (skins) {
-                                            resolve(
-                                                skins
-                                            );
-                                        } else {
-                                            reject(WrapperError.get(4));
-                                        }
+                                    if (skins) {
+                                        resolve(
+                                            skins
+                                        );
+                                    } else {
+                                        reject(
+                                            new WrapperError().get(4)
+                                        );
+                                    }
                                 })
-                                .catch(error => reject(WrapperError.get(1, error)));
+                                .catch(error =>
+                                    reject(
+                                        new WrapperError().get(1, error)
+                                    )
+                                );
                         } else {
-                            reject(WrapperError.get(3, nickname));
+                            reject(
+                                new WrapperError().get(3, nickname)
+                            );
                         }
                     })
                     .catch(error => {
-                        console.log(error)
-
-                        reject(WrapperError.get(1, error))
+                        reject(
+                            new WrapperError().get(1, error)
+                        );
                     });
             } else {
-                reject(WrapperError.get(2))
+                reject(
+                    new WrapperError().get(2)
+                );
             }
         })
     }
@@ -87,31 +96,25 @@ export default class NameMC {
                     .then(({ request, data }) => {
                         if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
 
-                            const capes = data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
-
-                            if (capes) {
-                                resolve(
-                                    capes.map(cape => {
-                                        const regExp = /data-cape-hash="([^]+?)"/;
-
-                                        const [, hash] = regExp.exec(cape);
-
-                                        return {
-                                            hash,
-                                            url: `${this.getEndpoint()}/texture/${hash}.png`,
-                                            ...this.getCapeType(hash)
-                                        };
-                                    })
-                                );
-                            }
+                            resolve(
+                                new DataParser(data, this)
+                                    .parseCapes()
+                            );
 
                         } else {
-                            reject(WrapperError.get(3, nickname));
+                            reject(
+                                new WrapperError().get(3, nickname)
+                            );
                         }
                     })
-                    .catch(error => reject(WrapperError.get(1, error)));
+                    .catch(error => reject(
+                        new WrapperError().get(1, error)
+                        )
+                    );
             } else {
-                reject(WrapperError.get(2))
+                reject(
+                    new WrapperError().get(2)
+                );
             }
         })
     }
@@ -174,15 +177,23 @@ export default class NameMC {
                     if (hash) {
                         resolve(`${endpoint}/texture/${hash}.png`);
                     } else {
-                        reject(WrapperError.get(4));
+                        reject(
+                            new WrapperError().get(4)
+                        );
                     }
                 })
                 .catch(error => {
                     if (error.response && error.response.status) {
-                        if (error.response.status === 404) reject(WrapperError.get(5, skin));
+                        if (error.response.status === 404) {
+                            reject(
+                                new WrapperError().get(5, skin)
+                            );
+                        }
                     }
 
-                    reject(WrapperError.get(1, error));
+                    reject(
+                        new WrapperError().get(1, error)
+                    );
                 })
         });
     }
@@ -193,12 +204,12 @@ export default class NameMC {
      * @returns {Object} Object with cape information
      */
     getCapeType(hash) {
-        const capeIndex = minecraftCapes.findIndex(cape => cape.hash === hash);
+        const capeIndex = capes.findIndex(cape => cape.hash === hash);
 
         return capeIndex !== -1 ?
             {
                 type: "minecraft",
-                ...minecraftCapes[capeIndex]
+                ...capes[capeIndex]
             }
             :
             {
@@ -218,21 +229,33 @@ export default class NameMC {
 
                 axios.get(`${this.getEndpoint(null, "api.ashcon.app")}/mojang/v2/user/${nickname}`)
                     .then(response => response.data)
-                    .then(data => {
+                    .then(({ uuid }) => {
 
-                        axios.get(`${this.getEndpoint("api")}/profile/${data.uuid}/friends`)
-                            .then(response => resolve(response.data))
-                            .catch(error => reject(WrapperError.get(1, error)))
+                        axios.get(`${this.getEndpoint("api")}/profile/${uuid}/friends`)
+                            .then(({ data }) => resolve(data))
+                            .catch(error =>
+                                reject(
+                                    new WrapperError().get(1, error)
+                                )
+                            );
 
                     })
                     .catch(error => {
-                        if (error.response && error.response.status === 404) reject(WrapperError.get(3, nickname));
+                        if (error.response && error.response.status === 404) {
+                            reject(
+                                new WrapperError().get(3, nickname)
+                            );
+                        }
 
-                        reject(WrapperError.get(1, error))
+                        reject(
+                            new WrapperError().get(1, error)
+                        );
                     });
 
             } else {
-                reject(WrapperError.get(2))
+                reject(
+                    new WrapperError().get(2)
+                );
             }
         })
     }
@@ -254,9 +277,16 @@ export default class NameMC {
 
             axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) =>
-                    resolve(this.parseSkins(data))
+                    resolve(
+                        new DataParser(data, this)
+                            .parseSkins()
+                    )
                 )
-                .catch(error => reject(WrapperError.get(1, error)))
+                .catch(error =>
+                    reject(
+                        new WrapperError().get(1, error)
+                    )
+                )
         }));
     }
 
@@ -265,44 +295,8 @@ export default class NameMC {
      * @ignore
      */
     getEndpoint(subdomain, domain) {
-        const {
-            proxy, endpoint
-        } = this.options;
+        const { proxy, endpoint } = this.options;
 
         return `${proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
-    }
-
-    /**
-     * @class
-     * @ignore
-     */
-    parseSkins(data) {
-        const skins = data.match(/<\s*a href="\/skin\/([^]+?)"[^>]*>/g);
-
-        const models = data.match(/model=(classic|slim)/g);
-
-        const ratings = data.match(/★([\d]+)/g);
-
-        if (skins) {
-            return skins.map((skin, index) => {
-                const [, hash] = /\/skin\/([\da-z]+)/.exec(skin);
-                const [, model] = /model=(classic|slim)/.exec(models[index]);
-
-                const [, rating] = /★([\d]+)/.exec(ratings[index]);
-
-                return {
-                    url: `${this.getEndpoint()}/texture/${hash}.png`,
-                    hash,
-                    isSlim: model !== "classic",
-                    renders: this.getRenders({
-                        skin: hash,
-                        model
-                    }),
-                    rating: parseInt(rating)
-                }
-            });
-        } else {
-            return null;
-        }
     }
 }

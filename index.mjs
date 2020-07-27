@@ -1,4 +1,4 @@
-import NameMC from "./src/namemc.mjs";
+import NameMC from "./src/NameMC.mjs";
 
 export {
     NameMC

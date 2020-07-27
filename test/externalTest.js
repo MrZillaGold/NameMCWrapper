@@ -1,11 +1,9 @@
 import assert from "assert";
 
 import { NameMC } from "../index.mjs";
-import ErrorHandler from "../src/error.mjs";
+import { WrapperError } from "../src/WrapperError.mjs";
 
 const nameMc = new NameMC();
-
-const WrapperError = new ErrorHandler();
 
 describe("Skin", function() {
     describe("skinHistory();", function() {
@@ -24,7 +22,7 @@ describe("Skin", function() {
 
                 done();
 
-            }, WrapperError.get(2));
+            }, new WrapperError().get(2));
         });
     });
 
@@ -90,7 +88,7 @@ describe("Cape", function() {
 
                 done();
 
-            }, WrapperError.get(2));
+            }, new WrapperError().get(2));
         });
     });
 
@@ -126,7 +124,7 @@ describe("Friends", function() {
 
                 done();
 
-            }, WrapperError.get(2));
+            }, new WrapperError().get(2));
         });
     });
 });
