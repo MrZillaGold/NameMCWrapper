@@ -16,11 +16,14 @@
 
 <p align="center">This page is available in other languages:</p>
 <p align="center">
-  <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/README_RU.md">🇷🇺</a>
+  <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/README_RU.md">🇷🇺</a>
 </p>
 
 ## Install 📦
-`npm i namemcwrapper`
+| NodeJS Version | Command                     |
+| -------------- | --------------------------- | 
+| `>= 14.0.0`    | `npm i namemcwrapper`       |
+| `<= 13.14.0`   | `npm i namemcwrapper@1.1.3` |
 
 ## Use 🔧
 ```js
