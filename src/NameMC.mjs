@@ -37,11 +37,13 @@ export default class NameMC {
             if (nickname.match(nameRegExp)) {
                 axios.get(`${this.getEndpoint()}/profile/${nickname}`)
                     .then(({ request, data }) => {
-                        if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
+                        if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
                             const user = /<\s*a href="\/minecraft-skins\/profile\/([^]+?)"[^>]*>(?:.*?)<\s*\/\s*a>/.exec(data);
 
-                            if (!user) return resolve([]);
+                            if (!user) {
+                                return resolve([]);
+                            }
 
                             const [, userId] = user;
 
@@ -71,7 +73,7 @@ export default class NameMC {
                             );
                         }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         reject(
                             new WrapperError().get(1, error)
                         );
@@ -94,7 +96,7 @@ export default class NameMC {
             if (nickname.match(nameRegExp)) {
                 axios.get(`${this.getEndpoint()}/profile/${nickname}`)
                     .then(({ request, data }) => {
-                        if (((request.res && request.res.responseUrl) || request.responseURL).match(profileRegExp)) {
+                        if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
                             resolve(
                                 new DataParser(data, this)
@@ -107,7 +109,7 @@ export default class NameMC {
                             );
                         }
                     })
-                    .catch(error => reject(
+                    .catch((error) => reject(
                         new WrapperError().get(1, error)
                         )
                     );
@@ -131,7 +133,10 @@ export default class NameMC {
      * @param {boolean} [options.overlay=true] - Use skin overlay on 2d face render
      * @returns {Object} Object with renders skin
      */
-    getRenders({ skin = "12b92a9206470fe2", model = "classic", width = 600, height = 300, scale = 4, overlay = true, theta = -30 }) {
+    getRenders({
+                   skin = "12b92a9206470fe2", model = "classic", width = 600,
+                   height = 300, scale = 4, overlay = true, theta = -30
+    }) {
         const endpoint = this.getEndpoint("render");
 
         return {
@@ -160,9 +165,13 @@ export default class NameMC {
         ];
 
         return new Promise((resolve, reject) => {
-            if (!(skin && transformation)) reject(WrapperError.get(7));
+            if (!(skin && transformation)) {
+                reject(WrapperError.get(7));
+            }
 
-            if (!transformations.includes(transformation)) reject(WrapperError.get(6, transformation));
+            if (!transformations.includes(transformation)) {
+                reject(WrapperError.get(6, transformation));
+            }
 
             axios.post(`${endpoint}/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
                 headers: {
@@ -172,7 +181,7 @@ export default class NameMC {
                 }
             })
                 .then(({ request }) => {
-                    const [, hash] = ((request.res && request.res.responseUrl) || request.responseURL).match(skinRegExp);
+                    const [, hash] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
 
                     if (hash) {
                         resolve(`${endpoint}/texture/${hash}.png`);
@@ -182,13 +191,11 @@ export default class NameMC {
                         );
                     }
                 })
-                .catch(error => {
-                    if (error.response && error.response.status) {
-                        if (error.response.status === 404) {
-                            reject(
-                                new WrapperError().get(5, skin)
-                            );
-                        }
+                .catch((error) => {
+                    if (error?.response?.status === 404) {
+                        reject(
+                            new WrapperError().get(5, skin)
+                        );
                     }
 
                     reject(
@@ -204,7 +211,7 @@ export default class NameMC {
      * @returns {Object} Object with cape information
      */
     getCapeType(hash) {
-        const capeIndex = capes.findIndex(cape => cape.hash === hash);
+        const capeIndex = capes.findIndex((cape) => cape.hash === hash);
 
         return capeIndex !== -1 ?
             {
@@ -233,15 +240,15 @@ export default class NameMC {
 
                         axios.get(`${this.getEndpoint("api")}/profile/${uuid}/friends`)
                             .then(({ data }) => resolve(data))
-                            .catch(error =>
+                            .catch((error) =>
                                 reject(
                                     new WrapperError().get(1, error)
                                 )
                             );
 
                     })
-                    .catch(error => {
-                        if (error.response && error.response.status === 404) {
+                    .catch((error) => {
+                        if (error?.response?.status === 404) {
                             reject(
                                 new WrapperError().get(3, nickname)
                             );
@@ -272,8 +279,12 @@ export default class NameMC {
         const sections = ["daily", "weekly", "monthly", "top"];
 
         return new Promise(((resolve, reject) => {
-            if (!tabs.includes(tab)) reject(WrapperError.get(6, tab));
-            if (!sections.includes(section)) reject(WrapperError.get(6, section));
+            if (!tabs.includes(tab)) {
+                reject(WrapperError.get(6, tab));
+            }
+            if (!sections.includes(section)) {
+                reject(WrapperError.get(6, section));
+            }
 
             axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) =>
@@ -282,7 +293,7 @@ export default class NameMC {
                             .parseSkins()
                     )
                 )
-                .catch(error =>
+                .catch((error) =>
                     reject(
                         new WrapperError().get(1, error)
                     )
