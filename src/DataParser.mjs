@@ -1,32 +1,24 @@
 export class DataParser {
 
-    constructor(data, context) {
-        this.data = data;
+    parseSkins(data) {
+        const skinRegExp = /<\s*img class="lazy drop-shadow auto-size" width="(?:[^]+?)" height="(?:[^]+?)" src="(?:[^]+?)" data-src="https:\/\/render\.namemc\.com\/skin\/3d\/body\.png\?skin=([^]+?)&amp;model=([^]+?)&amp;width=(?:[^]+?)&amp;height=(?:[^]+?)" loading="lazy"[^>]*>/;
 
-        this.context = context;
-    }
-
-    parseSkins() {
-        const { data, context } = this;
-
-        const skins = data.match(/<\s*a href="\/skin\/([^]+?)"[^>]*>/g);
-
-        const models = data.match(/model=(classic|slim)/g);
-
-        const ratings = data.match(/★([\d]+)/g);
+        const skins = data.match(new RegExp(skinRegExp, "g"));
 
         if (skins) {
+            const ratings = data.match(/★([\d]+)/g);
+
             return skins.map((skin, index) => {
-                const [, hash] = /\/skin\/([\da-z]+)/.exec(skin);
-                const [, model] = /model=(classic|slim)/.exec(models[index]);
+                const [, hash, model] = skinRegExp.exec(skin);
 
                 const [, rating] = /★([\d]+)/.exec(ratings[index]);
 
                 return {
-                    url: `${context.getEndpoint()}/texture/${hash}.png`,
+                    url: `${this.getEndpoint()}/texture/${hash}.png`,
                     hash,
+                    model,
                     isSlim: model !== "classic",
-                    renders: context.getRenders({
+                    renders: this.getRenders({
                         skin: hash,
                         model
                     }),
@@ -38,21 +30,19 @@ export class DataParser {
         }
     }
 
-    parseCapes() {
-        const { data, context } = this;
-
+    parseCapes(data) {
         const capes = data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
 
         if (capes) {
-            return capes.map(cape => {
+            return capes.map((cape) => {
                 const regExp = /data-cape-hash="([^]+?)"/;
 
                 const [, hash] = regExp.exec(cape);
 
                 return {
                     hash,
-                    url: `${context.getEndpoint()}/texture/${hash}.png`,
-                    ...context.getCapeType(hash)
+                    url: `${this.getEndpoint()}/texture/${hash}.png`,
+                    ...this.getCapeType(hash)
                 };
             })
         } else {

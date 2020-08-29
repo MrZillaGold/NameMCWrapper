@@ -49,8 +49,8 @@ export default class NameMC {
 
                             axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${userId}?page=${page}`)
                                 .then(({ data })  => {
-                                    const skins = new DataParser(data, this)
-                                        .parseSkins();
+                                    const skins = new DataParser()
+                                        .parseSkins.call(this, data);
 
                                     if (skins) {
                                         resolve(
@@ -99,8 +99,8 @@ export default class NameMC {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
                             resolve(
-                                new DataParser(data, this)
-                                    .parseCapes()
+                                new DataParser()
+                                    .parseCapes.call(this, data)
                             );
 
                         } else {
@@ -166,11 +166,11 @@ export default class NameMC {
 
         return new Promise((resolve, reject) => {
             if (!(skin && transformation)) {
-                reject(WrapperError.get(7));
+                reject(new WrapperError().get(7));
             }
 
             if (!transformations.includes(transformation)) {
-                reject(WrapperError.get(6, transformation));
+                reject(new WrapperError().get(6, transformation));
             }
 
             axios.post(`${endpoint}/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
@@ -211,12 +211,12 @@ export default class NameMC {
      * @returns {Object} Object with cape information
      */
     getCapeType(hash) {
-        const capeIndex = capes.findIndex((cape) => cape.hash === hash);
+        const cape = capes.get(hash);
 
-        return capeIndex !== -1 ?
+        return cape ?
             {
                 type: "minecraft",
-                ...capes[capeIndex]
+                name: cape
             }
             :
             {
@@ -280,17 +280,17 @@ export default class NameMC {
 
         return new Promise(((resolve, reject) => {
             if (!tabs.includes(tab)) {
-                reject(WrapperError.get(6, tab));
+                reject(new WrapperError().get(6, tab));
             }
             if (!sections.includes(section)) {
-                reject(WrapperError.get(6, section));
+                reject(new WrapperError().get(6, section));
             }
 
             axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) =>
                     resolve(
-                        new DataParser(data, this)
-                            .parseSkins()
+                        new DataParser()
+                            .parseSkins.call(this, data)
                     )
                 )
                 .catch((error) =>
