@@ -1,6 +1,6 @@
 {
   "name": "namemcwrapper",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "ES6 Promise based wrapper for NameMC.com",
   "main": "index.mjs",
   "scripts": {

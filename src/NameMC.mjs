@@ -188,6 +188,7 @@ export default class NameMC {
                         resolve({
                             url: `${endpoint}/texture/${hash}.png`,
                             hash,
+                            model,
                             renders: this.getRenders({
                                 skin: hash,
                                 model
