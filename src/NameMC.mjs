@@ -153,9 +153,10 @@ export default class NameMC {
      * @param {Object} options - Object with parameters for skin transformation
      * @param {string} options.skin - Skin hash
      * @param {"grayscale"|"invert"|"rotate-hue-180"|"rotate-head-left"|"rotate-head-right"|"hat-pumpkin-mask-1"|"hat-pumpkin-mask-2"|"hat-pumpkin-mask-3"|"hat-pumpkin-mask-4"|"hat-pumpkin"|"hat-pumpkin-creeper"|"hat-santa"} options.transformation - Transformation type
+     * @param {"classic"|"slim"} [options.model="classic"] - Skin type for renders
      * @returns {Promise} Promise url string on transformed skin
      */
-    transformSkin({ skin, transformation }) {
+    transformSkin({ skin, transformation, model = "classic" }) {
         const endpoint = this.getEndpoint();
 
         const transformations = [
@@ -184,7 +185,14 @@ export default class NameMC {
                     const [, hash] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
 
                     if (hash) {
-                        resolve(`${endpoint}/texture/${hash}.png`);
+                        resolve({
+                            url: `${endpoint}/texture/${hash}.png`,
+                            hash,
+                            renders: this.getRenders({
+                                skin: hash,
+                                model
+                            })
+                        });
                     } else {
                         reject(
                             new WrapperError().get(4)

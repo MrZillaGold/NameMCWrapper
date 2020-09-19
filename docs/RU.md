@@ -160,13 +160,15 @@ nameMc.getRenders({
 | options                                  | `Object`                                                                                                                                                                                                                                 | Объект с параметрами для трансформации скина |
 | options.skin                             | `string`                                                                                                                                                                                                                                 | Хеш скина                                    |
 | options.transformation                   | `"grayscale"` `"invert"` `"rotate-hue-180"` `"rotate-head-left"` `"rotate-head-right"` `"hat-pumpkin-mask-1"` `"hat-pumpkin-mask-2"` `"hat-pumpkin-mask-3"` `"hat-pumpkin-mask-4"` `"hat-pumpkin"` `"hat-pumpkin-creeper"` `"hat-santa"` | Тип трансформации                            |
+| options.model                            | `"classic"` `"slim"`                                                                                                                                                                                                                     | Тип модели скина для рендеров                |
 
 **Пример**:
 
 ```js
 nameMc.transformSkin({
     skin: "c178117c21bd0a1c",
-    transformation: "grayscale"
+    transformation: "grayscale",
+    model: "classic"
 })
     .then(url => console.log(url))
     .catch(error => console.log(error));

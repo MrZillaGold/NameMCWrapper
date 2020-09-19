@@ -34,7 +34,7 @@ describe("Skin", function() {
                 skin: "12b92a9206470fe2",
                 transformation: "grayscale"
             })
-                .then(url => {
+                .then(({ url }) => {
                     assert.strictEqual(url, "https://namemc.com/texture/d1bf6a06a65d674a.png");
 
                     done();
