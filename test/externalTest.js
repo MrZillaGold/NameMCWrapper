@@ -1,6 +1,6 @@
 import assert from "assert";
 
-import { NameMC } from "../index.mjs";
+import { NameMC } from "../src/NameMC.mjs";
 import { WrapperError } from "../src/WrapperError.mjs";
 
 const nameMc = new NameMC();

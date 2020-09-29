@@ -5,7 +5,7 @@ import { WrapperError } from "./WrapperError.mjs";
 
 import { nameRegExp, profileRegExp, skinRegExp, capes } from "./utils.mjs";
 
-export default class NameMC {
+export class NameMC {
 
     constructor() {
         this.options = {

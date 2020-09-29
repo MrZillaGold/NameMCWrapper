@@ -1,12 +1,20 @@
 {
   "name": "namemcwrapper",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "ES6 Promise based wrapper for NameMC.com",
-  "main": "index.mjs",
-  "scripts": {
-    "test": "mocha --reporter spec"
+  "type": "commonjs",
+  "main": "./dist/src/NameMC.js",
+  "exports": {
+    ".": {
+      "require": "./dist/src/NameMC.js",
+      "default": "./src/NameMC.mjs"
+    }
   },
-  "type": "module",
+  "module": "./src/NameMC.mjs",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "build": "build-esm"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MrZillaGold/NameMCWrapper.git"
@@ -25,6 +33,7 @@
     "axios": "^0.20.0"
   },
   "devDependencies": {
+    "build-esm": "^4.2.2",
     "mocha": "^8.0.1"
   },
   "engines": {

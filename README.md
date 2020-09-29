@@ -20,20 +20,19 @@
 </p>
 
 ## Install 📦
-| NodeJS Version | Command                     |
-| -------------- | --------------------------- | 
-| `>= 14.0.0`    | `npm i namemcwrapper`       |
-| `<= 13.14.0`   | `npm i namemcwrapper@1.1.3` |
+`npm i namemcwrapper`
 
 ## Use 🔧
 ```js
-import { NameMC } from "namemcwrapper";
+import { NameMC } from "namemcwrapper"; // ES6
+// OR
+const { NameMC } = require("namemcwrapper"); // ES5
 
 const nameMc = new NameMC();
 
 nameMc.skinHistory("MrZillaGold")
-    .then(skins => console.log(skins))
-    .catch(error => console.log(error));
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
 ```
 
 ## Warning ⚠
