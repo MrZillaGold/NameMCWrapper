@@ -2,7 +2,7 @@
   "name": "namemcwrapper",
   "version": "1.2.4",
   "description": "ES6 Promise based wrapper for NameMC.com",
-  "type": "commonjs",
+  "type": "module",
   "main": "./dist/src/NameMC.js",
   "exports": {
     ".": {
