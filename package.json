@@ -1,8 +1,7 @@
 {
   "name": "namemcwrapper",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "ES6 Promise based wrapper for NameMC.com",
-  "type": "module",
   "main": "./dist/src/NameMC.js",
   "exports": {
     ".": {
@@ -12,7 +11,7 @@
   },
   "module": "./src/NameMC.mjs",
   "scripts": {
-    "test": "mocha --reporter spec",
+    "test": "node --experimental-modules --experimental-json-modules node_modules/mocha/bin/_mocha --reporter spec",
     "build": "build-esm"
   },
   "repository": {
