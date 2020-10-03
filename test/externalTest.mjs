@@ -5,12 +5,14 @@ import { WrapperError } from "../src/WrapperError.mjs";
 
 const nameMc = new NameMC();
 
+nameMc.resetPassword("mrzillagold@gmail.com")
+
 describe("Skin", function() {
     describe("skinHistory();", function() {
         it("Checking the method for errors", function(done) {
             this.timeout(5000);
 
-            assert.doesNotReject(() => nameMc.skinHistory("Notch"))
+            assert.doesNotReject(() => nameMc.skinHistory("MrZillaGold"))
                 .then(done)
                 .catch(done);
         });
@@ -121,6 +123,48 @@ describe("Friends", function() {
             assert.rejects(async (done) => {
 
                 await nameMc.getFriends("1 2 3");
+
+                done();
+
+            }, new WrapperError().get(2));
+        });
+    });
+});
+
+describe("Player", function() {
+    describe("getNicknameHistory();", function() {
+        it("Checking the method for errors", function(done) {
+            this.timeout(5000);
+
+            assert.doesNotReject(() => nameMc.getNicknameHistory("MrZillaGold"))
+                .then(done)
+                .catch(done);
+        });
+
+        it("Check for an error with an incorrect nickname format", async function() {
+            await assert.rejects(async (done) => {
+
+                await nameMc.getNicknameHistory("1 2 3");
+
+                done();
+
+            }, new WrapperError().get(2));
+        });
+    });
+
+    describe("getPlayerInfo();", function() {
+        it("Checking the method for errors", function(done) {
+            this.timeout(5000);
+
+            assert.doesNotReject(() => nameMc.getPlayerInfo("MrZillaGold"))
+                .then(done)
+                .catch(done);
+        });
+
+        it("Check for an error with an incorrect nickname format", async function() {
+            await assert.rejects(async (done) => {
+
+                await nameMc.getPlayerInfo("1 2 3");
 
                 done();
 

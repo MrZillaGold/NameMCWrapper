@@ -4,8 +4,14 @@
 <dt><a href="#setOptions">setOptions(options);</a></dt>
 <dd><p>Sets options</p>
 </dd>
+<dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get player info by nickname</p>
+</dd>
 <dt><a href="#skinHistory">skinHistory(nickname, page)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skin history by nickname</p>
+</dd>
+<dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get nickname history</p>
 </dd>
 <dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skins from a specific tab of the site</p>
@@ -49,6 +55,27 @@ nameMc.setOptions({
 });
 ```
 
+<a name="getPlayerInfo"></a>
+
+## getPlayerInfo(nickname) ⇒ `Promise`;
+Get player info by nickname
+
+**Kind**: global function
+
+**Returns**: `Promise` - Promise object with player info
+
+| Param    | Type              | Default | Description     |
+| -------- | ----------------- | ------- | --------------- |
+| nickname | `string`          |         | Player nickname |
+
+**Example**:
+
+```js
+nameMc.getPlayerInfo("Qwennnn")
+    .then((info) => console.log(info))
+    .catch((error) => console.log(error));
+```
+
 <a name="skinHistory"></a>
 
 ## skinHistory(nickname, page) ⇒ `Promise`;
@@ -67,8 +94,29 @@ Get skin history by nickname
 
 ```js
 nameMc.skinHistory("MrZillaGold", 2)
-    .then(skins => console.log(skins))
-    .catch(error => console.log(error));
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
+```
+
+<a name="getNicknameHistory"></a>
+
+## getNicknameHistory(nickname) ⇒ `Promise`;
+Get nickname history
+
+**Kind**: global function
+
+**Returns**: `Promise` - Promise array with nickname history
+
+| Param    | Type              | Default | Description     |
+| -------- | ----------------- | ------- | --------------- |
+| nickname | `string`          |         | Player nickname |
+
+**Example**:
+
+```js
+nameMc.getNicknameHistory("Dane4ka_")
+    .then((history) => console.log(history))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getSkins"></a>
@@ -90,8 +138,8 @@ Get skins from a specific tab of the site
 
 ```js
 nameMc.getSkins("new", 2)
-    .then(skins => console.log(skins))
-    .catch(error => console.log(error));
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getCapes"></a>
@@ -111,8 +159,8 @@ Get capes by nickname
 
 ```js
 nameMc.skinHistory("Twennnn")
-    .then(capes => console.log(capes))
-    .catch(error => console.log(error));
+    .then((capes) => console.log(capes))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getRenders"></a>
@@ -142,8 +190,8 @@ nameMc.getRenders({
     skin: "c178117c21bd0a1c",
     model: "slim"
 })
-    .then(renders => console.log(renders))
-    .catch(error => console.log(error));
+    .then((renders) => console.log(renders))
+    .catch((error) => console.log(error));
 ```
 
 <a name="transformSkin"></a>
@@ -170,8 +218,8 @@ nameMc.transformSkin({
     transformation: "grayscale",
     model: "classic"
 })
-    .then(skin => console.log(skin))
-    .catch(error => console.log(error));
+    .then((skin) => console.log(skin))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getCapeType"></a>
@@ -191,8 +239,8 @@ Get cape type by cape hash
 
 ```js
 nameMc.getCapeType("1981aad373fa9754")
-    .then(cape => console.log(cape))
-    .catch(error => console.log(error));
+    .then((cape) => console.log(cape))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getFriends"></a>
@@ -212,6 +260,6 @@ Get player friends by nickname
 
 ```js
 nameMc.getFriends("spoodov")
-    .then(friends => console.log(friends))
-    .catch(error => console.log(error));
+    .then((friends) => console.log(friends))
+    .catch((error) => console.log(error));
 ```

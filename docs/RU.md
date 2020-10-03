@@ -4,8 +4,14 @@
 <dt><a href="#setOptions">setOptions(options);</a></dt>
 <dd><p>Установить опции</p>
 </dd>
+<dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получить информацию об игроке по никнейму</p>
+</dd>
 <dt><a href="#skinHistory">skinHistory(nickname, page)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить историю скинов по никнейму</p>
+</dd>
+<dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>История никнейма</p>
 </dd>
 <dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить скины с определенной вкладки сайта</p>
@@ -49,6 +55,27 @@ nameMc.setOptions({
 });
 ```
 
+<a name="getPlayerInfo"></a>
+
+## getPlayerInfo(nickname) ⇒ <code>Promise</code>;
+Получить информацию об игроке по никнейму
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise` - Обещание объекта с информацией об игроке
+
+| Параметры | Тип               | По умолчанию | Описание       |
+| --------- | ----------------- | ------------ | -------------- |
+| nickname  | `string`          |              | Никнейм игрока |
+
+**Пример**:
+
+```js
+nameMc.getPlayerInfo("Qwennnn")
+    .then((info) => console.log(info))
+    .catch((error) => console.log(error));
+```
+
 <a name="skinHistory"></a>
 
 ## skinHistory(nickname) ⇒ <code>Promise</code>;
@@ -67,8 +94,29 @@ nameMc.setOptions({
 
 ```js
 nameMc.skinHistory("MrZillaGold", 2)
-    .then(skins => console.log(skins))
-    .catch(error => console.log(error));
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
+```
+
+<a name="getNicknameHistory"></a>
+
+## getNicknameHistory(nickname) ⇒ <code>Promise</code>;
+История никнейма
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise` - Обещание массива с историей никнейма
+
+| Параметры | Тип               | По умолчанию | Описание       |
+| --------- | ----------------- | ------------ | -------------- |
+| nickname  | `string`          |              | Никнейм игрока |
+
+**Пример**:
+
+```js
+nameMc.getNicknameHistory("Dane4ka_")
+    .then((history) => console.log(history))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getSkins"></a>
@@ -90,8 +138,8 @@ nameMc.skinHistory("MrZillaGold", 2)
 
 ```js
 nameMc.getSkins("new", 2)
-    .then(skins => console.log(skins))
-    .catch(error => console.log(error));
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getCapes"></a>
@@ -111,8 +159,8 @@ nameMc.getSkins("new", 2)
 
 ```js
 nameMc.skinHistory("Twennnn")
-    .then(capes => console.log(capes))
-    .catch(error => console.log(error));
+    .then((capes) => console.log(capes))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getRenders"></a>
@@ -142,8 +190,8 @@ nameMc.getRenders({
     skin: "c178117c21bd0a1c",
     model: "slim"
 })
-    .then(renders => console.log(renders))
-    .catch(error => console.log(error));
+    .then((renders) => console.log(renders))
+    .catch((error) => console.log(error));
 ```
 
 <a name="transformSkin"></a>
@@ -170,8 +218,8 @@ nameMc.transformSkin({
     transformation: "grayscale",
     model: "classic"
 })
-    .then(url => console.log(url))
-    .catch(error => console.log(error));
+    .then((url) => console.log(url))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getCapeType"></a>
@@ -191,8 +239,8 @@ nameMc.transformSkin({
 
 ```js
 nameMc.getCapeType("1981aad373fa9754")
-    .then(cape => console.log(cape))
-    .catch(error => console.log(error));
+    .then((cape) => console.log(cape))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getFriends"></a>
@@ -212,6 +260,6 @@ nameMc.getCapeType("1981aad373fa9754")
 
 ```js
 nameMc.getFriends("spoodov")
-    .then(friends => console.log(friends))
-    .catch(error => console.log(error));
+    .then((friends) => console.log(friends))
+    .catch((error) => console.log(error));
 ```

@@ -1,52 +1,99 @@
+import cheerio from "cheerio";
+
 export class DataParser {
 
     parseSkins(data) {
-        const skinRegExp = /<\s*img class="lazy drop-shadow auto-size" width="(?:[^]+?)" height="(?:[^]+?)" src="(?:[^]+?)" data-src="https:\/\/render\.namemc\.com\/skin\/3d\/body\.png\?skin=([^]+?)&amp;model=([^]+?)&amp;width=(?:[^]+?)&amp;height=(?:[^]+?)" loading="lazy"[^>]*>/;
+        const $ = cheerio.load(data);
 
-        const skins = data.match(new RegExp(skinRegExp, "g"));
+        const skins = $("div.card-body.position-relative.text-center.checkered-light.p-1")
+            .map((index, card) => {
+                const $ = cheerio.load(card);
 
-        if (skins) {
-            const ratings = data.match(/★([\d]+)/g);
+                const [skin] = $("div > img.lazy.drop-shadow.auto-size")
+                    .map((index, { attribs: { "data-src": skin } }) => {
+                        const skinRegExp = /https:\/\/render\.namemc\.com\/skin\/3d\/body\.png\?skin=([^]+?)&model=([^]+?)&width=(?:[^]+?)&height=(?:[^]+?)/;
 
-            return skins.map((skin, index) => {
-                const [, hash, model] = skinRegExp.exec(skin);
+                        const [, hash, model] = skinRegExp.exec(skin);
 
-                const [, rating] = /★([\d]+)/.exec(ratings[index]);
+                        return {
+                            hash,
+                            model
+                        };
+                    })
+                    .get();
+
+                const [{ children: [{ data: rating }] }] = $("div.position-absolute.bottom-0.right-0.text-muted.mx-1.small-xs.normal-sm")
+                    .get();
 
                 return {
-                    url: `${this.getEndpoint()}/texture/${hash}.png`,
-                    hash,
-                    model,
+                    ...skin,
+                    rating: Number(rating.slice(1))
+                };
+            })
+            .get();
+
+        return skins.map((skin) => this.extendResponse(skin, "skin"));
+    }
+
+    parseCapes(data) {
+        const $ = cheerio.load(data);
+
+        return $("canvas.cape-2d.align-top")
+            .map((index, { attribs: { "data-cape-hash": hash } }) => {
+                return this.extendResponse({ hash }, "cape");
+            })
+            .get();
+    }
+
+    parseNicknameHistory(data) {
+        const $ = cheerio.load(data);
+
+        const history = $("div.card.mb-3 > div.card-body.py-1 > div.row.no-gutters")
+            .filter((index, element) => element.attribs.class === "row no-gutters")
+            .map((index, element) => {
+                const $ = cheerio.load(element);
+
+                const name = $("div.col.order-md-2.col-md-4.text-nowrap > a").get();
+                const time = $("div.col-12.order-md-3.col-md > time").get();
+
+                if (name.length) {
+                    const [{ children: [{ data: nickname }] }] = name;
+                    const changed_at = time[0]?.attribs?.datetime || null;
+
+                    return {
+                        nickname,
+                        changed_at,
+                        timestamp: changed_at ? new Date(changed_at).getTime() : null
+                    };
+                }
+            })
+            .get();
+
+        return history.reverse();
+    }
+
+    extendResponse(response, responseType) {
+        const { hash, model } = response;
+
+        const url = `${this.getEndpoint()}/texture/${hash}.png`;
+
+        switch(responseType) {
+            case "skin":
+                return {
+                    ...response,
+                    url,
                     isSlim: model !== "classic",
                     renders: this.getRenders({
                         skin: hash,
                         model
-                    }),
-                    rating: parseInt(rating)
+                    })
                 }
-            });
-        } else {
-            return null;
-        }
-    }
-
-    parseCapes(data) {
-        const capes = data.match(/<\s*canvas class="cape-2d align-top (?:skin-button|skin-button skin-button-selected)" width="(?:[^]+?)" height="(?:[^]+?)" data-cape-hash="([^]+?)"[^>]*>(?:.*?)<\s*\/\s*canvas>/g);
-
-        if (capes) {
-            return capes.map((cape) => {
-                const regExp = /data-cape-hash="([^]+?)"/;
-
-                const [, hash] = regExp.exec(cape);
-
+            case "cape":
                 return {
-                    hash,
-                    url: `${this.getEndpoint()}/texture/${hash}.png`,
+                    ...response,
+                    url,
                     ...this.getCapeType(hash)
-                };
-            })
-        } else {
-            return [];
+                }
         }
     }
 }

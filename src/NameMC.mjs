@@ -5,9 +5,11 @@ import { WrapperError } from "./WrapperError.mjs";
 
 import { nameRegExp, profileRegExp, skinRegExp, capes } from "./utils.mjs";
 
-export class NameMC {
+export class NameMC extends DataParser {
 
     constructor() {
+        super();
+
         this.options = {
             endpoint: "namemc.com"
         };
@@ -49,8 +51,7 @@ export class NameMC {
 
                             axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${userId}?page=${page}`)
                                 .then(({ data })  => {
-                                    const skins = new DataParser()
-                                        .parseSkins.call(this, data);
+                                    const skins = this.parseSkins(data);
 
                                     if (skins) {
                                         resolve(
@@ -98,10 +99,7 @@ export class NameMC {
                     .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
-                            resolve(
-                                new DataParser()
-                                    .parseCapes.call(this, data)
-                            );
+                            resolve(this.parseCapes(data));
 
                         } else {
                             reject(
@@ -118,7 +116,64 @@ export class NameMC {
                     new WrapperError().get(2)
                 );
             }
-        })
+        });
+    }
+
+    /**
+     * @description Get nickname history
+     * @param {string} nickname - Player nickname
+     * @returns {Promise} Promise array with nickname history
+     */
+    getNicknameHistory(nickname) {
+        return new Promise((resolve, reject) => {
+            if (nickname.match(nameRegExp)) {
+                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                    .then(({ request, data }) => {
+                        if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
+
+                            resolve(this.parseNicknameHistory(data));
+
+                        } else {
+                            reject(
+                                new WrapperError().get(3, nickname)
+                            );
+                        }
+                    })
+                    .catch((error) => reject(
+                        new WrapperError().get(1, error)
+                        )
+                    );
+            } else {
+                reject(
+                    new WrapperError().get(2)
+                );
+            }
+        });
+    }
+
+    /**
+     * @description Get player info by nickname
+     * @param {string} nickname - Player nickname
+     * @returns {Promise} Promise object with player info
+     */
+    getPlayerInfo(nickname) {
+        return new Promise((resolve, reject) =>
+            Promise.all([
+                this.skinHistory(nickname),
+                this.getCapes(nickname),
+                this.getFriends(nickname),
+                this.getNicknameHistory(nickname)
+            ])
+                .then(([skins, capes, friends, names]) =>
+                    resolve({
+                        skins,
+                        capes,
+                        friends,
+                        names
+                    })
+                )
+                .catch((error) => reject(error))
+        );
     }
 
     /**
@@ -177,7 +232,6 @@ export class NameMC {
             axios.post(`${endpoint}/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
                     "origin": "https://ru.namemc.com"
                 }
             })
@@ -185,15 +239,9 @@ export class NameMC {
                     const [, hash] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
 
                     if (hash) {
-                        resolve({
-                            url: `${endpoint}/texture/${hash}.png`,
-                            hash,
-                            model,
-                            renders: this.getRenders({
-                                skin: hash,
-                                model
-                            })
-                        });
+                        resolve(
+                            this.extendResponse({ hash, model }, "skin")
+                        );
                     } else {
                         reject(
                             new WrapperError().get(4)
@@ -244,7 +292,7 @@ export class NameMC {
             if (nickname.match(nameRegExp)) {
 
                 axios.get(`${this.getEndpoint(null, "api.ashcon.app")}/mojang/v2/user/${nickname}`)
-                    .then(response => response.data)
+                    .then(({ data }) => data)
                     .then(({ uuid }) => {
 
                         axios.get(`${this.getEndpoint("api")}/profile/${uuid}/friends`)
@@ -273,7 +321,7 @@ export class NameMC {
                     new WrapperError().get(2)
                 );
             }
-        })
+        });
     }
 
     /**
@@ -296,12 +344,7 @@ export class NameMC {
             }
 
             axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
-                .then(({ data }) =>
-                    resolve(
-                        new DataParser()
-                            .parseSkins.call(this, data)
-                    )
-                )
+                .then(({ data }) => resolve(this.parseSkins(data)))
                 .catch((error) =>
                     reject(
                         new WrapperError().get(1, error)
