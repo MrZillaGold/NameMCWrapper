@@ -5,8 +5,6 @@ import { WrapperError } from "../src/WrapperError.mjs";
 
 const nameMc = new NameMC();
 
-nameMc.resetPassword("mrzillagold@gmail.com")
-
 describe("Skin", function() {
     describe("skinHistory();", function() {
         it("Checking the method for errors", function(done) {
