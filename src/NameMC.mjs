@@ -343,7 +343,7 @@ export class NameMC extends DataParser {
                 reject(new WrapperError().get(6, section));
             }
 
-            axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${section === "trending" ? `/${section}` : ""}?page=${page}`)
+            axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) => resolve(this.parseSkins(data)))
                 .catch((error) =>
                     reject(
