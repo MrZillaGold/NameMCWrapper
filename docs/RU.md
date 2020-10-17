@@ -177,11 +177,13 @@ nameMc.skinHistory("Twennnn")
 | options                                       | `Object`             |                      | Объект с параметрами для генерации рендеров                  |
 | options.skin<span style="color:red;">*</span> | `string`             | `"12b92a9206470fe2"` | Хеш скина                                                    |
 | options.model                                 | `"classic"` `"slim"` | `"classic"`          | Тип для модели со скином                                     |
-| options.width                                 | `number` `string`    | `600`                | Ширина 3d рендера                                            |
-| options.height                                | `number` `string`    | `300`                | Высота 3d рендера                                            |
-| options.theta                                 | `number` `string`    | `-30`                | Угол для поворота 3d модели по кругу (-360 - 360)            |
-| options.scale                                 | `number` `string`    | `4`                 | Маштаб для 2d рендера лица, 32 макс. (8px * маштаб)           |
-| options.overlay                               | `boolean`            | `true`               | Использовать второй слой скина при генерации 2d рендера лица |
+| options.width                                 | `number` `string`    | `600`                | Ширина 3D рендера                                            |
+| options.height                                | `number` `string`    | `300`                | Высота 3D рендера                                            |
+| options.theta                                 | `number` `string`    | `-30`                | Угол для поворота 3D модели по горизонтали (-360 - 360)      |
+| options.phi                                   | `number` `string`    | `20`                 | Угол для поворота 3D модели по вертикали (-360 - 360)        |
+| options.time                                  | `number` `string`    | `90`                 | Время анимации 3D модели (0 - 360)                           |
+| options.scale                                 | `number` `string`    | `4`                  | Маштаб для 2d рендера лица, 32 макс. (8px * маштаб)          |
+| options.overlay                               | `boolean`            | `true`               | Использовать второй слой скина при генерации 2D рендера лица |
 
 **Пример**:
 

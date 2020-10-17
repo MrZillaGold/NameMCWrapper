@@ -3,7 +3,7 @@
 </p>
 
 <p align="center"><b>NameMCWrapper</b></p>
-<p align="center">ES6 основананная на Promise библиотека для NameMC.com</p>
+<p align="center">ES6 Promise библиотека для NameMC.com</p>
 <p align="center">
   <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/RU.md">Документация</a>
 </p>
