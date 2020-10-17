@@ -177,13 +177,13 @@ Get skin renders
 | options                                       | `Object`             |                      | Object with parameters for generating renders          |
 | options.skin<span style="color:red;">*</span> | `string`             | `"12b92a9206470fe2"` | Skin hash                                              |
 | options.model                                 | `"classic"` `"slim"` | `"classic"`          | Skin type for model                                    |
-| options.width                                 | `number` `string`    | `600`                | Width for 3d render image                              |
-| options.height                                | `number` `string`    | `300`                | Height for 3d render image                             |
+| options.width                                 | `number` `string`    | `600`                | Width for 3D render image                              |
+| options.height                                | `number` `string`    | `300`                | Height for 3D render image                             |
 | options.theta                                 | `number` `string`    | `-30`                | Horizontal rotation angle of the 3D model (-360 - 360) |
 | options.phi                                   | `number` `string`    | `20`                 | Vertical rotation angle of the 3D model (-360 - 360)   |
-| options.time                                  | `number` `string`    | `90`                 | Animation time of the 3D model. (0 - 360)              |
-| options.scale                                 | `number` `string`    | `4`                  | Scale for 2d face render, 32 max (8px * scale)         |
-| options.overlay                               | `boolean`            | `true`               | Use skin overlay on 2d face render                     |
+| options.time                                  | `number` `string`    | `90`                 | Animation time of the 3D model (0 - 360)               |
+| options.scale                                 | `number` `string`    | `4`                  | Scale for 2D face render, 32 max (8px * scale)         |
+| options.overlay                               | `boolean`            | `true`               | Use skin overlay on 2D face render                     |
 
 **Example**:
 
