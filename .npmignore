@@ -1,3 +1,6 @@
 .idea
 .travis.yml
-/docs/logo.png
+/docs
+/test
+.gitignore
+.travis.yml
