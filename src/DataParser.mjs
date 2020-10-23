@@ -9,8 +9,8 @@ export class DataParser {
             .map((index, card) => {
                 const $ = cheerio.load(card);
 
-                const [skin] = $("div > img.lazy.drop-shadow.auto-size")
-                    .map((index, { attribs: { "data-src": skin } }) => {
+                const [skin] = $("div > img.drop-shadow.auto-size")
+                    .map((index, { attribs: { src: skin } }) => {
                         const skinRegExp = /https:\/\/render\.namemc\.com\/skin\/3d\/body\.png\?skin=([^]+?)&model=([^]+?)&width=(?:[^]+?)&height=(?:[^]+?)/;
 
                         const [, hash, model] = skinRegExp.exec(skin);
