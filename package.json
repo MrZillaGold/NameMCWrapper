@@ -6,13 +6,13 @@
   "exports": {
     ".": {
       "require": "./dist/NameMC.js",
-      "default": "./src/NameMC.mjs"
+      "default": "./dist/NameMC.js"
     }
   },
-  "module": "./src/NameMC.mjs",
+  "module": "./dist/NameMC.js",
   "scripts": {
     "test": "node --experimental-modules --experimental-json-modules node_modules/mocha/bin/_mocha --reporter spec",
-    "build": "build-esm"
+    "build": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -33,10 +33,11 @@
     "cheerio": "^1.0.0-rc.3"
   },
   "devDependencies": {
-    "build-esm": "^4.2.2",
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
     "mocha": "^8.0.1"
-  },
-  "engines": {
-    "node": ">=14.0.0"
   }
 }
