@@ -1,6 +1,6 @@
 .idea
-.travis.yml
+.gitignore
 /docs
 /test
-.gitignore
+/scripts
 .travis.yml
