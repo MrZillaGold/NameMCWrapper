@@ -1,8 +1,8 @@
 ## Documentation
 
 <dl>
-<dt><a href="#setOptions">setOptions(options);</a></dt>
-<dd><p>Sets options</p>
+<dt><a href="#NameMC">NameMC(options);</a></dt>
+<dd>Main class
 </dd>
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get player info by nickname</p>
@@ -33,12 +33,12 @@
 </dd>
 </dl>
 
-<a name="setOptions"></a>
+<a name="NameMC"></a>
 
-## setOptions(options);
-Sets options
+## NameMC(options);
+Main class
 
-**Kind**: global function
+**Kind**: class
 
 | Param              | Type     | Default        | Description                           |
 | ------------------ | -------- | -------------- | ------------------------------------- |
@@ -49,7 +49,7 @@ Sets options
 **Example**:
 
 ```js
-nameMc.setOptions({
+const nameMc = new NameMC({
     proxy: "https://cors-anywhere.herokuapp.com",
     endpoint: "ru.namemc.com"
 });

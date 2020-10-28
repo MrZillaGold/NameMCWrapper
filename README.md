@@ -22,7 +22,7 @@
 ## Install 📦
 `npm i namemcwrapper`
 
-## Use 🔧
+## Usage 🔧
 ```js
 import { NameMC } from "namemcwrapper"; // ES6
 // OR

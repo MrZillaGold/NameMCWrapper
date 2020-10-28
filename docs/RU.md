@@ -1,8 +1,8 @@
 ## Документация
 
 <dl>
-<dt><a href="#setOptions">setOptions(options);</a></dt>
-<dd><p>Установить опции</p>
+<dt><a href="#NameMC">NameMC(options);</a></dt>
+<dd><p>Основной класс</p>
 </dd>
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить информацию об игроке по никнейму</p>
@@ -33,12 +33,12 @@
 </dd>
 </dl>
 
-<a name="setOptions"></a>
+<a name="NameMC"></a>
 
-## setOptions(options);
-Установить опции
+## NameMC(options);
+Основной класс
 
-**Вид**: глобальная функция
+**Вид**: класс
 
 | Параметры        | Тип      | По умолчанию   | Описание                           |
 | ---------------- | -------- | -------------- | ---------------------------------- |
@@ -49,7 +49,7 @@
 **Пример**:
 
 ```js
-nameMc.setOptions({
+const nameMc = new NameMC({
     proxy: "https://cors-anywhere.herokuapp.com",
     endpoint: "ru.namemc.com"
 });

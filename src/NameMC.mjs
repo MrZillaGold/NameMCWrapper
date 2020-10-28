@@ -7,25 +7,22 @@ import { nameRegExp, profileRegExp, skinRegExp, capes } from "./utils.mjs";
 
 export class NameMC extends DataParser {
 
-    constructor() {
-        super();
-
-        this.options = {
-            endpoint: "namemc.com"
-        };
-    }
-
     /**
-     * @description Sets options
-     * @param {Object} options - Object with parameters for the class
+     * @param {Object} [options] - Object with parameters for the class
      * @param {string} [options.proxy] - Proxy for requests
      * @param {string} [options.endpoint=namemc.com] - NameMC Endpoint
      */
-    setOptions(options) {
+    constructor(options) {
+        super();
+
         this.options = {
-            ...this.options,
+            endpoint: "namemc.com",
             ...options
         };
+
+        this.client = axios.create({
+            baseURL: this.getEndpoint()
+        });
     }
 
     /**
@@ -37,7 +34,7 @@ export class NameMC extends DataParser {
     skinHistory(nickname, page = 1) {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                this.client.get(`/profile/${nickname}`)
                     .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
@@ -49,7 +46,7 @@ export class NameMC extends DataParser {
 
                             const [, userId] = user;
 
-                            axios.get(`${this.getEndpoint()}/minecraft-skins/profile/${userId}?page=${page}`)
+                            this.client.get(`/minecraft-skins/profile/${userId}?page=${page}`)
                                 .then(({ data })  => {
                                     const skins = this.parseSkins(data);
 
@@ -63,7 +60,7 @@ export class NameMC extends DataParser {
                                         );
                                     }
                                 })
-                                .catch(error =>
+                                .catch((error) =>
                                     reject(
                                         new WrapperError().get(1, error)
                                     )
@@ -95,7 +92,7 @@ export class NameMC extends DataParser {
     getCapes(nickname) {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                this.client.get(`/profile/${nickname}`)
                     .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
@@ -127,7 +124,7 @@ export class NameMC extends DataParser {
     getNicknameHistory(nickname) {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
-                axios.get(`${this.getEndpoint()}/profile/${nickname}`)
+                this.client.get(`/profile/${nickname}`)
                     .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
@@ -215,8 +212,6 @@ export class NameMC extends DataParser {
      * @returns {Promise} Promise url string on transformed skin
      */
     transformSkin({ skin, transformation, model = "classic" }) {
-        const endpoint = this.getEndpoint();
-
         const transformations = [
             "grayscale", "invert", "rotate-hue-180", "rotate-head-left",
             "rotate-head-right", "hat-pumpkin-mask-1", "hat-pumpkin-mask-2", "hat-pumpkin-mask-3",
@@ -232,7 +227,7 @@ export class NameMC extends DataParser {
                 reject(new WrapperError().get(6, transformation));
             }
 
-            axios.post(`${endpoint}/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
+            this.client.post(`/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "origin": "https://ru.namemc.com"
@@ -291,22 +286,13 @@ export class NameMC extends DataParser {
      * @returns {Promise} Promise array with friends objects
      */
     getFriends(nickname) {
-        return new Promise((resolve, reject) => {
-            if (nickname.match(nameRegExp)) {
+        return new Promise(async (resolve, reject) => {
+            const nicknameMatch = nickname.match(nameRegExp);
 
-                axios.get(`${this.getEndpoint(null, "api.ashcon.app")}/mojang/v2/user/${nickname}`)
-                    .then(({ data }) => data)
-                    .then(({ uuid }) => {
+            if (nicknameMatch) {
 
-                        axios.get(`${this.getEndpoint("api")}/profile/${uuid}/friends`)
-                            .then(({ data }) => resolve(data))
-                            .catch((error) =>
-                                reject(
-                                    new WrapperError().get(1, error)
-                                )
-                            );
-
-                    })
+                const uuid = nicknameMatch.groups.uuid ?? await this.client.get(`${this.getEndpoint(null, "api.ashcon.app")}/mojang/v2/user/${nickname}`)
+                    .then(({ data: { uuid } }) => uuid)
                     .catch((error) => {
                         if (error?.response?.status === 404) {
                             reject(
@@ -318,6 +304,14 @@ export class NameMC extends DataParser {
                             new WrapperError().get(1, error)
                         );
                     });
+
+                this.client.get(`${this.getEndpoint("api")}/profile/${uuid}/friends`)
+                    .then(({ data }) => resolve(data))
+                    .catch((error) =>
+                        reject(
+                            new WrapperError().get(1, error)
+                        )
+                    );
 
             } else {
                 reject(
@@ -346,7 +340,7 @@ export class NameMC extends DataParser {
                 reject(new WrapperError().get(6, section));
             }
 
-            axios.get(`${this.getEndpoint()}/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
+            this.client.get(`/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) => resolve(this.parseSkins(data)))
                 .catch((error) =>
                     reject(
