@@ -4,10 +4,9 @@
 
 <p align="center"><b>NameMCWrapper</b></p>
 <p align="center">ES6 Promise библиотека для NameMC.com</p>
-<p align="center">
 
-  [Документация](RU.md)
-</p>
+| 📖 [Документация](RU.md) |
+| ------------------------ |
 
 <p align="center">
  <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">

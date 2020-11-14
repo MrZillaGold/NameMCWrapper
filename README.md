@@ -4,10 +4,9 @@
 
 <p align="center"><b>NameMCWrapper</b></p>
 <p align="center">ES6 Promise based wrapper for NameMC.com</p>
-<p align="center">
 
-  [Documentation](docs/DOCS.md)
-</p>
+| 📖 [Documentation](docs/DOCS.md) |
+| -------------------------------- |
 
 <p align="center">
  <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
@@ -16,10 +15,9 @@
 </p>
 
 <p align="center">This page is available in other languages:</p>
-<p align="center">
 
-  [🇷🇺](docs/README_RU.md)
-</p>
+| [🇷🇺](docs/README_RU.md) |
+| ----------------------- |
 
 ## Install 📦
 `npm i namemcwrapper`
