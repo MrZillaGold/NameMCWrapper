@@ -64,9 +64,9 @@ Get player info by nickname
 
 **Returns**: `Promise` - Promise object with player info
 
-| Param    | Type              | Default | Description     |
-| -------- | ----------------- | ------- | --------------- |
-| nickname | `string`          |         | Player nickname |
+| Param    | Type              | Default | Description             |
+| -------- | ----------------- | ------- | ----------------------- |
+| nickname | `string`          |         | Player nickname or UUID |
 
 **Example**:
 
@@ -85,10 +85,10 @@ Get skin history by nickname
 
 **Returns**: `Promise` - Promise array with skins objects
 
-| Param    | Type              | Default | Description     |
-| -------- | ----------------- | ------- | --------------- |
-| nickname | `string`          |         | Player nickname |
-| page     | `number` `string` | 1       | Page number     |
+| Param    | Type              | Default | Description             |
+| -------- | ----------------- | ------- | ----------------------- |
+| nickname | `string`          |         | Player nickname or UUID |
+| page     | `number` `string` | 1       | Page number             |
 
 **Example**:
 
@@ -107,9 +107,9 @@ Get nickname history
 
 **Returns**: `Promise` - Promise array with nickname history
 
-| Param    | Type              | Default | Description     |
-| -------- | ----------------- | ------- | --------------- |
-| nickname | `string`          |         | Player nickname |
+| Param    | Type              | Default | Description             |
+| -------- | ----------------- | ------- | ----------------------- |
+| nickname | `string`          |         | Player nickname or UUID |
 
 **Example**:
 
@@ -151,9 +151,9 @@ Get capes by nickname
 
 **Returns**: `Promise` - Promise array with capes objects
 
-| Param    | Type     | Description     |
-| -------- | -------- | --------------- |
-| nickname | `string` | Player nickname |
+| Param    | Type     | Description             |
+| -------- | -------- | ----------------------- |
+| nickname | `string` | Player nickname or UUID |
 
 **Example**:
 
@@ -254,9 +254,9 @@ Get player friends by nickname
 
 **Returns**: `Promise` - Promise array with friends objects
 
-| Param    | Type     | Description     |
-| -------- | -------- | --------------- |
-| nickname | `string` | Player nickname |
+| Param    | Type     | Description             |
+| -------- | -------- | ----------------------- |
+| nickname | `string` | Player nickname or UUID |
 
 **Example**:
 

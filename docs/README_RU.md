@@ -5,7 +5,8 @@
 <p align="center"><b>NameMCWrapper</b></p>
 <p align="center">ES6 Promise библиотека для NameMC.com</p>
 <p align="center">
-  <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/RU.md">Документация</a>
+
+  [Документация](RU.md)
 </p>
 
 <p align="center">
@@ -19,13 +20,15 @@
 
 ## Использование 🔧
 ```js
-import { NameMC } from "namemcwrapper";
+import { NameMC } from "namemcwrapper"; // ESM
+// Или
+const { NameMC } = require("namemcwrapper"); // CommonJS
 
 const nameMc = new NameMC();
 
 nameMc.skinHistory("MrZillaGold")
-    .then(skins => console.log(skins))
-    .catch(error => console.log(error));
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
 ```
 
 ## Предупреждение ⚠

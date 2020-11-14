@@ -5,7 +5,8 @@
 <p align="center"><b>NameMCWrapper</b></p>
 <p align="center">ES6 Promise based wrapper for NameMC.com</p>
 <p align="center">
-  <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/DOCS.md">Documentation</a>
+
+  [Documentation](docs/DOCS.md)
 </p>
 
 <p align="center">
@@ -16,7 +17,8 @@
 
 <p align="center">This page is available in other languages:</p>
 <p align="center">
-  <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/master/docs/README_RU.md">🇷🇺</a>
+
+  [🇷🇺](docs/README_RU.md)
 </p>
 
 ## Install 📦
@@ -24,9 +26,9 @@
 
 ## Usage 🔧
 ```js
-import { NameMC } from "namemcwrapper"; // ES6
+import { NameMC } from "namemcwrapper"; // ESM
 // OR
-const { NameMC } = require("namemcwrapper"); // ES5
+const { NameMC } = require("namemcwrapper"); // CommonJS
 
 const nameMc = new NameMC();
 
