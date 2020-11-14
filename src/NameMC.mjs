@@ -56,29 +56,21 @@ export class NameMC extends DataParser {
                                         );
                                     } else {
                                         reject(
-                                            new WrapperError().get(4)
+                                            new WrapperError(4)
                                         );
                                     }
                                 })
-                                .catch((error) =>
-                                    reject(
-                                        new WrapperError().get(1, error)
-                                    )
-                                );
+                                .catch(reject);
                         } else {
                             reject(
-                                new WrapperError().get(3, nickname)
+                                new WrapperError(3, nickname)
                             );
                         }
                     })
-                    .catch((error) => {
-                        reject(
-                            new WrapperError().get(1, error)
-                        );
-                    });
+                    .catch(reject);
             } else {
                 reject(
-                    new WrapperError().get(2)
+                    new WrapperError(2)
                 );
             }
         })
@@ -100,17 +92,14 @@ export class NameMC extends DataParser {
 
                         } else {
                             reject(
-                                new WrapperError().get(3, nickname)
+                                new WrapperError(3, nickname)
                             );
                         }
                     })
-                    .catch((error) => reject(
-                        new WrapperError().get(1, error)
-                        )
-                    );
+                    .catch(reject);
             } else {
                 reject(
-                    new WrapperError().get(2)
+                    new WrapperError(2)
                 );
             }
         });
@@ -132,17 +121,14 @@ export class NameMC extends DataParser {
 
                         } else {
                             reject(
-                                new WrapperError().get(3, nickname)
+                                new WrapperError(3, nickname)
                             );
                         }
                     })
-                    .catch((error) => reject(
-                        new WrapperError().get(1, error)
-                        )
-                    );
+                    .catch(reject);
             } else {
                 reject(
-                    new WrapperError().get(2)
+                    new WrapperError(2)
                 );
             }
         });
@@ -169,7 +155,7 @@ export class NameMC extends DataParser {
                         names
                     })
                 )
-                .catch((error) => reject(error))
+                .catch(reject)
         );
     }
 
@@ -220,11 +206,11 @@ export class NameMC extends DataParser {
 
         return new Promise((resolve, reject) => {
             if (!(skin && transformation)) {
-                reject(new WrapperError().get(7));
+                reject(new WrapperError(7));
             }
 
             if (!transformations.includes(transformation)) {
-                reject(new WrapperError().get(6, transformation));
+                reject(new WrapperError(6, transformation));
             }
 
             this.client.post(`/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
@@ -242,20 +228,18 @@ export class NameMC extends DataParser {
                         );
                     } else {
                         reject(
-                            new WrapperError().get(4)
+                            new WrapperError(4)
                         );
                     }
                 })
                 .catch((error) => {
                     if (error?.response?.status === 404) {
                         reject(
-                            new WrapperError().get(5, skin)
+                            new WrapperError(5, skin)
                         );
                     }
 
-                    reject(
-                        new WrapperError().get(1, error)
-                    );
+                    reject(error);
                 })
         });
     }
@@ -268,16 +252,10 @@ export class NameMC extends DataParser {
     getCapeType(hash) {
         const cape = capes.get(hash);
 
-        return cape ?
-            {
-                type: "minecraft",
-                name: cape
-            }
-            :
-            {
-                type: "optifine",
-                name: "Optifine"
-            }
+        return {
+            type: cape ? "minecraft" : "optifine",
+            name: cape ?? "Optifine"
+        };
     }
 
     /**
@@ -296,26 +274,20 @@ export class NameMC extends DataParser {
                     .catch((error) => {
                         if (error?.response?.status === 404) {
                             reject(
-                                new WrapperError().get(3, nickname)
+                                new WrapperError(3, nickname)
                             );
                         }
 
-                        reject(
-                            new WrapperError().get(1, error)
-                        );
+                        reject(error);
                     });
 
                 this.client.get(`${this.getEndpoint("api")}/profile/${uuid}/friends`)
                     .then(({ data }) => resolve(data))
-                    .catch((error) =>
-                        reject(
-                            new WrapperError().get(1, error)
-                        )
-                    );
+                    .catch(reject);
 
             } else {
                 reject(
-                    new WrapperError().get(2)
+                    new WrapperError(2)
                 );
             }
         });
@@ -334,19 +306,15 @@ export class NameMC extends DataParser {
 
         return new Promise(((resolve, reject) => {
             if (!tabs.includes(tab)) {
-                reject(new WrapperError().get(6, tab));
+                reject(new WrapperError(6, tab));
             }
             if (!sections.includes(section)) {
-                reject(new WrapperError().get(6, section));
+                reject(new WrapperError(6, section));
             }
 
             this.client.get(`/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) => resolve(this.parseSkins(data)))
-                .catch((error) =>
-                    reject(
-                        new WrapperError().get(1, error)
-                    )
-                )
+                .catch(reject)
         }));
     }
 

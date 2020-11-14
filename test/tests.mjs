@@ -2,40 +2,28 @@ import assert from "assert";
 
 export const tests = (nameMc, WrapperError, type) => {
 
-    describe(type, function () {
+    describe(type, function() {
         describe("Skin", function() {
             describe("skinHistory();", function() {
                 it("Checking the method for errors", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.skinHistory("MrZillaGold"))
                         .then(done)
                         .catch(done);
                 });
 
                 it("Checking the method for errors with uuid", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.skinHistory("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
                         .then(done)
                         .catch(done);
                 });
 
-                it("Check for an error with an incorrect nickname format", async function() {
-                    await assert.rejects(async (done) => {
-
-                        await nameMc.skinHistory("1 2 3");
-
-                        done();
-
-                    }, new WrapperError().get(2));
+                it("Check for an error with an incorrect nickname format", function() {
+                    assert.rejects(() => nameMc.skinHistory("1 2 3"), new WrapperError(2));
                 });
             });
 
             describe("transformSkin();", function() {
                 it("Transform skin and compare result with pattern", function(done) {
-                    this.timeout(5000);
-
                     nameMc.transformSkin({
                         skin: "12b92a9206470fe2",
                         transformation: "grayscale"
@@ -51,8 +39,6 @@ export const tests = (nameMc, WrapperError, type) => {
 
             describe("getSkins();", function() {
                 it("Receive data and check array size", function(done) {
-                    this.timeout(5000);
-
                     nameMc.getSkins()
                         .then((skins) => {
                             assert.strictEqual(skins.length, 30);
@@ -67,8 +53,6 @@ export const tests = (nameMc, WrapperError, type) => {
         describe("Cape", function() {
             describe("getCapes();", function() {
                 it("Check for equality of results to a pattern", function(done) {
-                    this.timeout(5000);
-
                     const pattern = [
                         {
                             hash: "77421d9cf72e07e9",
@@ -79,7 +63,7 @@ export const tests = (nameMc, WrapperError, type) => {
                     ];
 
                     nameMc.getCapes("dannyBstyle")
-                        .then(capes => {
+                        .then((capes) => {
                             assert.strictEqual(JSON.stringify(capes), JSON.stringify(pattern));
 
                             done();
@@ -87,14 +71,8 @@ export const tests = (nameMc, WrapperError, type) => {
                         .catch(done);
                 });
 
-                it("Check for an error with an incorrect nickname format", async function() {
-                    await assert.rejects(async (done) => {
-
-                        await nameMc.getCapes("1 2 3");
-
-                        done();
-
-                    }, new WrapperError().get(2));
+                it("Check for an error with an incorrect nickname format", function() {
+                    assert.rejects(() => nameMc.getCapes("1 2 3"), new WrapperError(2));
                 });
             });
 
@@ -116,29 +94,19 @@ export const tests = (nameMc, WrapperError, type) => {
             describe("getFriends();", function() {
 
                 it("Checking the method for errors", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.getFriends("MrZillaGold"))
                         .then(done)
                         .catch(done);
                 });
 
                 it("Checking the method for errors with uuid", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.getFriends("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
                         .then(done)
                         .catch(done);
                 });
 
                 it("Check for an error with an incorrect nickname format", function() {
-                    assert.rejects(async (done) => {
-
-                        await nameMc.getFriends("1 2 3");
-
-                        done();
-
-                    }, new WrapperError().get(2));
+                    assert.rejects(() => nameMc.getFriends("1 2 3"), new WrapperError(2));
                 });
             });
         });
@@ -146,57 +114,37 @@ export const tests = (nameMc, WrapperError, type) => {
         describe("Player", function() {
             describe("getNicknameHistory();", function() {
                 it("Checking the method for errors", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.getNicknameHistory("MrZillaGold"))
                         .then(done)
                         .catch(done);
                 });
 
                 it("Checking the method for errors with uuid", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.getNicknameHistory("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
                         .then(done)
                         .catch(done);
                 });
 
-                it("Check for an error with an incorrect nickname format", async function() {
-                    await assert.rejects(async (done) => {
-
-                        await nameMc.getNicknameHistory("1 2 3");
-
-                        done();
-
-                    }, new WrapperError().get(2));
+                it("Check for an error with an incorrect nickname format", function() {
+                    assert.rejects(() => nameMc.getNicknameHistory("1 2 3"), new WrapperError(2));
                 });
             });
 
             describe("getPlayerInfo();", function() {
                 it("Checking the method for errors", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.getPlayerInfo("MrZillaGold"))
                         .then(done)
                         .catch(done);
                 });
 
                 it("Checking the method for errors with uuid", function(done) {
-                    this.timeout(5000);
-
                     assert.doesNotReject(() => nameMc.getPlayerInfo("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
                         .then(done)
                         .catch(done);
                 });
 
-                it("Check for an error with an incorrect nickname format", async function() {
-                    await assert.rejects(async (done) => {
-
-                        await nameMc.getPlayerInfo("1 2 3");
-
-                        done();
-
-                    }, new WrapperError().get(2));
+                it("Check for an error with an incorrect nickname format", function() {
+                    assert.rejects(() => nameMc.getPlayerInfo("1 2 3"), new WrapperError(2));
                 });
             });
         });
