@@ -26,10 +26,26 @@ export class NameMC extends DataParser {
     }
 
     /**
+     * Player skin
+     * @typedef {object} Skin
+     * @property {string} url - Skin URL
+     * @property {SkinRenders} renders - Skin renders
+     * @property {boolean} isSlim - Slim skin flag
+     * @property {string} hash - Skin hash
+     * @property {SkinModel} model - Skin model
+     * @property {number} rating - Skin rating
+     */
+
+    /**
+     * Skin model
+     * @typedef {"classic"|"slim"} SkinModel
+     */
+
+    /**
      * @description Get skin history by nickname
      * @param {string} nickname - Player nickname
      * @param {(number|string)} [page=1] - Page number
-     * @returns {Promise} Promise array with skins objects
+     * @returns {Promise<Skin[]>} Promise array with skins objects
      */
     skinHistory(nickname, page = 1) {
         return new Promise((resolve, reject) => {
@@ -79,7 +95,7 @@ export class NameMC extends DataParser {
     /**
      * @description Get capes by nickname
      * @param {string} nickname - Player nickname
-     * @returns {Promise} Promise array with capes objects
+     * @returns {Promise<Cape[]>} Promise array with capes objects
      */
     getCapes(nickname) {
         return new Promise((resolve, reject) => {
@@ -106,9 +122,17 @@ export class NameMC extends DataParser {
     }
 
     /**
+     * Nickname history
+     * @typedef {object} NicknameHistory
+     * @property {string} nickname - Nickname
+     * @property {string} changed_at - Nickname change date
+     * @property {number} timestamp - Nickname change timestamp
+     */
+
+    /**
      * @description Get nickname history
      * @param {string} nickname - Player nickname
-     * @returns {Promise} Promise array with nickname history
+     * @returns {Promise<NicknameHistory[]>} Array with nickname history
      */
     getNicknameHistory(nickname) {
         return new Promise((resolve, reject) => {
@@ -135,9 +159,18 @@ export class NameMC extends DataParser {
     }
 
     /**
+     * Player info
+     * @typedef {object} Player
+     * @property {Skin[]} skins - Player skin history
+     * @property {Cape[]} capes - Player capes
+     * @property {Friend[]} friends - Player friends
+     * @property {NicknameHistory[]} names - Player nickname history
+     */
+
+    /**
      * @description Get player info by nickname
      * @param {string} nickname - Player nickname
-     * @returns {Promise} Promise object with player info
+     * @returns {Promise<Player>} Promise object with player info
      */
     getPlayerInfo(nickname) {
         return new Promise((resolve, reject) =>
@@ -160,10 +193,19 @@ export class NameMC extends DataParser {
     }
 
     /**
+     * Skin renders
+     * @typedef {object} SkinRenders
+     * @property {object} body - Body renders
+     * @property {string} body.front - Front body render
+     * @property {string} body.front_and_back - Front and back body render
+     * @property {string} face - Face render
+     */
+
+    /**
      * @description Get skin renders
-     * @param {Object} options - Object with parameters for generating renders
+     * @param {object} options - Object with parameters for generating renders
      * @param {string} options.skin="12b92a9206470fe2" - Skin hash
-     * @param {"classic"|"slim"} [options.model="classic"] - Skin type for model
+     * @param {SkinModel} [options.model="classic"] - Skin type for model
      * @param {(number|string)} [options.width=600] - Width for 3d render image
      * @param {(number|string)} [options.height=300] - Height for 3d render image
      * @param {(number|string)} [options.theta=-30] - Horizontal rotation angle of the 3D model. (-360 - 360)
@@ -171,7 +213,7 @@ export class NameMC extends DataParser {
      * @param {(number|string)} [options.time=90] - Animation time of the 3D model. (0 - 360)
      * @param {(number|string)} [options.scale=4] - Scale for 2d face render, 32 max (8px * scale)
      * @param {boolean} [options.overlay=true] - Use skin overlay on 2d face render
-     * @returns {Object} Object with renders skin
+     * @returns {SkinRenders}
      */
     getRenders({
                    skin = "12b92a9206470fe2", model = "classic", width = 600,
@@ -191,11 +233,11 @@ export class NameMC extends DataParser {
 
     /**
      * @description Transform skin method
-     * @param {Object} options - Object with parameters for skin transformation
+     * @param {object} options - Object with parameters for skin transformation
      * @param {string} options.skin - Skin hash
      * @param {"grayscale"|"invert"|"rotate-hue-180"|"rotate-head-left"|"rotate-head-right"|"hat-pumpkin-mask-1"|"hat-pumpkin-mask-2"|"hat-pumpkin-mask-3"|"hat-pumpkin-mask-4"|"hat-pumpkin"|"hat-pumpkin-creeper"|"hat-santa"} options.transformation - Transformation type
-     * @param {"classic"|"slim"} [options.model="classic"] - Skin type for renders
-     * @returns {Promise} Promise url string on transformed skin
+     * @param {SkinModel} [options.model="classic"] - Skin type for renders
+     * @returns {Promise<string>} Url string on transformed skin
      */
     transformSkin({ skin, transformation, model = "classic" }) {
         const transformations = [
@@ -245,9 +287,15 @@ export class NameMC extends DataParser {
     }
 
     /**
+     * @typedef {object} Cape
+     * @property {string} type - Cape type
+     * @property {string} name - Cape name
+     */
+
+    /**
      * @description Get cape type by cape hash
      * @param {string} hash - Cape hash
-     * @returns {Object} Object with cape information
+     * @returns {Cape} Object with cape information
      */
     getCapeType(hash) {
         const cape = capes.get(hash);
@@ -259,9 +307,16 @@ export class NameMC extends DataParser {
     }
 
     /**
+     * Player friend
+     * @typedef {object} Friend
+     * @property {string} uuid - Friend uuid
+     * @property {string} name - Friend name
+     */
+
+    /**
      * @description Get player friends by nickname
      * @param {string} nickname - Player nickname
-     * @returns {Promise} Promise array with friends objects
+     * @returns {Promise<Friend[]>} Promise array with friends objects
      */
     getFriends(nickname) {
         return new Promise(async (resolve, reject) => {
@@ -298,7 +353,7 @@ export class NameMC extends DataParser {
      * @param {"trending"|"new"|"random"} [tab="trending"] - Tab with which to get skins
      * @param {(number|string)} [page=1] - Tab page (1 - 100)
      * @param {"daily"|"weekly"|"monthly"|"top"} [section="weekly"] - Section, used when getting trending skins
-     * @returns {Promise} Promise array with skins objects
+     * @returns {Promise<Skin[]>} Promise array with skins objects
      */
     getSkins(tab = "trending", page = 1, section = "weekly") {
         const tabs = ["trending", "new", "random"];
@@ -319,8 +374,7 @@ export class NameMC extends DataParser {
     }
 
     /**
-     * @class
-     * @ignore
+     * @private
      */
     getEndpoint(subdomain, domain) {
         const { proxy, endpoint } = this.options;
