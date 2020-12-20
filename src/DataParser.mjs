@@ -5,7 +5,7 @@ export class DataParser {
     parseSkins(data) {
         const $ = cheerio.load(data);
 
-        const skins = $("div.card-body.position-relative.text-center.checkered-light.p-1")
+        const skins = $("div.card-body.position-relative.text-center.checkered.p-1")
             .map((index, card) => {
                 const $ = cheerio.load(card);
 
