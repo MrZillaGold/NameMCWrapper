@@ -1,7 +1,12 @@
 import cheerio from "cheerio";
 
+import { profileSkinsRegExp } from "./utils.mjs";
+
 export class DataParser {
 
+    /**
+     * @private
+     */
     parseSkins(data) {
         const $ = cheerio.load(data);
 
@@ -35,6 +40,9 @@ export class DataParser {
         return skins.map((skin) => this.extendResponse(skin, "skin"));
     }
 
+    /**
+     * @private
+     */
     parseCapes(data) {
         const $ = cheerio.load(data);
 
@@ -45,6 +53,9 @@ export class DataParser {
             .get();
     }
 
+    /**
+     * @private
+     */
     parseNicknameHistory(data) {
         const $ = cheerio.load(data);
 
@@ -72,6 +83,9 @@ export class DataParser {
         return history.reverse();
     }
 
+    /**
+     * @private
+     */
     extendResponse(response, responseType) {
         const { hash, model } = response;
 
@@ -95,5 +109,24 @@ export class DataParser {
                     ...this.getCapeType(hash)
                 }
         }
+    }
+
+    /**
+     * @private
+     */
+    getProfileId(data) {
+        const $ = cheerio.load(data);
+
+        const [profileId] = $("div.card-header.py-1 > strong > a")
+            .map((index, element) => {
+                const isProfileSkinsUrl = profileSkinsRegExp.exec(element.attribs.href);
+
+                if (isProfileSkinsUrl) {
+                    return isProfileSkinsUrl[1];
+                }
+            })
+            .get();
+
+        return profileId;
     }
 }

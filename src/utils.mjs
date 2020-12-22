@@ -1,8 +1,9 @@
-const nameRegExp = /^(?:(?<name>[A-Za-z0-9_]{1,16})|(?<uuid>[0-9a-f]{8}-?[0-9a-f]{4}-?[0-5][0-9a-f]{3}-?[089ab][0-9a-f]{3}-?[0-9a-f]{12}))$/;
-const profileRegExp = /[^]+\/profile\/[^]+/;
-const skinRegExp = /[^]+\/skin\/([^]+)/;
+export const nameRegExp = /^(?:(?<name>[A-Za-z0-9_]{1,16})|(?<uuid>[0-9a-f]{8}-?[0-9a-f]{4}-?[0-5][0-9a-f]{3}-?[089ab][0-9a-f]{3}-?[0-9a-f]{12}))$/;
+export const profileRegExp = /[^]+\/profile\/[^]+/;
+export const profileSkinsRegExp = /\/minecraft-skins\/profile\/([^]+)/;
+export const skinRegExp = /[^]+\/skin\/([^]+)/;
 
-const capes = new Map([
+export const capes = new Map([
     ["1981aad373fa9754", "MineCon 2016"],
     ["72ee2cfcefbfc081", "MineCon 2015"],
     ["0e4cc75a5f8a886d", "MineCon 2013"],
@@ -24,10 +25,3 @@ const capes = new Map([
     ["88f1509813f4e324", "Prismarine"],
     ["8c05ef3c54870d04", "Turtle"]
 ]);
-
-export {
-    nameRegExp,
-    profileRegExp,
-    skinRegExp,
-    capes
-}

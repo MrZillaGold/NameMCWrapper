@@ -54,19 +54,17 @@ export class NameMC extends DataParser {
                     .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
 
-                            const user = /<\s*a href="\/minecraft-skins\/profile\/([^]+?)"[^>]*>(?:.*?)<\s*\/\s*a>/.exec(data);
+                            const userId = this.getProfileId(data);
 
-                            if (!user) {
+                            if (!userId) {
                                 return resolve([]);
                             }
-
-                            const [, userId] = user;
 
                             this.client.get(`/minecraft-skins/profile/${userId}?page=${page}`)
                                 .then(({ data })  => {
                                     const skins = this.parseSkins(data);
 
-                                    if (skins) {
+                                    if (skins.length) {
                                         resolve(
                                             skins
                                         );
@@ -368,7 +366,15 @@ export class NameMC extends DataParser {
             }
 
             this.client.get(`/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
-                .then(({ data }) => resolve(this.parseSkins(data)))
+                .then(({ data }) => {
+                    const skins = this.parseSkins(data);
+
+                    if (skins.length) {
+                        resolve(skins);
+                    } else {
+                        reject(new WrapperError(4));
+                    }
+                })
                 .catch(reject)
         }));
     }
