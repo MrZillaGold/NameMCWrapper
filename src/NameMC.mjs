@@ -206,7 +206,7 @@ export class NameMC extends DataParser {
      * @param {SkinModel} [options.model="classic"] - Skin type for model
      * @param {(number|string)} [options.width=600] - Width for 3d render image
      * @param {(number|string)} [options.height=300] - Height for 3d render image
-     * @param {(number|string)} [options.theta=-30] - Horizontal rotation angle of the 3D model. (-360 - 360)
+     * @param {(number|string)} [options.theta=30] - Horizontal rotation angle of the 3D model. (-360 - 360)
      * @param {(number|string)} [options.phi=20] - Vertical rotation angle of the 3D model. (-360 - 360)
      * @param {(number|string)} [options.time=90] - Animation time of the 3D model. (0 - 360)
      * @param {(number|string)} [options.scale=4] - Scale for 2d face render, 32 max (8px * scale)
@@ -215,7 +215,7 @@ export class NameMC extends DataParser {
      */
     getRenders({
                    skin = "12b92a9206470fe2", model = "classic", width = 600,
-                   height = 300, scale = 4, overlay = true, theta = -30,
+                   height = 300, scale = 4, overlay = true, theta = 30,
                    phi = 20, time = 90
     }) {
         const endpoint = this.getEndpoint("render");
