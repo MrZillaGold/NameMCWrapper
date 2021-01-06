@@ -1,6 +1,6 @@
 {
   "name": "namemcwrapper",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "ES6 Promise based wrapper for NameMC.com",
   "main": "./dist/NameMC.js",
   "exports": {
@@ -43,9 +43,7 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@babel/plugin-transform-named-capturing-groups-regex": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
-    "@babel/runtime": "^7.12.5",
     "@types/cheerio": "^0.22.23",
     "mocha": "^8.0.1",
     "typescript": "^4.1.3"
