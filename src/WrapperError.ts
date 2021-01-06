@@ -1,4 +1,4 @@
-const errors = new Map([
+const errors: Map<number, string> = new Map([
     [0, "Unknown error."],
     [1, "Axios request error. $params"],
     [2, "Invalid Minecraft nickname."],
@@ -11,11 +11,11 @@ const errors = new Map([
 
 export class WrapperError extends Error {
 
-    constructor(code, params = "") {
-        super(
-            errors.get(code)
-                .replace("$params", params)
-        );
+    code: number;
+    name: string;
+
+    constructor(code: number, params: string = "") {
+        super(errors.get(code)?.replace("$params", params));
 
         this.code = code;
         this.name = this.constructor.name;
@@ -23,11 +23,11 @@ export class WrapperError extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 
-    get [Symbol.toStringTag]() {
+    get [Symbol.toStringTag](): string {
         return this.constructor.name;
     }
 
-    toJSON() {
+    toJSON(): object {
         return {
             ...this
         };

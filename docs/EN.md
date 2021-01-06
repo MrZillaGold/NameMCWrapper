@@ -7,13 +7,13 @@
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get player info by nickname</p>
 </dd>
-<dt><a href="#skinHistory">skinHistory(nickname, page)</a> ⇒ <code>Promise</code>;</dt>
+<dt><a href="#skinHistory">skinHistory(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skin history by nickname</p>
 </dd>
 <dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get nickname history</p>
 </dd>
-<dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
+<dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skins from a specific tab of the site</p>
 </dd>
 <dt><a href="#getCapes">getCapes(nickname)</a> ⇒ <code>Promise</code>;</dt>
@@ -25,7 +25,7 @@
 <dt><a href="#transformSkin">transformSkin(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Transform skin method</p>
 </dd>
-<dt><a href="#getCapeType">getCapeType(hash)</a> ⇒ <code>Object</code>;</dt>
+<dt><a href="#getCapeInfo">getCapeInfo(hash)</a> ⇒ <code>Object</code>;</dt>
 <dd><p>Get cape type by cape hash</p>
 </dd>
 <dt><a href="#getFriends">getFriends(nickname)</a> ⇒ <code>Promise</code>;</dt>
@@ -57,12 +57,12 @@ const nameMc = new NameMC({
 
 <a name="getPlayerInfo"></a>
 
-## getPlayerInfo(nickname) ⇒ `Promise`;
+## getPlayerInfo(nickname) ⇒ `Promise<Player>`;
 Get player info by nickname
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise object with player info
+**Returns**: `Promise<Player>` - Promise object with player info
 
 | Param    | Type              | Default | Description             |
 | -------- | ----------------- | ------- | ----------------------- |
@@ -78,34 +78,35 @@ nameMc.getPlayerInfo("Qwennnn")
 
 <a name="skinHistory"></a>
 
-## skinHistory(nickname, page) ⇒ `Promise`;
+## skinHistory(options) ⇒ `Promise<Skin[]>`;
 Get skin history by nickname
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise array with skins objects
+**Returns**: `Promise<Skin[]>` - Promise array with skins objects
 
-| Param    | Type              | Default | Description             |
-| -------- | ----------------- | ------- | ----------------------- |
-| nickname | `string`          |         | Player nickname or UUID |
-| page     | `number` `string` | 1       | Page number             |
+| Param            | Type              | Default | Description                                |
+| ---------------- | ----------------- | ------- | ------------------------------------------ |
+| options          | `Object`          |         | Object with parameters for getting history |
+| options.nickname | `string`          |         | Player nickname or UUID                    |
+| options.page     | `number` `string` | 1       | Page number                                |
 
 **Example**:
 
 ```js
-nameMc.skinHistory("MrZillaGold", 2)
+nameMc.skinHistory({ nickname: "MrZillaGold", page: 2 })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
 ```
 
 <a name="getNicknameHistory"></a>
 
-## getNicknameHistory(nickname) ⇒ `Promise`;
+## getNicknameHistory(nickname) ⇒ `Promise<Nickname[]>`;
 Get nickname history
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise array with nickname history
+**Returns**: `Promise<Nickname[]>` - Promise array with nickname history
 
 | Param    | Type              | Default | Description             |
 | -------- | ----------------- | ------- | ----------------------- |
@@ -121,35 +122,36 @@ nameMc.getNicknameHistory("Dane4ka_")
 
 <a name="getSkins"></a>
 
-## getSkins(tab, page, section)⇒ <code>Promise</code>;
+## getSkins(options)⇒ <code>Promise<Skin[]></code>;
 Get skins from a specific tab of the site
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise array with skins objects
+**Returns**: `Promise<Skin[]>` - Promise array with skins objects
 
-| Param   | Type                            | Description                                 |
-| ------- | ------------------------------- | ------------------------------------------- |
-| tab     | `"trending"` `"new"` `"random"` | Tab with which to get skins                 |
-| page    | `number` `string`               | Tab page (1 - 100)                          |
-| section | `string`                        | Section, used when getting `trending` skins |
+| Param           | Type                                     | Description                                 |
+| --------------- | ---------------------------------------- | ------------------------------------------- |
+| options         | `Object`                                 | Object with parameters for getting skins    |
+| options.tab     | `"trending"` `"new"` `"random"`          | Tab with which to get skins                 |
+| options.page    | `number`                                 | Tab page (1 - 100)                          |
+| options.section | `"daily"` `"weekly"` `"monthly"` `"top"` | Section, used when getting `trending` skins |
 
 **Example**:
 
 ```js
-nameMc.getSkins("new", 2)
+nameMc.getSkins({ tab: "new", page: 2 })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
 ```
 
 <a name="getCapes"></a>
 
-## getCapes(nickname) ⇒ `Promise`;
+## getCapes(nickname) ⇒ `Promise<Cape[]>`;
 Get capes by nickname
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise array with capes objects
+**Returns**: `Promise<Cape[]>` - Promise array with capes objects
 
 | Param    | Type     | Description             |
 | -------- | -------- | ----------------------- |
@@ -198,12 +200,12 @@ nameMc.getRenders({
 
 <a name="transformSkin"></a>
 
-## transformSkin(options) ⇒ `Promise`;
+## transformSkin(options) ⇒ `Promise<string>`;
 Transform skin method
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise url string on transformed skin
+**Returns**: `Promise<string>` - Promise url string on transformed skin
 
 | Param                  | Type                                                                                                                                                                                                                                     | Description                                    |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
@@ -224,9 +226,9 @@ nameMc.transformSkin({
     .catch((error) => console.log(error));
 ```
 
-<a name="getCapeType"></a>
+<a name="getCapeInfo"></a>
 
-## getCapeType(hash) ⇒ `Object`;
+## getCapeInfo(hash) ⇒ `Object`;
 Get cape type by cape hash
 
 **Kind**: global function
@@ -247,12 +249,12 @@ nameMc.getCapeType("1981aad373fa9754")
 
 <a name="getFriends"></a>
 
-## getFriends(nickname) ⇒ `Promise`;
+## getFriends(nickname) ⇒ `Promise<Friend[]>`;
 Get player friends by nickname
 
 **Kind**: global function
 
-**Returns**: `Promise` - Promise array with friends objects
+**Returns**: `Promise<Friend[]>` - Promise array with friends objects
 
 | Param    | Type     | Description             |
 | -------- | -------- | ----------------------- |

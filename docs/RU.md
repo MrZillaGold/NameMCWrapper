@@ -7,13 +7,13 @@
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить информацию об игроке по никнейму</p>
 </dd>
-<dt><a href="#skinHistory">skinHistory(nickname, page)</a> ⇒ <code>Promise</code>;</dt>
+<dt><a href="#skinHistory">skinHistory(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить историю скинов по никнейму</p>
 </dd>
 <dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>История никнейма</p>
 </dd>
-<dt><a href="#getSkins">getSkins(tab, page, section)</a> ⇒ <code>Promise</code>;</dt>
+<dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить скины с определенной вкладки сайта</p>
 </dd>
 <dt><a href="#getCapes">getCapes(nickname)</a> ⇒ <code>Promise</code>;</dt>
@@ -25,7 +25,7 @@
 <dt><a href="#transformSkin">transformSkin(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Трансформировать скин</p>
 </dd>
-<dt><a href="#getCapeType">getCapeType(hash)</a> ⇒ <code>Object</code>;</dt>
+<dt><a href="#getCapeInfo">getCapeInfo(hash)</a> ⇒ <code>Object</code>;</dt>
 <dd><p>Получить тип плаща по его хешу</p>
 </dd>
 <dt><a href="#getFriends">getFriends(nickname)</a> ⇒ <code>Promise</code>;</dt>
@@ -62,7 +62,7 @@ const nameMc = new NameMC({
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание объекта с информацией об игроке
+**Возвращает**: `Promise<Player>` - Обещание объекта с информацией об игроке
 
 | Параметры | Тип               | По умолчанию | Описание                |
 | --------- | ----------------- | ------------ | ----------------------- |
@@ -78,22 +78,23 @@ nameMc.getPlayerInfo("Qwennnn")
 
 <a name="skinHistory"></a>
 
-## skinHistory(nickname) ⇒ <code>Promise</code>;
+## skinHistory(options) ⇒ <code>Promise</code>;
 Получить историю скинов по никнейму
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание массива с объектами скинов
+**Возвращает**: `Promise<Skin[]>` - Обещание массива с объектами скинов
 
-| Параметры | Тип               | По умолчанию | Описание                |
-| --------- | ----------------- | ------------ | ----------------------- |
-| nickname  | `string`          |              | Никнейм или UUID игрока |
-| page      | `number` `string` | 1            | Номер страницы          |
+| Параметры         | Тип               | По умолчанию | Описание                |
+| ----------------- | ----------------- | ------------ | ----------------------- |
+| options           | `Object`          |              | Объект с параметрами    |
+| options.nickname  | `string`          |              | Никнейм или UUID игрока |
+| options.page      | `number` `string` | 1            | Номер страницы          |
 
 **Пример**:
 
 ```js
-nameMc.skinHistory("MrZillaGold", 2)
+nameMc.skinHistory({ nickname: "MrZillaGold", page: 2 })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
 ```
@@ -105,7 +106,7 @@ nameMc.skinHistory("MrZillaGold", 2)
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание массива с историей никнейма
+**Возвращает**: `Promise<Nickname[]>` - Обещание массива с историей никнейма
 
 | Параметры | Тип               | По умолчанию | Описание                |
 | --------- | ----------------- | ------------ | ----------------------- |
@@ -121,23 +122,24 @@ nameMc.getNicknameHistory("Dane4ka_")
 
 <a name="getSkins"></a>
 
-## getSkins(tab, page, section)⇒ <code>Promise</code>;
+## getSkins(options)⇒ <code>Promise</code>;
 Получить скины с определенной вкладки сайта
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание массива с объектами скинов
+**Возвращает**: `Promise<Skin[]>` - Обещание массива с объектами скинов
 
-| Параметры | Тип                             | Описание                                                        |
-| --------- | ------------------------------- | --------------------------------------------------------------- |
-| tab       | `"trending"` `"new"` `"random"` | Вкладка с которой получить скины                                |
-| page      | `number` `string`               | Страница вкладки (1 - 100)                                      |
-| section   | `string`                        | Секция, используется при получении скинов из вкладки `trending` |
+| Параметры         | Тип                                      | Описание                                                        |
+| ----------------- | ---------------------------------------- | --------------------------------------------------------------- |
+| options           | `Object`                                 | Объект с параметрами                                            |
+| options.tab       | `"trending"` `"new"` `"random"`          | Вкладка с которой получить скины                                |
+| options.page      | `number`                                 | Страница вкладки (1 - 100)                                      |
+| options.section   | `"daily"` `"weekly"` `"monthly"` `"top"` | Секция, используется при получении скинов из вкладки `trending` |
 
 **Пример**:
 
 ```js
-nameMc.getSkins("new", 2)
+nameMc.getSkins({ tab: "new", page: 2 })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
 ```
@@ -149,7 +151,7 @@ nameMc.getSkins("new", 2)
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание массива с объектами плащей
+**Возвращает**: `Promise<Cape[]>` - Обещание массива с объектами плащей
 
 | Параметры | Тип      | Описание                |
 | --------- | -------- | ----------------------- |
@@ -203,7 +205,7 @@ nameMc.getRenders({
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание строки со ссылкой трансформированного скина
+**Возвращает**: `Promise<string>` - Обещание строки со ссылкой трансформированного скина
 
 | Параметры                                | Тип                                                                                                                                                                                                                                      | Описание                                     |
 | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
@@ -224,9 +226,9 @@ nameMc.transformSkin({
     .catch((error) => console.log(error));
 ```
 
-<a name="getCapeType"></a>
+<a name="getCapeInfo"></a>
 
-## getCapeType(hash) ⇒ <code>Object</code>;
+## getCapeInfo(hash) ⇒ <code>Object</code>;
 Получить тип плаща по его хешу
 
 **Вид**: глобальная функция
@@ -240,7 +242,7 @@ nameMc.transformSkin({
 **Пример**:
 
 ```js
-nameMc.getCapeType("1981aad373fa9754")
+nameMc.getCapeInfo("1981aad373fa9754")
     .then((cape) => console.log(cape))
     .catch((error) => console.log(error));
 ```
@@ -252,7 +254,7 @@ nameMc.getCapeType("1981aad373fa9754")
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise` - Обещание массива с объектами друзей
+**Возвращает**: `Promise<Friend[]>` - Обещание массива с объектами друзей
 
 | Параметры | Тип      | Описание                 |
 | --------- | -------- | ------------------------ |

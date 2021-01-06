@@ -1,10 +1,12 @@
 import { promises as fs } from "fs";
 
-fs.readdir("./dist")
+const DIST_DIR = "./dist";
+
+await fs.readdir(DIST_DIR)
     .then((files) => {
         files.forEach(async (file) => {
             if (file.endsWith(".js")) {
-                const filePath = `./dist/${file}`;
+                const filePath = `${DIST_DIR}/${file}`;
 
                 fs.readFile(filePath)
                     .then((file) => {
@@ -18,3 +20,5 @@ fs.readdir("./dist")
             }
         })
     });
+
+await fs.rmdir("./build", { recursive: true });

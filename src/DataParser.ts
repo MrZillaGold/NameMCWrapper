@@ -1,29 +1,36 @@
 import cheerio from "cheerio";
 
-import { profileSkinsRegExp } from "./utils.mjs";
+import { profileSkinsRegExp } from "./utils";
 
-export class DataParser {
+import { ISkin, ICape, INickname, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, Hash, ISkinResponse, ICapeInfo } from "./interfaces";
 
-    /**
-     * @private
-     */
-    parseSkins(data) {
+export abstract class DataParser {
+
+    abstract getEndpoint(options: IGetEndpointOptions): string;
+    abstract getRenders(options: IGetRendersOptions): IRender;
+    abstract getCapeInfo(hash: Hash): ICapeInfo;
+
+    protected parseSkins(data: string): ISkin[] {
         const $ = cheerio.load(data);
 
         const skins = $("div.card-body.position-relative.text-center.checkered.p-1")
             .map((index, card) => {
                 const $ = cheerio.load(card);
 
-                const [skin] = $("div > img.drop-shadow.auto-size")
+                const [skin] = $("div > img.drop-shadow.auto-size") // @ts-ignore
                     .map((index, { attribs: { src: skin } }) => {
                         const skinRegExp = /https:\/\/render\.namemc\.com\/skin\/3d\/body\.png\?skin=([^]+?)&model=([^]+?)&width=(?:[^]+?)&height=(?:[^]+?)/;
 
-                        const [, hash, model] = skinRegExp.exec(skin);
+                        const idValidSkin = skinRegExp.exec(skin);
 
-                        return {
-                            hash,
-                            model
-                        };
+                        if (idValidSkin) {
+                            const [, hash, model] = idValidSkin;
+
+                            return {
+                                hash,
+                                model
+                            };
+                        }
                     })
                     .get();
 
@@ -37,29 +44,29 @@ export class DataParser {
             })
             .get();
 
-        return skins.map((skin) => this.extendResponse(skin, "skin"));
+        return skins.map((skin) => this.extendResponse({
+            ...skin,
+            type: "skin"
+        }));
     }
 
-    /**
-     * @private
-     */
-    parseCapes(data) {
+    protected parseCapes(data: string): ICape[] {
         const $ = cheerio.load(data);
 
-        return $("canvas.cape-2d.align-top")
-            .map((index, { attribs: { "data-cape-hash": hash } }) => {
-                return this.extendResponse({ hash }, "cape");
-            })
+        return $("canvas.cape-2d.align-top") // @ts-ignore
+            .map((index, { attribs: { "data-cape-hash": hash } }) =>
+                this.extendResponse({
+                    hash,
+                    type: "cape"
+                })
+            )
             .get();
     }
 
-    /**
-     * @private
-     */
-    parseNicknameHistory(data) {
+    protected parseNicknameHistory(data: string): INickname[] {
         const $ = cheerio.load(data);
 
-        const history = $("div.card.mb-3 > div.card-body.py-1 > div.row.no-gutters")
+        const history = $("div.card.mb-3 > div.card-body.py-1 > div.row.no-gutters") // @ts-ignore
             .filter((index, element) => element.attribs.class === "row no-gutters")
             .map((index, element) => {
                 const $ = cheerio.load(element);
@@ -83,42 +90,41 @@ export class DataParser {
         return history.reverse();
     }
 
-    /**
-     * @private
-     */
-    extendResponse(response, responseType) {
-        const { hash, model } = response;
+    protected extendResponse(response: ISkinResponse): ISkin;
+    protected extendResponse(response: ICapeResponse): ICape;
+    protected extendResponse(response: ISkinResponse | ICapeResponse): ISkin | ICape {
+        // @ts-ignore
+        const { hash, model, type, rating = 0 } = response;
 
-        const url = `${this.getEndpoint()}/texture/${hash}.png`;
+        const url = `${this.getEndpoint({})}/texture/${hash}.png`;
 
-        switch(responseType) {
+        switch(type) {
             case "skin":
                 return {
-                    ...response,
                     url,
-                    isSlim: model !== "classic",
+                    hash,
+                    model,
+                    rating,
                     renders: this.getRenders({
                         skin: hash,
                         model
-                    })
-                }
+                    }),
+                    isSlim: model !== "classic"
+                };
             case "cape":
                 return {
-                    ...response,
+                    hash,
                     url,
-                    ...this.getCapeType(hash)
-                }
+                    ...this.getCapeInfo(hash)
+                };
         }
     }
 
-    /**
-     * @private
-     */
-    getProfileId(data) {
+    protected getProfileId(data: string): string {
         const $ = cheerio.load(data);
 
         const [profileId] = $("div.card-header.py-1 > strong > a")
-            .map((index, element) => {
+            .map((index, element) => { // @ts-ignore
                 const isProfileSkinsUrl = profileSkinsRegExp.exec(element.attribs.href);
 
                 if (isProfileSkinsUrl) {
