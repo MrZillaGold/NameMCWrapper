@@ -3,5 +3,6 @@
 /docs
 /test
 /scripts
+/src
 .travis.yml
 babel.config.json
