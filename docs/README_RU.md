@@ -25,7 +25,7 @@ const { NameMC } = require("namemcwrapper"); // CommonJS
 
 const nameMc = new NameMC();
 
-nameMc.skinHistory("MrZillaGold")
+nameMc.skinHistory({ nickname: "MrZillaGold" })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
 ```
