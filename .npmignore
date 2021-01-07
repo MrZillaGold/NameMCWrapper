@@ -6,3 +6,4 @@
 /src
 .travis.yml
 babel.config.json
+tsconfig.json
