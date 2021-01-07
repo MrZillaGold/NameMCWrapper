@@ -25,7 +25,7 @@ export class NameMC extends DataParser {
         });
     }
 
-    /*
+    /**
      * Get skin history by nickname
      */
     skinHistory({ nickname, page = 1 }: IGetSkinHistoryOptions): Promise<ISkin[]> {
@@ -68,7 +68,7 @@ export class NameMC extends DataParser {
         })
     }
 
-    /*
+    /**
      * Get capes by nickname
      */
     getCapes(nickname: Nickname): Promise<ICape[]> {
@@ -93,7 +93,7 @@ export class NameMC extends DataParser {
         });
     }
 
-    /*
+    /**
      * Get nickname history
      */
     getNicknameHistory(nickname: Nickname): Promise<INickname[]> {
@@ -119,7 +119,7 @@ export class NameMC extends DataParser {
     }
 
 
-    /*
+    /**
      * Get player info by nickname
      */
     getPlayerInfo(nickname: Nickname): Promise<IPlayer> {
@@ -142,7 +142,7 @@ export class NameMC extends DataParser {
         });
     }
 
-    /*
+    /**
      * Get skin renders
      */
     getRenders({
@@ -161,7 +161,7 @@ export class NameMC extends DataParser {
         };
     }
 
-    /*
+    /**
      * Transform skin method
      */
     transformSkin({ skin, transformation = "grayscale", model = "classic" }: ITransformSkinOptions): Promise<ISkin> {
@@ -209,7 +209,7 @@ export class NameMC extends DataParser {
         });
     }
 
-    /*
+    /**
      * Get cape info by cape hash
      */
     getCapeInfo(hash: Hash): ICapeInfo {
@@ -221,7 +221,7 @@ export class NameMC extends DataParser {
         };
     }
 
-    /*
+    /**
      * Get player friends by nickname
      */
     getFriends(nickname: Nickname): Promise<IFriend[]> {
@@ -252,7 +252,7 @@ export class NameMC extends DataParser {
         });
     }
 
-    /*
+    /**
      * Get skins from a specific tab of the site
      */
     getSkins({ tab = "trending", page = 1, section = "weekly" }: IGetSkinsOptions = {}): Promise<ISkin[]> {
