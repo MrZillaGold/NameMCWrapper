@@ -5,22 +5,18 @@ import { WrapperError } from "../dist/WrapperError.js";
 
 const nameMc = new NameMC();
 
-describe("Skin", () => {
+describe("Skins", () => {
     describe("skinHistory();", () => {
-        it("Checking the method for errors", (done) => {
-            assert.doesNotReject(() => nameMc.skinHistory({
+        it("Checking the method for errors", async () => {
+            await nameMc.skinHistory({
                 nickname: "MrZillaGold"
-            }))
-                .then(done)
-                .catch(done);
+            });
         });
 
-        it("Checking the method for errors with uuid", (done) => {
-            assert.doesNotReject(() => nameMc.skinHistory({
+        it("Checking the method for errors with uuid", async () => {
+            await nameMc.skinHistory({
                 nickname: "5dcafb2f-bd76-4a85-8b25-3c22079ce358"
-            }))
-                .then(done)
-                .catch(done);
+            });
         });
 
         it("Check for an error with an incorrect nickname format", () => {
@@ -58,7 +54,7 @@ describe("Skin", () => {
     });
 });
 
-describe("Cape", () => {
+describe("Capes", () => {
     describe("getCapes();", () => {
         it("Check for equality of results to a pattern", (done) => {
             const pattern = [
@@ -101,16 +97,12 @@ describe("Cape", () => {
 describe("Friends", () => {
     describe("getFriends();", () => {
 
-        it("Checking the method for errors", (done) => {
-            assert.doesNotReject(() => nameMc.getFriends("MrZillaGold"))
-                .then(done)
-                .catch(done);
+        it("Checking the method for errors", async () => {
+            await nameMc.getFriends("MrZillaGold");
         });
 
-        it("Checking the method for errors with uuid", (done) => {
-            assert.doesNotReject(() => nameMc.getFriends("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
-                .then(done)
-                .catch(done);
+        it("Checking the method for errors with uuid", async () => {
+            await nameMc.getFriends("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
         });
 
         it("Check for an error with an incorrect nickname format", () => {
@@ -119,18 +111,14 @@ describe("Friends", () => {
     });
 });
 
-describe("Player", () => {
+describe("Players", () => {
     describe("getNicknameHistory();", () => {
-        it("Checking the method for errors", (done) => {
-            assert.doesNotReject(() => nameMc.getNicknameHistory("MrZillaGold"))
-                .then(done)
-                .catch(done);
+        it("Checking the method for errors", async () => {
+            await nameMc.getNicknameHistory("MrZillaGold");
         });
 
-        it("Checking the method for errors with uuid", (done) => {
-            assert.doesNotReject(() => nameMc.getNicknameHistory("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
-                .then(done)
-                .catch(done);
+        it("Checking the method for errors with uuid", async () => {
+            await nameMc.getNicknameHistory("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
         });
 
         it("Check for an error with an incorrect nickname format", () => {
@@ -139,20 +127,57 @@ describe("Player", () => {
     });
 
     describe("getPlayerInfo();", () => {
-        it("Checking the method for errors", (done) => {
-            assert.doesNotReject(() => nameMc.getPlayerInfo("MrZillaGold"))
-                .then(done)
-                .catch(done);
+        it("Checking the method for errors", async () => {
+            await nameMc.getPlayerInfo("MrZillaGold");
         });
 
-        it("Checking the method for errors with uuid", (done) => {
-            assert.doesNotReject(() => nameMc.getPlayerInfo("5dcafb2f-bd76-4a85-8b25-3c22079ce358"))
-                .then(done)
-                .catch(done);
+        it("Checking the method for errors with uuid", async () => {
+            await nameMc.getPlayerInfo("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
         });
 
         it("Check for an error with an incorrect nickname format", () => {
             assert.rejects(() => nameMc.getPlayerInfo("1 2 3"), new WrapperError(2));
+        });
+    });
+});
+
+describe("Servers", () => {
+    describe("getServers();", () => {
+        it("Checking the method for errors", async () => {
+            await nameMc.getServers();
+        });
+    });
+
+    describe("getServer();", () => {
+        it("Checking the method for errors", async () => {
+            await nameMc.getServer("hypixel.net");
+        });
+    });
+
+    describe("getServerLikes();", () => {
+        it("Response must be array", async () => {
+            await nameMc.getServerLikes("hypixel.net")
+                .then((likes) =>
+                    assert.ok(Array.isArray(likes))
+                );
+        });
+    });
+
+    describe("checkServerLike();", () => {
+        it("Check server like with uuid", async () => {
+            await nameMc.checkServerLike({
+                ip: "hypixel.net",
+                nickname: "5dcafb2f-bd76-4a85-8b25-3c22079ce358"
+            })
+                .then(assert.ok);
+        });
+
+        it("Check server like with nickname", async () => {
+            await nameMc.checkServerLike({
+                ip: "hypixel.net",
+                nickname: "MrZillaGold"
+            })
+                .then(assert.ok);
         });
     });
 });

@@ -1,4 +1,4 @@
-import { Nickname } from "./nickname";
+import { Nickname } from "../NameMC/nickname";
 
 export interface IFriend {
     uuid: string;

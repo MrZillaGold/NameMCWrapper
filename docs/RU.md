@@ -4,9 +4,11 @@
 <dt><a href="#NameMC">NameMC(options);</a></dt>
 <dd><p>Основной класс</p>
 </dd>
+
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить информацию об игроке по никнейму</p>
 </dd>
+
 <dt><a href="#skinHistory">skinHistory(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить историю скинов по никнейму</p>
 </dd>
@@ -28,8 +30,22 @@
 <dt><a href="#getCapeInfo">getCapeInfo(hash)</a> ⇒ <code>Object</code>;</dt>
 <dd><p>Получить тип плаща по его хешу</p>
 </dd>
+
 <dt><a href="#getFriends">getFriends(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить друзей игрока по никнейму</p>
+</dd>
+
+<dt><a href="#getServers">getServers(page)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получить список серверов</p>
+</dd>
+<dt><a href="#getServer">getServer(ip)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получить сервер по IP-адресу</p>
+</dd>
+<dt><a href="#getServerLikes">getServerLikes(ip)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получение списка игроков оценивших сервер</p>
+</dd>
+<dt><a href="#checkServerLike">checkServerLike(options)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получение статуса оценки сервера игроком</p>
 </dd>
 </dl>
 
@@ -167,12 +183,12 @@ nameMc.skinHistory("Twennnn")
 
 <a name="getRenders"></a>
 
-## getRenders(options) ⇒ <code>Object</code>;
+## getRenders(options) ⇒ <code>Render</code>;
 Получить рендеры скина
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Object` - Объект с рендерами скинов
+**Возвращает**: `Render` - Объект с рендерами скинов
 
 | Параметры                                     | Тип                  | По умолчанию         | Описание                                                     |
 | --------------------------------------------- | -------------------- | -------------------- | ------------------------------------------------------------ |
@@ -228,12 +244,12 @@ nameMc.transformSkin({
 
 <a name="getCapeInfo"></a>
 
-## getCapeInfo(hash) ⇒ <code>Object</code>;
+## getCapeInfo(hash) ⇒ <code>CapeInfo</code>;
 Получить тип плаща по его хешу
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Object` - Объект с информацией о плаще
+**Возвращает**: `CapeInfo` - Объект с информацией о плаще
 
 | Параметры | Тип      | Описание  |
 | --------- | -------- | --------- |
@@ -265,5 +281,91 @@ nameMc.getCapeInfo("1981aad373fa9754")
 ```js
 nameMc.getFriends("spoodov")
     .then((friends) => console.log(friends))
+    .catch((error) => console.log(error));
+```
+
+<a name="getServers"></a>
+
+## getServers(page) ⇒ `Promise<ServerPreview[]>`;
+Получения списка серверов
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise<ServerPreview[]>` - Обещание массива с объектами серверов
+
+| Параметры | Тип      | По умолчанию | Описание       |
+| --------- | -------- | ------------ | -------------- |
+| page      | `number` |  `1`         | Номер страницы |
+
+**Пример**:
+
+```js
+nameMc.getServers(1)
+    .then((servers) => console.log(servers))
+    .catch((error) => console.log(error));
+```
+
+<a name="getServer"></a>
+
+## getServer(ip) ⇒ `Promise<Server[]>`;
+Получение информации о сервере по IP
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise<Server[]>` - Обещание объекта с информацией о сервере
+
+| Параметры | Тип      | Описание         |
+| --------- | -------- | ---------------- |
+| ip        | `string` | IP-адрес сервера |
+
+**Пример**:
+
+```js
+nameMc.getServer("hypixel.net")
+    .then((server) => console.log(server))
+    .catch((error) => console.log(error));
+```
+
+<a name="getServerLikes"></a>
+
+## getServerLikes(ip) ⇒ `Promise<string[]>`;
+Получение списка игроков оценивших сервер
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise<string[]>` - Обещание массива с UUID игроков, которые оценили сервер
+
+| Параметры | Тип      | Описание         |
+| --------- | -------- | ---------------- |
+| ip        | `string` | IP-адрес сервера |
+
+**Пример**:
+
+```js
+nameMc.getServerLikes("hypixel.net")
+    .then((server) => console.log(server))
+    .catch((error) => console.log(error));
+```
+
+<a name="checkServerLike"></a>
+
+## checkServerLike(options) ⇒ `Promise<boolean>`;
+Получение статуса оценки сервера игроком
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise<boolean>` - Обещание значения оценки сервера
+
+| Параметры        | Тип      | Описание                         |
+| ---------------- | -------- | -------------------------------- |
+| options          | `Object` | Объект с параметрами для запроса |
+| options.ip       | `string` | IP-адрес сервера                 |
+| options.nickname | `string` | Никнейм игрока для проверки      |
+
+**Пример**:
+
+```js
+nameMc.checkServerLike({ ip: "hypixel.net", nickname: "MrZillaGold" })
+    .then((like) => console.log(like))
     .catch((error) => console.log(error));
 ```

@@ -1,16 +1,18 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 
+import { API } from "./API";
 import { DataParser } from "./DataParser";
 import { WrapperError } from "./WrapperError";
 
-import { nameRegExp, profileRegExp, skinRegExp, capes } from "./utils";
+import {nameRegExp, profileRegExp, skinRegExp, capes, getUUID} from "./utils";
 
-import { IRender, IOptions, ISkin, INickname, ICape, ICapeInfo, Transformation, ITransformSkinOptions, IFriend, CapeName, IGetSkinsOptions, Tab, Section, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, Nickname, Hash, IGetRendersOptions } from "./interfaces";
+import { IRender, IOptions, ISkin, INickname, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash } from "./interfaces";
 
 export class NameMC extends DataParser {
 
     readonly client: AxiosInstance;
     readonly options: IOptions;
+    readonly api: API;
 
     constructor(options: IOptions = {}) {
         super();
@@ -23,6 +25,8 @@ export class NameMC extends DataParser {
         this.client = axios.create({
             baseURL: this.getEndpoint()
         });
+
+        this.api = new API();
     }
 
     /**
@@ -41,7 +45,7 @@ export class NameMC extends DataParser {
                             }
 
                             this.client.get(`/minecraft-skins/profile/${userId}?page=${page}`)
-                                .then(({ data }: AxiosResponse) => {
+                                .then(({ data }) => {
                                     const skins: ISkin[] = this.parseSkins(data);
 
                                     if (skins.length) {
@@ -55,7 +59,7 @@ export class NameMC extends DataParser {
                                 .catch(reject);
                         } else {
                             reject(
-                                new WrapperError(3, nickname)
+                                new WrapperError(3, [nickname])
                             );
                         }
                     })
@@ -75,12 +79,12 @@ export class NameMC extends DataParser {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
                 this.client.get(`/profile/${nickname}`)
-                    .then(({ request, data }: AxiosResponse) => {
+                    .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                             resolve(this.parseCapes(data));
                         } else {
                             reject(
-                                new WrapperError(3, nickname)
+                                new WrapperError(3, [nickname])
                             );
                         }
                     })
@@ -100,12 +104,12 @@ export class NameMC extends DataParser {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
                 this.client.get(`/profile/${nickname}`)
-                    .then(({ request, data }: AxiosResponse) => {
+                    .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                             resolve(this.parseNicknameHistory(data));
                         } else {
                             reject(
-                                new WrapperError(3, nickname)
+                                new WrapperError(3, [nickname])
                             );
                         }
                     })
@@ -138,7 +142,7 @@ export class NameMC extends DataParser {
                         names
                     })
                 )
-                .catch(reject)
+                .catch(reject);
         });
     }
 
@@ -177,7 +181,7 @@ export class NameMC extends DataParser {
             }
 
             if (!transformations.includes(transformation)) {
-                reject(new WrapperError(6, transformation));
+                reject(new WrapperError(6, [transformation]));
             }
 
             this.client.post(`/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
@@ -186,34 +190,33 @@ export class NameMC extends DataParser {
                     "origin": "https://ru.namemc.com"
                 }
             })
-                .then(({ request }: AxiosResponse) => {
+                .then(({ request }) => {
                     const [, hash] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
 
                     if (hash) {
                         resolve(this.extendResponse({ hash, model, type: "skin" }));
-                    } else {
-                        reject(
-                            new WrapperError(4)
-                        );
-                    }
-                })
-                .catch((error: AxiosError) => {
-                    if (error?.response?.status === 404) {
-                        reject(
-                            new WrapperError(5, skin)
-                        );
                     }
 
-                    reject(error);
+                    reject(
+                        new WrapperError(4)
+                    );
                 })
+                .catch((error: AxiosError) => {
+                    reject(
+                        error?.response?.status === 404 ?
+                            new WrapperError(3, [skin])
+                            :
+                            error
+                    );
+                });
         });
     }
 
     /**
      * Get cape info by cape hash
      */
-    getCapeInfo(hash: Hash): ICapeInfo {
-        const cape: CapeName | undefined = capes.get(hash);
+    getCapeInfo(hash: CapeHash): ICapeInfo {
+        const cape = capes.get(hash);
 
         return {
             type: cape ? "minecraft" : "optifine",
@@ -226,28 +229,15 @@ export class NameMC extends DataParser {
      */
     getFriends(nickname: Nickname): Promise<IFriend[]> {
         return new Promise(async (resolve, reject) => {
-            const nicknameMatch = nickname.match(nameRegExp);
+            const uuid = await getUUID(this.client, this.getEndpoint({ domain: "api.ashcon.app" }), nickname)
+                .catch(reject);
 
-            if (nicknameMatch) {
-                const uuid: string = nicknameMatch.groups?.uuid ?? await this.client.get(`${this.getEndpoint({ domain: "api.ashcon.app" })}/mojang/v2/user/${nickname}`)
-                    .then(({ data: { uuid } }: AxiosResponse) => uuid)
-                    .catch((error: AxiosError) => {
-                        if (error?.response?.status === 404) {
-                            reject(
-                                new WrapperError(3, nickname)
-                            );
-                        }
-
-                        reject(error);
-                    });
-
-                this.client.get(`${this.getEndpoint({ subdomain: "api" })}/profile/${uuid}/friends`)
-                    .then(({ data }: AxiosResponse) => resolve(data))
+            if (uuid) {
+                this.api.profile.friends({
+                    target: uuid
+                })
+                    .then(resolve)
                     .catch(reject);
-            } else {
-                reject(
-                    new WrapperError(2)
-                );
             }
         });
     }
@@ -261,24 +251,82 @@ export class NameMC extends DataParser {
 
         return new Promise(((resolve, reject) => {
             if (!tabs.includes(tab)) {
-                reject(new WrapperError(6, tab));
+                reject(new WrapperError(6, [tab]));
             }
             if (!sections.includes(section)) {
-                reject(new WrapperError(6, section));
+                reject(new WrapperError(6, [section]));
             }
 
             this.client.get(`/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
-                .then(({ data }: AxiosResponse) => {
+                .then(({ data }) => {
                     const skins = this.parseSkins(data);
 
                     if (skins.length) {
                         resolve(skins);
-                    } else {
-                        reject(new WrapperError(4));
                     }
+
+                    reject(new WrapperError(4));
                 })
                 .catch(reject)
         }));
+    }
+
+    /**
+     * Get servers list
+     */
+    getServers(page: number = 1): Promise<IServerPreview[]> {
+        return new Promise((resolve, reject) => {
+            this.client.get(`/minecraft-servers/${page}`)
+                .then(({ data }) => {
+                    const servers = this.parseServers(data);
+
+                    if (servers.length) {
+                        resolve(servers);
+                    }
+
+                    reject(new WrapperError(4));
+                })
+                .catch(reject);
+        });
+    }
+
+    /**
+     * Get server by ip
+     */
+    getServer(ip: string): Promise<IServer> {
+        return new Promise((resolve, reject) => {
+            this.client.get(`/server/${ip}`)
+                .then(({ data }) => resolve(this.parseServer(data, ip)))
+                .catch((error: AxiosError) => {
+                    reject(
+                        error?.response?.status === 404 ?
+                            new WrapperError(3, [ip])
+                            :
+                            error
+                    );
+                });
+        });
+    }
+
+    /**
+     * Get server likes by ip
+     */
+    getServerLikes(ip: string): Promise<string[]> {
+        return this.api.server.likes({
+                target: ip
+            });
+    }
+
+    /**
+     * Check server like value by nickname
+     */
+    async checkServerLike({ ip, nickname }: ICheckServerLikeOptions): Promise<boolean> {
+        const uuid = await getUUID(this.client, this.getEndpoint({ domain: "api.ashcon.app" }), nickname);
+
+        return this.api.server.likes({
+            target: ip,
+            profile: uuid
+        });
     }
 
     getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
@@ -287,3 +335,5 @@ export class NameMC extends DataParser {
         return `${proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 }
+
+export { API } from "./API";

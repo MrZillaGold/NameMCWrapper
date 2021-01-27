@@ -4,15 +4,18 @@
 <dt><a href="#NameMC">NameMC(options);</a></dt>
 <dd>Main class
 </dd>
+
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get player info by nickname</p>
 </dd>
+
 <dt><a href="#skinHistory">skinHistory(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skin history by nickname</p>
 </dd>
 <dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get nickname history</p>
 </dd>
+
 <dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skins from a specific tab of the site</p>
 </dd>
@@ -28,8 +31,22 @@
 <dt><a href="#getCapeInfo">getCapeInfo(hash)</a> ⇒ <code>Object</code>;</dt>
 <dd><p>Get cape type by cape hash</p>
 </dd>
+
 <dt><a href="#getFriends">getFriends(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get player friends by nickname</p>
+</dd>
+
+<dt><a href="#getServers">getServers(page)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get servers list</p>
+</dd>
+<dt><a href="#getServer">getServer(ip)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get server by ip</p>
+</dd>
+<dt><a href="#getServerLikes">getServerLikes(ip)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get server likes by ip</p>
+</dd>
+<dt><a href="#checkServerLike">checkServerLike(options)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Check server like value by nickname</p>
 </dd>
 </dl>
 
@@ -167,12 +184,12 @@ nameMc.skinHistory("Twennnn")
 
 <a name="getRenders"></a>
 
-## getRenders(options) ⇒ `Object`;
+## getRenders(options) ⇒ `Render`;
 Get skin renders
 
 **Kind**: global function
 
-**Returns**: `Object` - Object with renders skin
+**Returns**: `Render` - Object with renders skin
 
 | Param                                         | Type                 | Default              | Description                                            |
 | --------------------------------------------- | -----------------    | -------------------- | ------------------------------------------------------ |
@@ -228,12 +245,12 @@ nameMc.transformSkin({
 
 <a name="getCapeInfo"></a>
 
-## getCapeInfo(hash) ⇒ `Object`;
+## getCapeInfo(hash) ⇒ `CapeInfo`;
 Get cape type by cape hash
 
 **Kind**: global function
 
-**Returns**: `Object` - Object with cape information
+**Returns**: `CapeInfo` - Object with cape information
 
 | Param | Type     | Description |
 | ----- | -------- | ----------- |
@@ -265,5 +282,91 @@ Get player friends by nickname
 ```js
 nameMc.getFriends("spoodov")
     .then((friends) => console.log(friends))
+    .catch((error) => console.log(error));
+```
+
+<a name="getServers"></a>
+
+## getServers(page) ⇒ `Promise<ServerPreview[]>`;
+Get servers list
+
+**Kind**: global function
+
+**Returns**: `Promise<ServerPreview[]>` - Promise array with servers objects
+
+| Param | Type     | Default | Description |
+| ----- | -------- | ------- | ----------- |
+| page  | `number` |  `1`    | Page number |
+
+**Example**:
+
+```js
+nameMc.getServers(1)
+    .then((servers) => console.log(servers))
+    .catch((error) => console.log(error));
+```
+
+<a name="getServer"></a>
+
+## getServer(ip) ⇒ `Promise<Server[]>`;
+Get server by ip
+
+**Kind**: global function
+
+**Returns**: `Promise<Server[]>` - Promise object with server information
+
+| Param | Type     | Description |
+| ----- | -------- | ----------- |
+| ip    | `string` | Server IP   |
+
+**Example**:
+
+```js
+nameMc.getServer("hypixel.net")
+    .then((server) => console.log(server))
+    .catch((error) => console.log(error));
+```
+
+<a name="getServerLikes"></a>
+
+## getServerLikes(ip) ⇒ `Promise<string[]>`;
+Get server likes by ip
+
+**Kind**: global function
+
+**Returns**: `Promise<string[]>` - Promise array with uuid players who like server
+
+| Param | Type     | Description |
+| ----- | -------- | ----------- |
+| ip    | `string` | Server IP   |
+
+**Example**:
+
+```js
+nameMc.getServerLikes("hypixel.net")
+    .then((server) => console.log(server))
+    .catch((error) => console.log(error));
+```
+
+<a name="checkServerLike"></a>
+
+## checkServerLike(options) ⇒ `Promise<boolean>`;
+Check server like value by nickname
+
+**Kind**: global function
+
+**Returns**: `Promise<boolean>` - Promise like value
+
+| Param            | Type     | Description                        |
+| ---------------- | -------- | ---------------------------------- |
+| options          | `Object` | Object with parameters for request |
+| options.ip       | `string` | Server IP                          |
+| options.nickname | `string` | Player nickname or UUID for check  |
+
+**Example**:
+
+```js
+nameMc.checkServerLike({ ip: "hypixel.net", nickname: "MrZillaGold" })
+    .then((like) => console.log(like))
     .catch((error) => console.log(error));
 ```
