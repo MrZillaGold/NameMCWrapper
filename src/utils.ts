@@ -89,7 +89,7 @@ export function getUUID(client: AxiosInstance, endpoint: string, nickname: strin
 
 export function escapeColorsClasses(elements: TagElement[]): TagElement[] {
     return elements.map((element: TagElement) => {
-        if (Object.keys(element.attribs).length) {
+        if (element.attribs && Object.keys(element.attribs).length) {
             element.attribs.style = element.attribs.class.split(" ")
                 .map((style: string) => {
                     style = style.replace("mc-", "")
