@@ -16,7 +16,7 @@ export interface IServerPreview {
         name: string;
         image: string;
         emoji: string;
-    };
+    } | null;
     rating: number;
 }
 

@@ -161,22 +161,27 @@ export abstract class DataParser {
         const { attribs: { src: icon } } = body.find(`div.col-auto${isPreview ? ".p-1" : ".p-2"} > img`)
             .get(0);
 
-        const rawMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
+        const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
-        const { attribs: { title: motdClear } } = rawMotd.get(0);
-        const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }] }, { children: motdRawHtml }] = rawMotd.children()
+        const { attribs: { title: motdTitle } } = bodyMotd.get(0);
+        const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }] }, rawMotd] = bodyMotd.children()
             .get();
+
         // @ts-ignore Invalid lib type
-        const motdHtml = cheerio.html(escapeColorsClasses(motdRawHtml));
+        const motdHtml = typeof rawMotd === "object" ? cheerio.html(escapeColorsClasses(rawMotd.children)) : rawMotd;
+        const motdClear = isPreview ?
+            motdTitle
+            :
+            typeof rawMotd === "object" ?
+                escapeHtml(rawMotd.children)
+                :
+                rawMotd;
 
         const parsedData = {
             title,
             icon,
             motd: {
-                clear: isPreview ?
-                    motdClear
-                    :
-                    escapeHtml(motdRawHtml),
+                clear: motdClear,
                 html: motdHtml
             },
             players: {
@@ -205,14 +210,18 @@ export abstract class DataParser {
         return parsedData;
     }
 
-    protected parseServerCountry(data: TagElement): IServer["country"] {
-        const { attribs: { title: name, src: image, alt: emoji } } = data;
+    protected parseServerCountry(data: TagElement | undefined): IServer["country"] {
+        if (data) {
+            const { attribs: { title: name, src: image, alt: emoji } } = data;
 
-        return {
-            name,
-            image,
-            emoji
-        };
+            return {
+                name,
+                image,
+                emoji
+            };
+        }
+
+        return null;
     }
 
     protected extendResponse(response: ISkinResponse): ISkin;
