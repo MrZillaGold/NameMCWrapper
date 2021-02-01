@@ -18,7 +18,7 @@ export abstract class DataParser {
             .map((index, card) => {
                 const $ = cheerio.load(card);
 
-                const [skin] = $("div > img.drop-shadow.auto-size") // @ts-ignore
+                const [skin] = $("div > img.drop-shadow") // @ts-ignore
                     .map((index, { attribs: { src: skin } }) => {
                         const skinRegExp = /skin=([^]+?)&model=([^]+?)&[^]+/;
 
