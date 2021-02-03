@@ -164,18 +164,20 @@ export abstract class DataParser {
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
         const { attribs: { title: motdTitle } } = bodyMotd.get(0);
-        const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }] }, rawMotd] = bodyMotd.children()
+        const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: { data: textMotd } }, rawMotd] = bodyMotd.children()
             .get();
 
-        // @ts-ignore Invalid lib type
-        const motdHtml = typeof rawMotd === "object" ? cheerio.html(escapeColorsClasses(rawMotd.children)) : rawMotd;
+        const motdHtml = typeof rawMotd === "object" ? // @ts-ignore Invalid lib type
+            cheerio.html(escapeColorsClasses(rawMotd.children))
+            :
+            textMotd;
         const motdClear = isPreview ?
             motdTitle
             :
             typeof rawMotd === "object" ?
                 escapeHtml(rawMotd.children)
                 :
-                rawMotd;
+                textMotd;
 
         const parsedData = {
             title,
