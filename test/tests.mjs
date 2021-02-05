@@ -151,6 +151,7 @@ describe("Servers", () => {
     describe("getServer();", () => {
         it("Checking the method for errors", async () => {
             await nameMc.getServer("hypixel.net");
+            await nameMc.getServer("minecraftonline.com");
         });
     });
 
