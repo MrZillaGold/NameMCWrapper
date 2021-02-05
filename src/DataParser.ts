@@ -166,7 +166,7 @@ export abstract class DataParser {
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
 
-        if (bodyMotd.children().length < 2) {
+        if (!bodyMotd.children()[0]?.next) {
             throw new WrapperError(5, [title]);
         }
 
