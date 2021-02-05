@@ -1,5 +1,7 @@
 import cheerio from "cheerio";
 
+import { WrapperError } from "./WrapperError";
+
 import { profileSkinsRegExp, escapeColorsClasses, escapeHtml } from "./utils";
 
 import { ISkin, ICape, INickname, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash } from "./interfaces";
@@ -163,6 +165,11 @@ export abstract class DataParser {
 
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
+
+        if (bodyMotd.children().length < 2) {
+            throw new WrapperError(5, [title]);
+        }
+
         const { attribs: { title: motdTitle } } = bodyMotd.get(0);
         const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: { data: textMotd } }, rawMotd] = bodyMotd.children()
             .get();
