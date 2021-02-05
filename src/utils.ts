@@ -89,7 +89,7 @@ export function getUUID(client: AxiosInstance, endpoint: string, nickname: strin
 
 export function escapeColorsClasses(elements: TagElement[]): any[] {
     return elements.map((element: TagElement) => {
-        if (element.children.length !== 1) {
+        if (element.children && element.children.length !== 1) {
             return escapeColorsClasses(element.children as TagElement[]);
         }
 
