@@ -87,9 +87,13 @@ export function getUUID(client: AxiosInstance, endpoint: string, nickname: strin
 }
 
 
-export function escapeColorsClasses(elements: TagElement[]): TagElement[] {
+export function escapeColorsClasses(elements: TagElement[]): any[] {
     return elements.map((element: TagElement) => {
-        if (element.attribs && Object.keys(element.attribs).length) {
+        if (element.children.length !== 1) {
+            return escapeColorsClasses(element.children as TagElement[]);
+        }
+
+        if (element.attribs?.class) {
             element.attribs.style = element.attribs.class.split(" ")
                 .map((style: string) => {
                     style = style.replace("mc-", "")
@@ -111,7 +115,8 @@ export function escapeColorsClasses(elements: TagElement[]): TagElement[] {
         }
 
         return element;
-    });
+    })
+        .flat(Infinity);
 }
 
 export function escapeHtml(elements: Element[]): string {
