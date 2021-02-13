@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 
 import { IRequestOptions, IMethods, MethodGroup } from "./interfaces";
 
-const API_ENDPOINT = "https://api.namemc.com/"
+const API_ENDPOINT = "https://api.namemc.com/";
 
 const groups: MethodGroup[] = [
     "profile",

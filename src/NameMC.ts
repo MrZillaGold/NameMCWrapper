@@ -4,7 +4,7 @@ import { API } from "./API";
 import { DataParser } from "./DataParser";
 import { WrapperError } from "./WrapperError";
 
-import {nameRegExp, profileRegExp, skinRegExp, capes, getUUID} from "./utils";
+import { nameRegExp, profileRegExp, skinRegExp, capes, getUUID } from "./utils";
 
 import { IRender, IOptions, ISkin, INickname, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash } from "./interfaces";
 
