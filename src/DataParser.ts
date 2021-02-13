@@ -57,7 +57,7 @@ export abstract class DataParser {
         const $ = cheerio.load(data);
 
         return $("canvas.cape-2d.align-top") // @ts-ignore
-            .map((index, { attribs: { "data-cape-hash": hash } }) =>
+            .map((index, { attribs: { "data-cape-hash": hash } }: TagElement) =>
                 this.extendResponse({
                     hash,
                     type: "cape"

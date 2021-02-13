@@ -122,7 +122,7 @@ export function escapeColorsClasses(elements: TagElement[]): any[] {
 export function escapeHtml(elements: Element[]): string {
     return elements.map((element: Element) => {
         if (element.type !== "text") {
-            return escapeHtml(element.children);
+            return escapeHtml((element as TagElement).children);
         }
 
         return element.data;

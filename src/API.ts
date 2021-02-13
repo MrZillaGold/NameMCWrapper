@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance } from "axios";
 
 import { IRequestOptions, IMethods, MethodGroup } from "./interfaces";
 
@@ -11,7 +11,7 @@ const groups: MethodGroup[] = [
 
 export class API {
 
-    worker: AxiosInstance;
+    private worker: AxiosInstance;
 
     constructor() {
         this.worker = axios.create({
@@ -19,7 +19,6 @@ export class API {
         });
 
         for (const group of groups) {
-            // @ts-ignore
             this[group] = new Proxy(Object.create(null),{
                 get: (object, prop: string) =>
                     ({ target, ...params }: { target?: string }): Promise<any> =>
@@ -41,7 +40,7 @@ export class API {
         return this.worker.get(`/${group}/${target ? `${target}/` : ""}${prop}`, {
             params
         })
-            .then(({ data }: AxiosResponse) => data);
+            .then(({ data }) => data);
     }
 }
 
