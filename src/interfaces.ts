@@ -11,3 +11,6 @@ export * from "./interfaces/NameMC/server";
 
 export * from "./interfaces/API/request";
 export * from "./interfaces/API/methods";
+
+export * from "./NameMC";
+export * from "./API";
