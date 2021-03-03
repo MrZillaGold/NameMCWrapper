@@ -166,13 +166,21 @@ export abstract class DataParser {
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
 
-        if (!bodyMotd.children()[0]?.next) {
+        if (!(bodyMotd.children()[0] as TagElement).attribs.class.includes("float-right") && !bodyMotd.children()[0]?.next) {
             throw new WrapperError(5, [title]);
         }
 
         const { attribs: { title: motdTitle } } = bodyMotd.get(0);
-        const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: { data: textMotd } }, rawMotd] = bodyMotd.children()
+        let [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: bodyMotdNext }, rawMotd] = bodyMotd.children()
             .get();
+
+        if (!bodyMotdNext) {
+            bodyMotdNext = {
+                data: ""
+            };
+        }
+
+        const { data: textMotd } = bodyMotdNext;
 
         const motdHtml = typeof rawMotd === "object" ? // @ts-ignore Invalid lib type
             cheerio.html(escapeColorsClasses(rawMotd.children))
