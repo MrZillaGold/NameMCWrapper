@@ -143,9 +143,11 @@ describe("Players", () => {
 
 describe("Servers", () => {
     describe("getServers();", () => {
-        it("Checking the method for errors", async () => {
-            for (let page = 1; page < 30; page++) {
-                await nameMc.getServers(page);
+        describe("Checking the method for errors", () => {
+            for (let page = 1; page <= 30; page++) {
+                it(`Check ${page} page for errors`, async () => {
+                    await nameMc.getServers(page);
+                });
             }
         });
     });
