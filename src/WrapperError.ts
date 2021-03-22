@@ -31,7 +31,7 @@ export class WrapperError extends Error {
         return this.constructor.name;
     }
 
-    toJSON(): object {
+    toJSON(): any {
         return {
             ...this
         };

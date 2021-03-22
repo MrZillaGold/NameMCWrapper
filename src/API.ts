@@ -19,15 +19,13 @@ export class API {
         });
 
         for (const group of groups) {
-            this[group] = new Proxy(Object.create(null),{
-                get: (object, prop: string) =>
-                    ({ target, ...params }: { target?: string }): Promise<any> =>
-                        this.request({
-                            group,
-                            target,
-                            prop,
-                            params
-                        })
+            this[group] = new Proxy(Object.create(null), {
+                get: (object, prop: string) => ({ target, ...params }: { target?: string }): Promise<any> => this.request({
+                    group,
+                    target,
+                    prop,
+                    params
+                })
             });
         }
     }
@@ -44,4 +42,5 @@ export class API {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface API extends IMethods {}

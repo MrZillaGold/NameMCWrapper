@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 import { API } from "./API";
 import { DataParser } from "./DataParser";
@@ -69,7 +69,7 @@ export class NameMC extends DataParser {
                     new WrapperError(2)
                 );
             }
-        })
+        });
     }
 
     /**
@@ -122,7 +122,6 @@ export class NameMC extends DataParser {
         });
     }
 
-
     /**
      * Get player info by nickname
      */
@@ -134,14 +133,12 @@ export class NameMC extends DataParser {
                 this.getFriends(nickname),
                 this.getNicknameHistory(nickname)
             ])
-                .then(([skins, capes, friends, names]) =>
-                    resolve({
-                        skins,
-                        capes,
-                        friends,
-                        names
-                    })
-                )
+                .then(([skins, capes, friends, names]) => resolve({
+                    skins,
+                    capes,
+                    friends,
+                    names
+                }))
                 .catch(reject);
         });
     }
@@ -150,10 +147,10 @@ export class NameMC extends DataParser {
      * Get skin renders
      */
     getRenders({
-                   skin = "12b92a9206470fe2", model = "classic", width = 600,
-                   height = 300, scale = 4, overlay = true, theta = 30,
-                   phi = 20, time = 90
-               }: IGetRendersOptions): IRender {
+        skin = "12b92a9206470fe2", model = "classic", width = 600,
+        height = 300, scale = 4, overlay = true, theta = 30,
+        phi = 20, time = 90
+    }: IGetRendersOptions): IRender {
         const endpoint: string = this.getEndpoint({ subdomain: "render" });
 
         return {
@@ -184,10 +181,10 @@ export class NameMC extends DataParser {
                 reject(new WrapperError(6, [transformation]));
             }
 
-            this.client.post(`/transform-skin`, `skin=${skin}&transformation=${transformation}`, {
+            this.client.post("/transform-skin", `skin=${skin}&transformation=${transformation}`, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "origin": "https://ru.namemc.com"
+                    origin: "https://ru.namemc.com"
                 }
             })
                 .then(({ request }) => {
@@ -201,7 +198,7 @@ export class NameMC extends DataParser {
                         new WrapperError(4)
                     );
                 })
-                .catch((error: AxiosError) => {
+                .catch((error) => {
                     reject(
                         error?.response?.status === 404 ?
                             new WrapperError(3, [skin])
@@ -228,6 +225,7 @@ export class NameMC extends DataParser {
      * Get player friends by nickname
      */
     getFriends(nickname: Nickname): Promise<IFriend[]> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             const uuid = await getUUID(this.client, this.getEndpoint({ domain: "api.ashcon.app" }), nickname)
                 .catch(reject);
@@ -267,14 +265,14 @@ export class NameMC extends DataParser {
 
                     reject(new WrapperError(4));
                 })
-                .catch(reject)
+                .catch(reject);
         }));
     }
 
     /**
      * Get servers list
      */
-    getServers(page: number = 1): Promise<IServerPreview[]> {
+    getServers(page = 1): Promise<IServerPreview[]> {
         return new Promise((resolve, reject) => {
             this.client.get(`/minecraft-servers/${page}`)
                 .then(({ data }) => {
@@ -297,7 +295,7 @@ export class NameMC extends DataParser {
         return new Promise((resolve, reject) => {
             this.client.get(`/server/${ip}`)
                 .then(({ data }) => resolve(this.parseServer(data, ip)))
-                .catch((error: AxiosError) => {
+                .catch((error) => {
                     reject(
                         error?.response?.status === 404 ?
                             new WrapperError(3, [ip])
@@ -313,8 +311,8 @@ export class NameMC extends DataParser {
      */
     getServerLikes(ip: string): Promise<string[]> {
         return this.api.server.likes({
-                target: ip
-            });
+            target: ip
+        });
     }
 
     /**

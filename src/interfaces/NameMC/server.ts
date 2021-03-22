@@ -21,8 +21,8 @@ export interface IServerPreview {
 }
 
 export interface IServer extends IServerPreview {
-    version: string;
-    uptime: number;
+    version: string | null;
+    uptime: number | null;
 }
 
 export interface ICheckServerLikeOptions {
