@@ -56,23 +56,8 @@ describe("Skins", () => {
 
 describe("Capes", () => {
     describe("getCapes();", () => {
-        it("Check for equality of results to a pattern", (done) => {
-            const pattern = [
-                {
-                    hash: "77421d9cf72e07e9",
-                    url: "https://namemc.com/texture/77421d9cf72e07e9.png",
-                    type: "minecraft",
-                    name: "dannyBstyle"
-                }
-            ];
-
-            nameMc.getCapes("dannyBstyle")
-                .then((capes) => {
-                    assert.strictEqual(JSON.stringify(capes), JSON.stringify(pattern));
-
-                    done();
-                })
-                .catch(done);
+        it("Checking the method for errors", async () => {
+            await nameMc.getCapes("dad");
         });
 
         it("Check for an error with an incorrect nickname format", () => {
@@ -154,8 +139,10 @@ describe("Servers", () => {
 
     describe("getServer();", () => {
         it("Checking the method for errors", async () => {
-            await nameMc.getServer("hypixel.net");
-            await nameMc.getServer("minecraftonline.com");
+            await Promise.all([
+                nameMc.getServer("hypixel.net"),
+                nameMc.getServer("minecraftonline.com")
+            ]);
         });
     });
 
