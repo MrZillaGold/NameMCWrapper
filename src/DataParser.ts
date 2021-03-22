@@ -57,12 +57,10 @@ export abstract class DataParser {
         const $ = cheerio.load(data);
 
         return $("canvas.cape-2d.align-top") // @ts-ignore
-            .map((index, { attribs: { "data-cape-hash": hash } }: TagElement) =>
-                this.extendResponse({
-                    hash,
-                    type: "cape"
-                })
-            )
+            .map((index, { attribs: { "data-cape-hash": hash } }: TagElement) => this.extendResponse({
+                hash,
+                type: "cape"
+            }))
             .get();
     }
 
@@ -121,35 +119,51 @@ export abstract class DataParser {
                 return $("div.card.mb-3 > div.card-body").children();
             });
 
-        const [version, uptime, country] = infoCard.map((index, element) => {
+        const { version = null, uptime = null, country = null } = Object.assign.apply({}, [{}, ...infoCard.map((index, element) => {
             const $ = cheerio.load(element);
 
             const rowValue = $("div.row > div.text-right");
 
             if (rowValue.children().length) {
-                return this.parseServerCountry(
-                    rowValue.children("img")
-                        .get(0)
-                );
+                return {
+                    country: this.parseServerCountry(
+                        rowValue.children("img")
+                            .get(0)
+                    )
+                };
             }
 
-            return rowValue.contents()
+            const content = rowValue.contents()
                 .get(0)
                 .data;
+
+            const isUptime = content.endsWith("%");
+
+            return {
+                [isUptime ? "uptime" : "version"]: content ?
+                    isUptime ?
+                        content.replace("%", "")
+                        :
+                        content
+                    :
+                    null
+            };
         })
-            .get();
+            .get()
+        ]);
 
         return {
             ...serverCard,
             ip,
             version,
             country,
-            uptime: Number(uptime.replace("%", ""))
+            uptime
         };
     }
 
     protected parseServerCard(data: TagElement, isPreview: true): IServerPreview;
     protected parseServerCard(data: TagElement, isPreview: false): Exclude<IServerPreview, "country" | "ip">;
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     protected parseServerCard(data: TagElement, isPreview: boolean) {
         const $ = cheerio.load(data);
 
@@ -243,6 +257,7 @@ export abstract class DataParser {
 
     protected extendResponse(response: ISkinResponse): ISkin;
     protected extendResponse(response: ICapeResponse): ICape;
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     protected extendResponse(response: ISkinResponse | ICapeResponse) {
         // @ts-ignore
         const { hash, model, type, rating = 0 } = response;
