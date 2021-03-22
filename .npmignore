@@ -1,9 +1,10 @@
-.idea
-.gitignore
+/.idea
 /docs
 /test
 /scripts
 /src
+.gitignore
 .travis.yml
+.eslintrc.json
 babel.config.json
 tsconfig.json

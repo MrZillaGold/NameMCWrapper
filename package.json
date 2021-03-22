@@ -17,7 +17,9 @@
   "scripts": {
     "tsc": "tsc && node --experimental-modules --es-module-specifier-resolution=node ./scripts/removeEmptyFiles.mjs",
     "build": "npm run-script tsc && babel build --out-dir dist --copy-files && node --experimental-modules --es-module-specifier-resolution=node ./scripts/fixImports.mjs",
-    "test": "npm run-script build && node --experimental-modules --experimental-json-modules node_modules/mocha/bin/_mocha --reporter spec --timeout 180000"
+    "test": "npm run-script build && node --experimental-modules --experimental-json-modules node_modules/mocha/bin/_mocha --reporter spec --timeout 180000",
+    "eslint:check": "eslint ./src/**/*",
+    "eslint:fix": "eslint ./src/**/* --fix"
   },
   "repository": {
     "type": "git",
@@ -46,6 +48,9 @@
     "@babel/plugin-transform-named-capturing-groups-regex": "^7.12.1",
     "@babel/preset-env": "^7.12.1",
     "@types/cheerio": "^0.22.24",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.22.0",
     "mocha": "^8.0.1",
     "typescript": "^4.1.3"
   }
