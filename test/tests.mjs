@@ -66,7 +66,7 @@ describe("Capes", () => {
     });
 
     describe("getCapeType();", () => {
-        it("Check for equality of results to a pattern", async () => {
+        it("Check for equality of results to a pattern", () => {
             const pattern = {
                 type: "optifine",
                 name: "Optifine"
@@ -74,7 +74,7 @@ describe("Capes", () => {
 
             const capeType = nameMc.getCapeInfo("7ac79667ca6d906d");
 
-            assert.strictEqual(JSON.stringify(capeType), JSON.stringify(pattern))
+            assert.strictEqual(JSON.stringify(capeType), JSON.stringify(pattern));
         });
     });
 });
@@ -97,17 +97,23 @@ describe("Friends", () => {
 });
 
 describe("Players", () => {
-    describe("getNicknameHistory();", () => {
+    describe("getPlayer();", () => {
         it("Checking the method for errors", async () => {
-            await nameMc.getNicknameHistory("MrZillaGold");
+            await nameMc.getPlayer("MrZillaGold");
         });
 
         it("Checking the method for errors with uuid", async () => {
-            await nameMc.getNicknameHistory("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
+            await nameMc.getPlayer("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
         });
 
         it("Check for an error with an incorrect nickname format", () => {
-            assert.rejects(() => nameMc.getNicknameHistory("1 2 3"), new WrapperError(2));
+            assert.rejects(() => nameMc.getPlayer("1 2 3"), new WrapperError(2));
+        });
+
+        it("Checking name history length", async () => {
+            const player = await nameMc.getPlayer("jeb_");
+
+            assert.ok(player.names.length > 0);
         });
     });
 
@@ -149,9 +155,7 @@ describe("Servers", () => {
     describe("getServerLikes();", () => {
         it("Response must be array", async () => {
             await nameMc.getServerLikes("hypixel.net")
-                .then((likes) =>
-                    assert.ok(Array.isArray(likes))
-                );
+                .then((likes) => assert.ok(Array.isArray(likes)));
         });
     });
 

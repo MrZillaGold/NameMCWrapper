@@ -8,12 +8,12 @@
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get player info by nickname</p>
 </dd>
+<dt><a href="#getPlayer">getPlayer(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get full player info by nickname</p>
+</dd>
 
 <dt><a href="#skinHistory">skinHistory(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skin history by nickname</p>
-</dd>
-<dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
-<dd><p>Get nickname history</p>
 </dd>
 
 <dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
@@ -74,12 +74,12 @@ const nameMc = new NameMC({
 
 <a name="getPlayerInfo"></a>
 
-## getPlayerInfo(nickname) ⇒ `Promise<Player>`;
+## getPlayerInfo(nickname) ⇒ `Promise<BasePlayerInfo>`;
 Get player info by nickname
 
 **Kind**: global function
 
-**Returns**: `Promise<Player>` - Promise object with player info
+**Returns**: `Promise<BasePlayerInfo>` - Promise object with base player info
 
 | Param    | Type              | Default | Description             |
 | -------- | ----------------- | ------- | ----------------------- |
@@ -89,6 +89,27 @@ Get player info by nickname
 
 ```js
 nameMc.getPlayerInfo("Qwennnn")
+    .then((info) => console.log(info))
+    .catch((error) => console.log(error));
+```
+
+<a name="getPlayer"></a>
+
+## getNicknameHistory(nickname) ⇒ `Promise<Player>`;
+Get full player info by nickname
+
+**Kind**: global function
+
+**Returns**: `Promise<Player>` - Promise object with full player info
+
+| Param    | Type              | Default | Description             |
+| -------- | ----------------- | ------- | ----------------------- |
+| nickname | `string`          |         | Player nickname or UUID |
+
+**Example**:
+
+```js
+nameMc.getPlayer("Dane4ka_")
     .then((info) => console.log(info))
     .catch((error) => console.log(error));
 ```
@@ -113,27 +134,6 @@ Get skin history by nickname
 ```js
 nameMc.skinHistory({ nickname: "MrZillaGold", page: 2 })
     .then((skins) => console.log(skins))
-    .catch((error) => console.log(error));
-```
-
-<a name="getNicknameHistory"></a>
-
-## getNicknameHistory(nickname) ⇒ `Promise<Nickname[]>`;
-Get nickname history
-
-**Kind**: global function
-
-**Returns**: `Promise<Nickname[]>` - Promise array with nickname history
-
-| Param    | Type              | Default | Description             |
-| -------- | ----------------- | ------- | ----------------------- |
-| nickname | `string`          |         | Player nickname or UUID |
-
-**Example**:
-
-```js
-nameMc.getNicknameHistory("Dane4ka_")
-    .then((history) => console.log(history))
     .catch((error) => console.log(error));
 ```
 

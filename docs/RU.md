@@ -8,12 +8,12 @@
 <dt><a href="#getPlayerInfo">getPlayerInfo(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить информацию об игроке по никнейму</p>
 </dd>
+<dt><a href="#getPlayer">getPlayer(nickname)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получить полную информацию об игроке по никнейму</p>
+</dd>
 
 <dt><a href="#skinHistory">skinHistory(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить историю скинов по никнейму</p>
-</dd>
-<dt><a href="#getNicknameHistory">getNicknameHistory(nickname)</a> ⇒ <code>Promise</code>;</dt>
-<dd><p>История никнейма</p>
 </dd>
 <dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить скины с определенной вкладки сайта</p>
@@ -78,7 +78,7 @@ const nameMc = new NameMC({
 
 **Вид**: глобальная функция
 
-**Возвращает**: `Promise<Player>` - Обещание объекта с информацией об игроке
+**Возвращает**: `Promise<BasePlayerInfo>` - Обещание объекта с основной информацией об игроке
 
 | Параметры | Тип               | По умолчанию | Описание                |
 | --------- | ----------------- | ------------ | ----------------------- |
@@ -89,6 +89,27 @@ const nameMc = new NameMC({
 ```js
 nameMc.getPlayerInfo("Qwennnn")
     .then((info) => console.log(info))
+    .catch((error) => console.log(error));
+```
+
+<a name="getPlayer"></a>
+
+## getPlayer(nickname) ⇒ <code>Promise</code>;
+Получить полную информацию об игроке по никнейму
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise<Player>` - Обещание объекта с полной информацией об игроке
+
+| Параметры | Тип               | По умолчанию | Описание                |
+| --------- | ----------------- | ------------ | ----------------------- |
+| nickname  | `string`          |              | Никнейм или UUID игрока |
+
+**Пример**:
+
+```js
+nameMc.getNicknameHistory("Dane4ka_")
+    .then((history) => console.log(history))
     .catch((error) => console.log(error));
 ```
 
@@ -112,27 +133,6 @@ nameMc.getPlayerInfo("Qwennnn")
 ```js
 nameMc.skinHistory({ nickname: "MrZillaGold", page: 2 })
     .then((skins) => console.log(skins))
-    .catch((error) => console.log(error));
-```
-
-<a name="getNicknameHistory"></a>
-
-## getNicknameHistory(nickname) ⇒ <code>Promise</code>;
-История никнейма
-
-**Вид**: глобальная функция
-
-**Возвращает**: `Promise<Nickname[]>` - Обещание массива с историей никнейма
-
-| Параметры | Тип               | По умолчанию | Описание                |
-| --------- | ----------------- | ------------ | ----------------------- |
-| nickname  | `string`          |              | Никнейм или UUID игрока |
-
-**Пример**:
-
-```js
-nameMc.getNicknameHistory("Dane4ka_")
-    .then((history) => console.log(history))
     .catch((error) => console.log(error));
 ```
 

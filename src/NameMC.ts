@@ -6,7 +6,7 @@ import { WrapperError } from "./WrapperError";
 
 import { nameRegExp, profileRegExp, skinRegExp, capes, getUUID } from "./utils";
 
-import { IRender, IOptions, ISkin, INickname, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash } from "./interfaces";
+import { IRender, IOptions, ISkin, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash, BasePlayerInfo } from "./interfaces";
 
 export class NameMC extends DataParser {
 
@@ -98,15 +98,15 @@ export class NameMC extends DataParser {
     }
 
     /**
-     * Get nickname history
+     * Get player info by nickname
      */
-    getNicknameHistory(nickname: Nickname): Promise<INickname[]> {
+    getPlayerInfo(nickname: Nickname): Promise<BasePlayerInfo> {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
                 this.client.get(`/profile/${nickname}`)
                     .then(({ request, data }) => {
                         if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
-                            resolve(this.parseNicknameHistory(data));
+                            resolve(this.parsePlayer(data));
                         } else {
                             reject(
                                 new WrapperError(3, [nickname])
@@ -123,21 +123,21 @@ export class NameMC extends DataParser {
     }
 
     /**
-     * Get player info by nickname
+     * Get full player info by nickname
      */
-    getPlayerInfo(nickname: Nickname): Promise<IPlayer> {
+    getPlayer(nickname: Nickname): Promise<IPlayer> {
         return new Promise((resolve, reject) => {
             Promise.all([
                 this.skinHistory({ nickname }),
                 this.getCapes(nickname),
                 this.getFriends(nickname),
-                this.getNicknameHistory(nickname)
+                this.getPlayerInfo(nickname)
             ])
-                .then(([skins, capes, friends, names]) => resolve({
+                .then(([skins, capes, friends, info]) => resolve({
                     skins,
                     capes,
                     friends,
-                    names
+                    ...info
                 }))
                 .catch(reject);
         });

@@ -4,7 +4,7 @@ import { WrapperError } from "./WrapperError";
 
 import { profileSkinsRegExp, escapeColorsClasses, escapeHtml } from "./utils";
 
-import { ISkin, ICape, INickname, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash } from "./interfaces";
+import { ISkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo } from "./interfaces";
 import TagElement = cheerio.TagElement;
 
 export abstract class DataParser {
@@ -64,16 +64,50 @@ export abstract class DataParser {
             .get();
     }
 
-    protected parseNicknameHistory(data: string): INickname[] {
+    protected parsePlayer(data: string): BasePlayerInfo {
         const $ = cheerio.load(data);
 
-        const history = $("div.card.mb-3 > div.card-body.py-1 > div.row.no-gutters")
-            .filter((index, element) => (element as TagElement).attribs.class === "row no-gutters")
+        let [baseInfo, nicknameHistory] = $("div.card.mb-3")
             .map((index, element) => {
                 const $ = cheerio.load(element);
 
-                const name = $("div.col.order-md-2.col-md-4.text-nowrap > a").get(0);
-                const time = $("div.col-12.order-md-3.col-md > time").get(0);
+                return $("div.card-body.py-1")
+                    .children("div.row.no-gutters");
+            })
+            .get();
+
+        baseInfo = baseInfo
+            .map((index: number, element: TagElement) => {
+                const $ = cheerio.load(element);
+
+                switch (index) {
+                    case 0:
+                    case 1:
+                        return $("div.col-12 > samp")
+                            .text();
+                    case 2: {
+                        const link = $("div.col-12 > a")
+                            .text();
+
+                        return `https://${link}`;
+                    }
+                    case 3: {
+                        const views = $("div.col-auto")
+                            .text()
+                            .replace(/\s\/ [^]+/, "");
+
+                        return Number(views);
+                    }
+                }
+            })
+            .get();
+
+        nicknameHistory = nicknameHistory
+            .map((index: number, element: TagElement) => {
+                const $ = cheerio.load(element);
+
+                const name = $("div.col > a").get(0);
+                const time = $("div.col-12 > time").get(0);
 
                 if (name) {
                     const { children: [{ data: nickname }] } = name;
@@ -86,9 +120,17 @@ export abstract class DataParser {
                     };
                 }
             })
-            .get();
+            .get()
+            .reverse();
 
-        return history.reverse();
+        const [uuid, , link, views] = baseInfo;
+
+        return {
+            uuid,
+            link,
+            views,
+            names: nicknameHistory
+        };
     }
 
     protected parseServers(data: string): IServerPreview[] {
