@@ -244,18 +244,18 @@ export class NameMC extends DataParser {
      * Get skins from a specific tab of the site
      */
     getSkins({ tab = "trending", page = 1, section = "weekly" }: IGetSkinsOptions = {}): Promise<ISkin[]> {
-        const tabs: Tab[] = ["trending", "new", "random"];
+        const tabs: Tab[] = ["trending", "new", "random", "tag"];
         const sections: Section[] = ["daily", "weekly", "monthly", "top"];
 
         return new Promise(((resolve, reject) => {
             if (!tabs.includes(tab)) {
                 reject(new WrapperError(6, [tab]));
             }
-            if (!sections.includes(section)) {
+            if (tab !== "tag" && !sections.includes(section)) {
                 reject(new WrapperError(6, [section]));
             }
 
-            this.client.get(`/minecraft-skins/${tab}${tab === "trending" ? `/${section}` : ""}?page=${page}`)
+            this.client.get(`/minecraft-skins/${tab}${tab === "trending" || tab === "tag" ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) => {
                     const skins = this.parseSkins(data);
 
