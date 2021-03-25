@@ -42,14 +42,19 @@ describe("Skins", () => {
     });
 
     describe("getSkins();", () => {
-        it("Receive data and check array size", (done) => {
-            nameMc.getSkins()
-                .then((skins) => {
-                    assert.strictEqual(skins.length, 30);
-
-                    done();
-                })
-                .catch(done);
+        it("Get skins and check array size", async () => {
+            const skins = await nameMc.getSkins();
+            
+            assert.strictEqual(skins.length, 30);
+        });
+        
+        it("Get skins with custom tag and check array size", async () => {
+            const skins = await nameMc.getSkins({
+                tab: "tag",
+                section: "girl"
+            });
+            
+            assert.strictEqual(skins.length, 30);
         });
     });
 });
