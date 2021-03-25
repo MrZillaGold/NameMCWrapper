@@ -27,7 +27,7 @@ export interface ITransformSkinOptions {
 }
 
 export type Tab = "trending" | "new" | "random" | "tag";
-export type Section = string;
+export type Section = "daily" | "weekly" | "monthly" | "top" | string;
 
 export interface IGetSkinsOptions {
     tab?: Tab;
