@@ -265,7 +265,14 @@ export class NameMC extends DataParser {
 
                     reject(new WrapperError(4));
                 })
-                .catch(reject);
+                .catch((error) => {
+                    reject(
+                        error?.response?.status === 404 ?
+                            new WrapperError(3, [section])
+                            :
+                            error
+                    );
+                });
         }));
     }
 
