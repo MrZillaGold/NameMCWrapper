@@ -146,12 +146,12 @@ Get skins from a specific tab of the site
 
 **Returns**: `Promise<Skin[]>` - Promise array with skins objects
 
-| Param           | Type                                              | Description                                 |
-| --------------- | ------------------------------------------------- | ------------------------------------------- |
-| options         | `Object`                                          | Object with parameters for getting skins    |
-| options.tab     | `"trending"` `"new"` `"random"` `"tag"`           | Tab with which to get skins                 |
-| options.page    | `number`                                          | Tab page (1 - 100)                          |
-| options.section | `"daily"` `"weekly"` `"monthly"` `"top"` `string` | Section, used when getting `trending` skins |
+| Param           | Type                                              | Description                                          |
+| --------------- | ------------------------------------------------- | ---------------------------------------------------- |
+| options         | `Object`                                          | Object with parameters for getting skins             |
+| options.tab     | `"trending"` `"new"` `"random"` `"tag"`           | Tab with which to get skins                          |
+| options.page    | `number`                                          | Tab page (1 - 100)                                   |
+| options.section | `"daily"` `"weekly"` `"monthly"` `"top"` `string` | Section, used when getting `trending` or `tag` skins |
 
 **Example**:
 
