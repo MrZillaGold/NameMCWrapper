@@ -32,8 +32,6 @@ export class WrapperError extends Error {
     }
 
     toJSON(): any {
-        return {
-            ...this
-        };
+        return this;
     }
 }
