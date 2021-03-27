@@ -4,8 +4,9 @@ import { WrapperError } from "./WrapperError";
 
 import { profileSkinsRegExp, escapeColorsClasses, escapeHtml } from "./utils";
 
-import { ISkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo } from "./interfaces";
+import { ISkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo, IExtendedSkin, Model } from "./interfaces";
 import TagElement = cheerio.TagElement;
+import Root = cheerio.Root;
 
 export abstract class DataParser {
 
@@ -21,28 +22,18 @@ export abstract class DataParser {
                 const $ = cheerio.load(card);
 
                 const [skin] = $("div > img.drop-shadow") // @ts-ignore
-                    .map((index, { attribs: { src: skin } }) => {
-                        const skinRegExp = /skin=([^]+?)&model=([^]+?)&[^]+/;
+                    .map((index, { attribs: { src } }) => {
+                        const isValidSkin = this.checkSkinLink(src);
 
-                        const idValidSkin = skinRegExp.exec(skin);
-
-                        if (idValidSkin) {
-                            const [, hash, model] = idValidSkin;
-
-                            return {
-                                hash,
-                                model
-                            };
+                        if (isValidSkin) {
+                            return isValidSkin;
                         }
                     })
                     .get();
 
-                const [{ children: [{ data: rating }] }] = $("div.position-absolute.bottom-0.right-0.text-muted.mx-1.small-xs.normal-sm")
-                    .get();
-
                 return {
                     ...skin,
-                    rating: Number(rating.slice(1))
+                    rating: this.parseSkinRating($)
                 };
             })
             .get();
@@ -51,6 +42,35 @@ export abstract class DataParser {
             ...skin,
             type: "skin"
         }));
+    }
+
+    protected parseSkin(data: string): IExtendedSkin | void {
+        const $ = cheerio.load(data);
+
+        const { attribs: { href } } = $("#render-button.btn")
+            .get(0);
+
+        const isValidSkin = this.checkSkinLink(href);
+
+        if (isValidSkin) {
+            const tags = $("div.card-body.text-center.py-1 > a.badge.badge-pill")
+                .map((index, element) => {
+                    const { children: [{ data: tag }] } = element as TagElement;
+
+                    return tag;
+                })
+                .get();
+
+            return {
+                ...this.extendResponse({
+                    ...isValidSkin,
+                    rating: this.parseSkinRating($),
+                    type: "skin"
+                }),
+                createdAt: this.parseSkinTime($),
+                tags
+            };
+        }
     }
 
     protected parseCapes(data: string): ICape[] {
@@ -203,10 +223,10 @@ export abstract class DataParser {
         };
     }
 
-    protected parseServerCard(data: TagElement, isPreview: true): IServerPreview;
-    protected parseServerCard(data: TagElement, isPreview: false): Exclude<IServerPreview, "country" | "ip">;
+    private parseServerCard(data: TagElement, isPreview: true): IServerPreview;
+    private parseServerCard(data: TagElement, isPreview: false): Exclude<IServerPreview, "country" | "ip">;
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    protected parseServerCard(data: TagElement, isPreview: boolean) {
+    private parseServerCard(data: TagElement, isPreview: boolean) {
         const $ = cheerio.load(data);
 
         const header = $("div.card-header.p-0 > div.row.no-gutters");
@@ -283,7 +303,7 @@ export abstract class DataParser {
         return parsedData;
     }
 
-    protected parseServerCountry(data: TagElement | undefined): IServer["country"] {
+    private parseServerCountry = (data: TagElement | undefined): IServer["country"] => {
         if (data) {
             const { attribs: { title: name, src: image, alt: emoji } } = data;
 
@@ -295,7 +315,7 @@ export abstract class DataParser {
         }
 
         return null;
-    }
+    };
 
     protected extendResponse(response: ISkinResponse): ISkin;
     protected extendResponse(response: ICapeResponse): ICape;
@@ -345,4 +365,35 @@ export abstract class DataParser {
 
         return profileId;
     }
+
+    private parseSkinRating = ($: Root): number => {
+        const { children: [{ data: rating }] } = $(".position-absolute.bottom-0.right-0.text-muted")
+            .get(0);
+
+        return Number(rating.slice(1));
+    };
+
+    private parseSkinTime = ($: Root): number => {
+        const date = $(".position-absolute.bottom-0.left-0.text-muted.title-time")
+            .get(0)
+            .attribs
+            .title;
+
+        return new Date(date)
+            .getTime();
+    };
+
+    private checkSkinLink = (link: string) => {
+        const skinRegExp = /skin=([^]+?)(?:&[^]+)?&model=([^]+?)&[^]+/;
+        const idValidSkin = skinRegExp.exec(link);
+
+        if (idValidSkin) {
+            const [, hash, model] = idValidSkin;
+
+            return {
+                hash,
+                model: model as Model
+            };
+        }
+    };
 }

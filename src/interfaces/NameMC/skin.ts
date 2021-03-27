@@ -13,6 +13,11 @@ export interface ISkin {
     rating: number;
 }
 
+export interface IExtendedSkin extends ISkin {
+    tags: string[];
+    createdAt: number;
+}
+
 export interface IGetSkinHistoryOptions {
     nickname: Nickname;
     page?: number;

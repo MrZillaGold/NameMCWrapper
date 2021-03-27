@@ -6,7 +6,7 @@ import { WrapperError } from "./WrapperError";
 
 import { nameRegExp, profileRegExp, skinRegExp, capes, getUUID } from "./utils";
 
-import { IRender, IOptions, ISkin, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash, BasePlayerInfo } from "./interfaces";
+import { IRender, IOptions, ISkin, IExtendedSkin,  ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash, BasePlayerInfo } from "./interfaces";
 
 export class NameMC extends DataParser {
 
@@ -255,7 +255,7 @@ export class NameMC extends DataParser {
                 reject(new WrapperError(6, [section]));
             }
 
-            this.client.get(`/minecraft-skins/${tab}${tab === "trending" || tab === "tag" ? `/${section}` : ""}?page=${page}`)
+            this.client.get(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) => {
                     const skins = this.parseSkins(data);
 
@@ -274,6 +274,34 @@ export class NameMC extends DataParser {
                     );
                 });
         }));
+    }
+
+    /**
+     * Get information about skin
+     */
+    getSkin(hash: ISkin["hash"]): Promise<IExtendedSkin> {
+        return new Promise((resolve, reject) => {
+            this.client.get(`/skin/${hash}`)
+                .then(({ data }) => {
+                    const skin = this.parseSkin(data);
+
+                    if (skin) {
+                        resolve(skin);
+                    } else {
+                        reject(
+                            new WrapperError(4)
+                        );
+                    }
+                })
+                .catch((error) => {
+                    reject(
+                        error?.response?.status === 404 ?
+                            new WrapperError(3, [hash])
+                            :
+                            error
+                    );
+                });
+        });
     }
 
     /**

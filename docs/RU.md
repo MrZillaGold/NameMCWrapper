@@ -18,6 +18,9 @@
 <dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить скины с определенной вкладки сайта</p>
 </dd>
+<dt><a href="#getSkin">getSkin(hash)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Получить информацию о скине</p>
+</dd>
 <dt><a href="#getCapes">getCapes(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Получить плащи игрока по никнейму</p>
 </dd>
@@ -157,6 +160,27 @@ nameMc.skinHistory({ nickname: "MrZillaGold", page: 2 })
 ```js
 nameMc.getSkins({ tab: "new", page: 2 })
     .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
+```
+
+<a name="getSkin"></a>
+
+## getSkin(hash)⇒ <code>Promise</code>;
+Получить информацию о скине
+
+**Вид**: глобальная функция
+
+**Возвращает**: `Promise<Skin[]>` - Обещание объекста с информацией о скине
+
+| Параметры | Тип      | Описание  |
+| --------- | -------- | --------- |
+| hash      | `string` | Хеш скина |
+
+**Пример**:
+
+```js
+nameMc.getSkin("1fa9890979396670")
+    .then((skin) => console.log(skin))
     .catch((error) => console.log(error));
 ```
 

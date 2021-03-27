@@ -19,6 +19,9 @@
 <dt><a href="#getSkins">getSkins(options)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get skins from a specific tab of the site</p>
 </dd>
+<dt><a href="#getSkin">getSkin(hash)</a> ⇒ <code>Promise</code>;</dt>
+<dd><p>Get information about skin</p>
+</dd>
 <dt><a href="#getCapes">getCapes(nickname)</a> ⇒ <code>Promise</code>;</dt>
 <dd><p>Get capes by nickname</p>
 </dd>
@@ -158,6 +161,27 @@ Get skins from a specific tab of the site
 ```js
 nameMc.getSkins({ tab: "new", page: 2 })
     .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
+```
+
+<a name="getSkin"></a>
+
+## getSkin(hash)⇒ <code>Promise<ExtendedSkin></code>;
+Get information about skin
+
+**Kind**: global function
+
+**Returns**: `Promise<ExtendedSkin>` - Promise object with skin information
+
+| Param | Type     | Description |
+| ----- | -------- | ----------- |
+| hash  | `string` | Skin hash   |
+
+**Example**:
+
+```js
+nameMc.getSkin("6abce4ea1b4afe5a")
+    .then((skin) => console.log(skin))
     .catch((error) => console.log(error));
 ```
 
