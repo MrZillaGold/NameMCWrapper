@@ -299,15 +299,16 @@ export abstract class DataParser {
 
     protected extendResponse(response: ISkinResponse): ISkin;
     protected extendResponse(response: ICapeResponse): ICape;
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    protected extendResponse(response: ISkinResponse | ICapeResponse) {
-        // @ts-ignore
-        const { hash, model, type, rating = 0 } = response;
+    protected extendResponse(response: ISkinResponse | ICapeResponse): ISkin | ICape {
+        const { hash, type } = response;
 
         const url = `${this.getEndpoint({})}/texture/${hash}.png`;
 
         switch(type) {
-            case "skin":
+            case "skin": {
+                const model = (response as ISkinResponse).model;
+                const rating = (response as ISkinResponse).rating ?? 0;
+
                 return {
                     url,
                     hash,
@@ -319,6 +320,7 @@ export abstract class DataParser {
                     }),
                     isSlim: model !== "classic"
                 };
+            }
             case "cape":
                 return {
                     hash,
