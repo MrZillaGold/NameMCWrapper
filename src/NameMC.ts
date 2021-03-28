@@ -15,7 +15,7 @@ export class NameMC extends DataParser {
     readonly api: API;
 
     constructor(options: IOptions = {}) {
-        super();
+        super(options);
 
         this.options = {
             endpoint: "namemc.com",
@@ -152,6 +152,8 @@ export class NameMC extends DataParser {
         phi = 20, time = 90
     }: IGetRendersOptions): IRender {
         const endpoint: string = this.getEndpoint({ subdomain: "render" });
+
+        model = this.options.defaultSkinsModel || model;
 
         return {
             body: {

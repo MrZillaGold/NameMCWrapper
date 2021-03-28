@@ -4,11 +4,17 @@ import { WrapperError } from "./WrapperError";
 
 import { profileSkinsRegExp, escapeColorsClasses, escapeHtml, skinRegExp } from "./utils";
 
-import { ISkin, IExtendedSkin, INamedSkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo, Model } from "./interfaces";
+import { IOptions, ISkin, IExtendedSkin, INamedSkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo, Model } from "./interfaces";
 import TagElement = cheerio.TagElement;
 import Root = cheerio.Root;
 
 export abstract class DataParser {
+
+    options: IOptions;
+
+    protected constructor(options: IOptions) {
+        this.options = options;
+    }
 
     abstract getEndpoint(options: IGetEndpointOptions): string;
     abstract getRenders(options: IGetRendersOptions): IRender;
@@ -333,7 +339,7 @@ export abstract class DataParser {
         switch(type) {
             case "skin": {
                 const name = (response as ISkinResponse).name || null;
-                const model = (response as ISkinResponse).model || "unknown";
+                const model = (response as ISkinResponse).model || (this.options.defaultSkinsModel || "unknown");
                 const rating = (response as ISkinResponse).rating ?? 0;
 
                 return {
