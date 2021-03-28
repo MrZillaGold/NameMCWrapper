@@ -153,8 +153,6 @@ export class NameMC extends DataParser {
     }: IGetRendersOptions): IRender {
         const endpoint: string = this.getEndpoint({ subdomain: "render" });
 
-        model = model || this.options.defaultSkinsModel;
-
         return {
             body: {
                 front: `${endpoint}/skin/3d/body.png?skin=${skin}&model=${model}&width=${width}&height=${height}&theta=${theta}&phi=${phi}&time=${time}`,

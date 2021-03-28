@@ -339,8 +339,8 @@ export abstract class DataParser {
         switch(type) {
             case "skin": {
                 const name = (response as ISkinResponse).name || null;
-                const model = (response as ISkinResponse).model || (this.options.defaultSkinsModel || "unknown");
                 const rating = (response as ISkinResponse).rating ?? 0;
+                const model = (response as ISkinResponse).model || this.options.defaultSkinsModel || "unknown";
 
                 return {
                     url,
