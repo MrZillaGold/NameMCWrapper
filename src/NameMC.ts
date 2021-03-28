@@ -245,9 +245,10 @@ export class NameMC extends DataParser {
     /**
      * Get skins from a specific tab of the site
      */
-    getSkins(options: IGetSkinsOptions & ({ tab: "trending" | "tag" | "new" })): Promise<INamedSkin[]>
-    getSkins(options: IGetSkinsOptions & ({ tab: "trending"; section: "top"; } | { tab: "random" })): Promise<ISkin[]>
-    getSkins({ tab = "trending", page = 1, section = "weekly" }: IGetSkinsOptions = {}): Promise<ISkin[] | INamedSkin[]> {
+    getSkins(options: IGetSkinsOptions<"trending" | "tag" | "new", Section>): Promise<INamedSkin[]>
+    getSkins(options: IGetSkinsOptions<"trending", "top">): Promise<ISkin[]>
+    getSkins(options: IGetSkinsOptions<"random", undefined>): Promise<ISkin[]>
+    getSkins({ tab, page, section = "weekly" }: IGetSkinsOptions<"trending" | "tag" | "new", Section> | IGetSkinsOptions<"trending", "top"> | IGetSkinsOptions<"random", undefined>): Promise<ISkin[] | INamedSkin[]> {
         const tabs: Tab[] = ["trending", "new", "random", "tag"];
         const sections: Section[] = ["daily", "weekly", "monthly", "top"];
 

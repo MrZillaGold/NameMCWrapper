@@ -39,8 +39,8 @@ export interface ITransformSkinOptions {
 export type Tab = "trending" | "new" | "random" | "tag";
 export type Section = "daily" | "weekly" | "monthly" | "top" | string;
 
-export interface IGetSkinsOptions {
-    tab?: Tab;
-    section?: Section;
+export interface IGetSkinsOptions<T, S> {
+    tab: T;
+    section?: S;
     page?: number;
 }
