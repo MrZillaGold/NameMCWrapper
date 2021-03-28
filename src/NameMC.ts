@@ -153,7 +153,7 @@ export class NameMC extends DataParser {
     }: IGetRendersOptions): IRender {
         const endpoint: string = this.getEndpoint({ subdomain: "render" });
 
-        model = this.options.defaultSkinsModel || model;
+        model = model || this.options.defaultSkinsModel;
 
         return {
             body: {
@@ -245,15 +245,17 @@ export class NameMC extends DataParser {
     /**
      * Get skins from a specific tab of the site
      */
-    getSkins(options: IGetSkinsOptions<"trending" | "tag" | "new", Section>): Promise<INamedSkin[]>
-    getSkins(options: IGetSkinsOptions<"trending", "top">): Promise<ISkin[]>
-    getSkins(options: IGetSkinsOptions<"random", undefined>): Promise<ISkin[]>
-    getSkins({ tab, page, section = "weekly" }: IGetSkinsOptions<"trending" | "tag" | "new", Section> | IGetSkinsOptions<"trending", "top"> | IGetSkinsOptions<"random", undefined>): Promise<ISkin[] | INamedSkin[]> {
+    getSkins(options: IGetSkinsOptions<"new", undefined, number>): Promise<INamedSkin[]>;
+    getSkins(options: IGetSkinsOptions<"tag", undefined, number>): Promise<ISkin[]>;
+    getSkins(options: IGetSkinsOptions<"tag", string, number>): Promise<ISkin[]>;
+    getSkins(options: IGetSkinsOptions<"trending", "top", number>): Promise<ISkin[]>;
+    getSkins(options: IGetSkinsOptions<"random", undefined, undefined>): Promise<ISkin[]>;
+    getSkins({ tab, page, section = "weekly" }: IGetSkinsOptions<Tab, Section, number | undefined>): Promise<ISkin[] | INamedSkin[]> {
         const tabs: Tab[] = ["trending", "new", "random", "tag"];
         const sections: Section[] = ["daily", "weekly", "monthly", "top"];
 
         return new Promise(((resolve, reject) => {
-            if (!tabs.includes(tab)) {
+            if (tab && !tabs.includes(tab)) {
                 reject(new WrapperError(6, [tab]));
             }
             if (tab !== "tag" && !sections.includes(section)) {
