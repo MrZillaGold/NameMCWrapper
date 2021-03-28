@@ -44,17 +44,33 @@ describe("Skins", () => {
     describe("getSkins();", () => {
         it("Get skins and check array size", async () => {
             const skins = await nameMc.getSkins();
-            
+
             assert.strictEqual(skins.length, 30);
         });
-        
+
+        it("Get skins tags and check array size", async () => {
+            const skins = await nameMc.getSkins({
+                tab: "tag"
+            });
+
+            assert.strictEqual(skins.length, 30);
+        });
+
         it("Get skins with custom tag and check array size", async () => {
             const skins = await nameMc.getSkins({
                 tab: "tag",
                 section: "girl"
             });
-            
+
             assert.strictEqual(skins.length, 30);
+        });
+    });
+
+    describe("getSkins();", () => {
+        it("Get skins and check tags array size", async () => {
+            const skin = await nameMc.getSkin("a4eaf5f46753cf75");
+
+            assert.ok(skin.tags.length > 1);
         });
     });
 });

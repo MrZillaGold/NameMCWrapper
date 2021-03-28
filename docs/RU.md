@@ -161,6 +161,10 @@ nameMc.skinHistory({ nickname: "MrZillaGold", page: 2 })
 nameMc.getSkins({ tab: "new", page: 2 })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
+
+nameMc.getSkins({ tab: "tag" })
+    .then((skins) => console.log(skins))
+    .catch((error) => console.log(error));
 ```
 
 <a name="getSkin"></a>

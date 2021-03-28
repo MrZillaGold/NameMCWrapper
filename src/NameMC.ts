@@ -6,7 +6,7 @@ import { WrapperError } from "./WrapperError";
 
 import { nameRegExp, profileRegExp, skinRegExp, capes, getUUID } from "./utils";
 
-import { IRender, IOptions, ISkin, IExtendedSkin,  ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash, BasePlayerInfo } from "./interfaces";
+import { IRender, IOptions, ISkin, IExtendedSkin, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash, BasePlayerInfo, INamedSkin } from "./interfaces";
 
 export class NameMC extends DataParser {
 
@@ -243,7 +243,9 @@ export class NameMC extends DataParser {
     /**
      * Get skins from a specific tab of the site
      */
-    getSkins({ tab = "trending", page = 1, section = "weekly" }: IGetSkinsOptions = {}): Promise<ISkin[]> {
+    getSkins(options: IGetSkinsOptions & ({ tab: "trending" | "tag" | "new" })): Promise<INamedSkin[]>
+    getSkins(options: IGetSkinsOptions & ({ tab: "trending"; section: "top"; } | { tab: "random" })): Promise<ISkin[]>
+    getSkins({ tab = "trending", page = 1, section = "weekly" }: IGetSkinsOptions = {}): Promise<ISkin[] | INamedSkin[]> {
         const tabs: Tab[] = ["trending", "new", "random", "tag"];
         const sections: Section[] = ["daily", "weekly", "monthly", "top"];
 

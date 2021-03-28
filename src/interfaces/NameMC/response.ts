@@ -5,9 +5,10 @@ export interface IResponse {
 }
 
 export interface ISkinResponse extends IResponse  {
-    model: Model;
-    rating?: number;
     type: "skin";
+    model: Model;
+    name?: string;
+    rating?: number;
 }
 
 export interface ICapeResponse extends IResponse  {

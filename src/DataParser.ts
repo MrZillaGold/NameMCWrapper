@@ -2,9 +2,9 @@ import cheerio from "cheerio";
 
 import { WrapperError } from "./WrapperError";
 
-import { profileSkinsRegExp, escapeColorsClasses, escapeHtml } from "./utils";
+import { profileSkinsRegExp, escapeColorsClasses, escapeHtml, skinRegExp } from "./utils";
 
-import { ISkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo, IExtendedSkin, Model } from "./interfaces";
+import { ISkin, IExtendedSkin, INamedSkin, ICape, ICapeResponse, IRender, IGetEndpointOptions, IGetRendersOptions, ISkinResponse, ICapeInfo, IServerPreview, IServer, Hash, BasePlayerInfo, Model } from "./interfaces";
 import TagElement = cheerio.TagElement;
 import Root = cheerio.Root;
 
@@ -14,25 +14,31 @@ export abstract class DataParser {
     abstract getRenders(options: IGetRendersOptions): IRender;
     abstract getCapeInfo(hash: Hash): ICapeInfo;
 
-    protected parseSkins(data: string): ISkin[] {
+    protected parseSkins(data: string): (ISkin | INamedSkin)[] {
         const $ = cheerio.load(data);
 
         const skins = $("div.card-body.position-relative.text-center.checkered.p-1")
             .map((index, card) => {
+                const cardLinkHash = (card.parent as TagElement).attribs.href.replace(skinRegExp, "$1");
+                const cardHeader = ((card.parent as TagElement).children as TagElement[]).filter(({ name, attribs: { class: className = "" } = {} }) => name === "div" && className.includes("card-header"))[0];
+                const cardName = cardHeader ? cardHeader.children[0]?.data : null;
+
                 const $ = cheerio.load(card);
 
                 const [skin] = $("div > img.drop-shadow") // @ts-ignore
                     .map((index, { attribs: { src } }) => {
                         const isValidSkin = this.checkSkinLink(src);
 
-                        if (isValidSkin) {
-                            return isValidSkin;
-                        }
+                        return {
+                            ...isValidSkin,
+                            hash: cardLinkHash
+                        };
                     })
                     .get();
 
                 return {
                     ...skin,
+                    name: cardName,
                     rating: this.parseSkinRating($)
                 };
             })
@@ -326,12 +332,14 @@ export abstract class DataParser {
 
         switch(type) {
             case "skin": {
-                const model = (response as ISkinResponse).model;
+                const name = (response as ISkinResponse).name || null;
+                const model = (response as ISkinResponse).model || "unknown";
                 const rating = (response as ISkinResponse).rating ?? 0;
 
                 return {
                     url,
                     hash,
+                    name,
                     model,
                     rating,
                     renders: this.getRenders({
@@ -367,10 +375,19 @@ export abstract class DataParser {
     }
 
     private parseSkinRating = ($: Root): number => {
-        const { children: [{ data: rating }] } = $(".position-absolute.bottom-0.right-0.text-muted")
-            .get(0);
+        const ratingElement = $(".position-absolute.bottom-0.right-0.text-muted")
+            .get(0)
+            .children;
 
-        return Number(rating.slice(1));
+        const rating = (
+            ratingElement.length > 1 ?
+                ratingElement[1]
+                :
+                ratingElement[0]
+        )
+            .data;
+
+        return Number(rating.replace(/(?:[^\d]+)([\d]+)/, "$1"));
     };
 
     private parseSkinTime = ($: Root): number => {

@@ -1,7 +1,7 @@
 import { IRender } from "./render";
 import { Nickname } from "./nickname";
 
-export type Model = "classic" | "slim";
+export type Model = "classic" | "slim" | "unknown";
 export type Hash = string;
 
 export interface ISkin {
@@ -11,6 +11,11 @@ export interface ISkin {
     hash: Hash;
     model: Model;
     rating: number;
+    name: string | null;
+}
+
+export interface INamedSkin extends ISkin {
+    name: string;
 }
 
 export interface IExtendedSkin extends ISkin {
