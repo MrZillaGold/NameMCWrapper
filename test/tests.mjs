@@ -43,7 +43,9 @@ describe("Skins", () => {
 
     describe("getSkins();", () => {
         it("Get skins and check array size", async () => {
-            const skins = await nameMc.getSkins();
+            const skins = await nameMc.getSkins({
+                tab: "trending"
+            });
 
             assert.strictEqual(skins.length, 30);
         });
