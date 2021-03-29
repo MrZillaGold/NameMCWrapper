@@ -16,7 +16,7 @@ export abstract class DataParser {
         this.options = options;
     }
 
-    abstract getEndpoint(options: IGetEndpointOptions): string;
+    protected abstract getEndpoint(options: IGetEndpointOptions): string;
     abstract getRenders(options: IGetRendersOptions): IRender;
     abstract getCapeInfo(hash: Hash): ICapeInfo;
 

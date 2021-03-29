@@ -17,8 +17,22 @@ export class NameMC extends DataParser {
     constructor(options: IOptions = {}) {
         super(options);
 
+        const urlOptions: ("proxy" | "endpoint")[] = [
+            "proxy",
+            "endpoint"
+        ];
+
+        urlOptions.forEach((option) => {
+            const optionValue = options[option];
+
+            if (optionValue?.endsWith("/")) {
+                options[option] = optionValue.slice(0, optionValue.length - 1);
+            }
+        });
+
         this.options = {
             endpoint: "namemc.com",
+            proxy: "",
             ...options
         };
 
@@ -367,10 +381,10 @@ export class NameMC extends DataParser {
         });
     }
 
-    getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
-        const { proxy, endpoint }: IOptions = this.options;
+    protected getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
+        const { proxy, endpoint, rendersIgnoreProxy }: IOptions = this.options;
 
-        return `${proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
+        return `${rendersIgnoreProxy && subdomain === "renders" ? "" : proxy}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 }
 

@@ -60,12 +60,13 @@ Main class
 
 **Kind**: class
 
-| Param                       | Type     | Default        | Description                                                                |
-| --------------------------- | -------- | -------------- | -------------------------------------------------------------------------- |
-| options                     | `Object` |                | Object with parameters for the class                                       |
-| options.proxy               | `string` |                | Proxy for requests                                                         |
-| options.endpoint            | `string` | `"namemc.com"` | NameMC Endpoint                                                            |
-| options.defaultSkinsModel   | `string` | `"unknown"`    | Model for skins by default, if an error occurred while trying to parse it. |
+| Param                      | Type      | Default        | Description                                                               |
+| -------------------------- | --------- | -------------- | ------------------------------------------------------------------------- |
+| options                    | `Object`  |                | Object with parameters for the class                                      |
+| options.proxy              | `string`  |                | Proxy for requests                                                        |
+| options.endpoint           | `string`  | `"namemc.com"` | NameMC Endpoint                                                           |
+| options.defaultSkinsModel  | `string`  | `"unknown"`    | Model for skins by default, if an error occurred while trying to parse it |
+| options.rendersIgnoreProxy | `boolean` | `false`        | Ignore proxy field for image renders                                      |
 
 **Example**:
 

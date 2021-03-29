@@ -1,6 +1,6 @@
 {
   "name": "namemcwrapper",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "description": "ES6 Promise based wrapper for NameMC.com",
   "main": "./dist/NameMC.js",
   "exports": {
@@ -17,7 +17,8 @@
   "scripts": {
     "tsc": "tsc && node --experimental-modules --es-module-specifier-resolution=node ./scripts/removeEmptyFiles.mjs",
     "build": "npm run-script tsc && babel build --out-dir dist --copy-files && node --experimental-modules --es-module-specifier-resolution=node ./scripts/fixImports.mjs",
-    "test": "npm run-script build && node --experimental-modules --experimental-json-modules node_modules/mocha/bin/_mocha --reporter spec --timeout 180000",
+    "pretest": "npm run-script build",
+    "test": "mocha --reporter spec --timeout 180000",
     "eslint:check": "eslint ./src/**/*",
     "eslint:fix": "eslint ./src/**/* --fix"
   },
