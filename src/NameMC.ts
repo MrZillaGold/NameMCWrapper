@@ -384,7 +384,7 @@ export class NameMC extends DataParser {
     protected getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
         const { proxy, endpoint, rendersIgnoreProxy }: IOptions = this.options;
 
-        return `${rendersIgnoreProxy && subdomain === "renders" ? "" : `${proxy}/`}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
+        return `${rendersIgnoreProxy && subdomain === "render" ? "" : `${proxy}/`}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 }
 
