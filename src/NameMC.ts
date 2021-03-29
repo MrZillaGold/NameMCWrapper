@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import * as axios from "axios";
 
 import { API } from "./API";
 import { DataParser } from "./DataParser";
@@ -7,6 +7,8 @@ import { WrapperError } from "./WrapperError";
 import { nameRegExp, profileRegExp, skinRegExp, capes, getUUID } from "./utils";
 
 import { IRender, IOptions, ISkin, IExtendedSkin, ICape, ICapeInfo, Transformation, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IServerPreview, IGetEndpointOptions, IPlayer, IGetSkinHistoryOptions, IGetRendersOptions, IServer, Tab, Section, Nickname, CapeHash, BasePlayerInfo, INamedSkin } from "./interfaces";
+import AxiosInstance = axios.AxiosInstance;
+import AxiosResponse = axios.AxiosResponse;
 
 export class NameMC extends DataParser {
 
@@ -36,6 +38,7 @@ export class NameMC extends DataParser {
             ...options
         };
 
+        // @ts-ignore
         this.client = axios.create({
             baseURL: this.getEndpoint()
         });
@@ -384,7 +387,7 @@ export class NameMC extends DataParser {
     protected getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
         const { proxy, endpoint, rendersIgnoreProxy }: IOptions = this.options;
 
-        return `${rendersIgnoreProxy && subdomain === "render" ? "" : `${proxy}/`}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
+        return `${rendersIgnoreProxy && subdomain === "render" ? "" : proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 }
 
