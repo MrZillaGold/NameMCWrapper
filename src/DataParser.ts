@@ -161,6 +161,7 @@ export abstract class DataParser {
             uuid,
             link,
             views,
+            username: nicknameHistory[nicknameHistory.length - 1].nickname,
             names: nicknameHistory
         };
     }
