@@ -32,7 +32,7 @@ export abstract class DataParser {
                 const $ = cheerio.load(card);
 
                 const [skin] = $("div > img.drop-shadow") // @ts-ignore
-                    .map((index, { attribs: { src } }) => {
+                    .map((index, { attribs: { "data-src": src } }) => {
                         const isValidSkin = this.checkSkinLink(src);
 
                         return {
@@ -394,7 +394,7 @@ export abstract class DataParser {
         )
             .data;
 
-        return Number(rating.replace(/(?:[^\d]+)([\d]+)/, "$1"));
+        return Number(rating.replace(/[^\d]+([\d]+)/, "$1"));
     };
 
     private parseSkinTime = ($: Root): number => {
