@@ -18,6 +18,18 @@ export interface IPlayerContext {
     capes: CapeContext[];
     friends: IFriend[];
     names: INickname[];
+    badlion: IBadlion | null;
+}
+
+export interface IBadlion {
+    play_time: number;
+    login_streak: {
+        current: number;
+        max: number;
+    };
+    last_server: string;
+    last_online: number;
+    version: string;
 }
 
 export type Nickname = string;

@@ -1,8 +1,9 @@
 import * as cheerio from "cheerio";
+import * as moment from "moment";
 
 import { Context, SkinContext, CapeContext } from "./";
 
-import { kSerializeData, pickProperties, parseDate } from "../utils";
+import { kSerializeData, parseDuration, pickProperties } from "../utils";
 
 import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
 import TagElement = cheerio.TagElement;
@@ -17,6 +18,7 @@ export class PlayerContext extends Context implements IPlayerContext {
     readonly skins: IPlayerContext["skins"] = [];
     readonly capes: IPlayerContext["capes"] = [];
     readonly friends: IPlayerContext["friends"] = [];
+    readonly badlion: IPlayerContext["badlion"] = null;
 
     private extended = false;
 
@@ -31,21 +33,62 @@ export class PlayerContext extends Context implements IPlayerContext {
 
         const $ = cheerio.load(data as string);
 
+        this.skins = $("canvas.skin-2d.skin-button") // @ts-ignore
+            .map((index, { attribs: { "data-skin-hash": hash, "data-model": model, title } }) => new SkinContext({
+                ...this,
+                payload: {
+                    hash,
+                    model, //@ts-ignore
+                    createdAt: moment(title).unix()
+                }
+            }))
+            .get();
         this.capes = $("canvas.cape-2d") // @ts-ignore
             .map((index, { attribs: { "data-cape-hash": hash } }) => new CapeContext({
                 ...this,
                 hash
             }))
             .get();
-        this.skins = $("canvas.skin-2d.skin-button") // @ts-ignore
-            .map((index, { attribs: { "data-skin-hash": hash, "data-model": model, title } }) => new SkinContext({
-                ...this,
-                payload: {
-                    hash,
-                    model,
-                    createdAt: parseDate(title)
+
+        const badlion = $("div.card.badlion > div.card-body > div.row.no-gutters")
+            .map((index, element) => {
+                const $ = cheerio.load(element);
+
+                switch (index) {
+                    case 0: {
+                        return moment.duration(
+                            parseDuration(
+                                $("div.col-12")
+                                    .text()
+                            )
+                        )
+                            .asSeconds();
+                    }
+                    case 1: {
+                        const [current, max] = $("div.col-12").text()
+                            .match(/([\d]+)/g) || [0, 0];
+
+                        return {
+                            current: Number(current),
+                            max: Number(max)
+                        };
+                    }
+                    case 3: {
+                        const time = $("div.col-12 > time").get(0);
+                        const lastOnline = time?.attribs?.datetime || null;
+
+                        return lastOnline ?
+                            new Date(lastOnline)
+                                .getTime()
+                            :
+                            null;
+                    }
+                    case 2:
+                    case 4: {
+                        return $("div.col-12").text();
+                    }
                 }
-            }))
+            })
             .get();
 
         let [baseInfo, nicknameHistory] = $("div.card.mb-3 > div.card-body")
@@ -96,7 +139,11 @@ export class PlayerContext extends Context implements IPlayerContext {
                     return {
                         nickname,
                         changed_at,
-                        timestamp: changed_at ? new Date(changed_at).getTime() : null
+                        timestamp: changed_at ?
+                            new Date(changed_at)
+                                .getTime()
+                            :
+                            null
                     };
                 }
             })
@@ -110,10 +157,26 @@ export class PlayerContext extends Context implements IPlayerContext {
         this.url = url;
         this.views = views;
         this.names = nicknameHistory;
+
+        if (badlion.length) {
+            const [play_time, login_streak, last_server, last_online, version] = badlion;
+
+            this.badlion = {
+                play_time,
+                login_streak,
+                last_server,
+                last_online,
+                version
+            };
+        }
     }
 
     get isExtended(): boolean {
         return this.extended;
+    }
+
+    get usesBadlion(): boolean {
+        return Boolean(this.badlion);
     }
 
     async loadPayload(): Promise<void> {
@@ -141,7 +204,8 @@ export class PlayerContext extends Context implements IPlayerContext {
             "names",
             "skins",
             "capes",
-            "friends"
+            "friends",
+            "badlion"
         ]);
     }
 }

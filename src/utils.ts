@@ -1,6 +1,5 @@
-// @ts-ignore
-import * as dateParser from "any-date-parser";
 import { AxiosError, AxiosInstance } from "axios";
+import { DurationInputObject } from "moment";
 
 import { WrapperError } from "./WrapperError";
 
@@ -113,13 +112,15 @@ export function escapeHtml(elements: Element[]): string {
         .join("");
 }
 
-export function parseDate(humanizedDate: string): number {
-    // @ts-ignore
-    const ParsedDate = Date.bind(null, ...Object.values(dateParser.attempt(humanizedDate, "en-US")));
+export function parseDuration(duration: string): DurationInputObject {
+    return Object.fromEntries(
+        duration.split(" ")
+            .map((value) => {
+                const type = value.slice(-1);
 
-    // @ts-ignore
-    return new ParsedDate()
-        .getTime() || 0;
+                return [type, Number(value.replace(type, ""))];
+            })
+    );
 }
 
 export function applyPayload<T, P>(context: T, payload: P): void {
