@@ -115,7 +115,7 @@ export function escapeHtml(elements: Element[]): string {
 
 export function parseDate(humanizedDate: string): number {
     // @ts-ignore
-    const ParsedDate = Date.bind(null, ...Object.values(dateParser.attempt(humanizedDate)));
+    const ParsedDate = Date.bind(null, ...Object.values(dateParser.attempt(humanizedDate, "en_us")));
 
     // @ts-ignore
     return new ParsedDate()
