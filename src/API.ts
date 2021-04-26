@@ -1,5 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 
+// @ts-ignore
+import { version, homepage } from "../package.json";
+
 import { IRequestOptions, IMethods, MethodGroup } from "./interfaces";
 
 const API_ENDPOINT = "https://api.namemc.com/";
@@ -15,7 +18,10 @@ export class API {
 
     constructor() {
         this.worker = axios.create({
-            baseURL: API_ENDPOINT
+            baseURL: API_ENDPOINT,
+            headers: {
+                "User-Agent": `NameMCWrapper/${version} (${homepage})`
+            }
         });
 
         for (const group of groups) {

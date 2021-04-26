@@ -1,6 +1,15 @@
-import { Nickname } from "./nickname";
+import * as cheerio from "cheerio";
 
-export interface IServerPreview {
+import { IContextOptions } from "./context";
+import { Nickname } from "./player";
+import Element = cheerio.Element;
+
+export interface IServerContextOptions extends IContextOptions {
+    data?: string | Element | Element[];
+    extended?: boolean;
+}
+
+export interface IServerContext {
     ip: string;
     title: string;
     icon: string;
@@ -18,9 +27,6 @@ export interface IServerPreview {
         emoji: string;
     } | null;
     rating: number;
-}
-
-export interface IServer extends IServerPreview {
     version: string | null;
     uptime: number | null;
 }

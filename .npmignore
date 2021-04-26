@@ -3,6 +3,7 @@
 /test
 /scripts
 /src
+/build
 .gitignore
 .travis.yml
 .eslintrc.json

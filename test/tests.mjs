@@ -1,7 +1,6 @@
 import assert from "assert";
 
 import { NameMC } from "../esm/NameMC.mjs";
-import { WrapperError } from "../dist/WrapperError.js";
 
 const nameMc = new NameMC();
 
@@ -22,7 +21,7 @@ describe("Skins", () => {
         it("Check for an error with an incorrect nickname format", () => {
             assert.rejects(() => nameMc.skinHistory({
                 nickname: "1 2 3"
-            }), new WrapperError(2));
+            }));
         });
     });
 
@@ -78,26 +77,10 @@ describe("Skins", () => {
 });
 
 describe("Capes", () => {
-    describe("getCapes();", () => {
-        it("Checking the method for errors", async () => {
-            await nameMc.getCapes("dad");
-        });
-
-        it("Check for an error with an incorrect nickname format", () => {
-            assert.rejects(() => nameMc.getCapes("1 2 3"), new WrapperError(2));
-        });
-    });
-
     describe("getCapeType();", () => {
-        it("Check for equality of results to a pattern", () => {
-            const pattern = {
-                type: "optifine",
-                name: "Optifine"
-            };
-
-            const capeType = nameMc.getCapeInfo("7ac79667ca6d906d");
-
-            assert.strictEqual(JSON.stringify(capeType), JSON.stringify(pattern));
+        it("Checking the name of the cape for equal", () => {
+            assert.strictEqual(nameMc.getCapeInfo("1981aad373fa9754").name, "MineCon 2016");
+            assert.strictEqual(nameMc.getCapeInfo("7ac79667ca6d906d").name, "Optifine");
         });
     });
 });
@@ -114,7 +97,7 @@ describe("Friends", () => {
         });
 
         it("Check for an error with an incorrect nickname format", () => {
-            assert.rejects(() => nameMc.getFriends("1 2 3"), new WrapperError(2));
+            assert.rejects(() => nameMc.getFriends("1 2 3"));
         });
     });
 });
@@ -122,35 +105,25 @@ describe("Friends", () => {
 describe("Players", () => {
     describe("getPlayer();", () => {
         it("Checking the method for errors", async () => {
-            await nameMc.getPlayer("MrZillaGold");
+            const player = await nameMc.getPlayer("MrZillaGold");
+
+            await player.loadPayload();
         });
 
         it("Checking the method for errors with uuid", async () => {
-            await nameMc.getPlayer("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
+            const player = await nameMc.getPlayer("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
+
+            await player.loadPayload();
         });
 
         it("Check for an error with an incorrect nickname format", () => {
-            assert.rejects(() => nameMc.getPlayer("1 2 3"), new WrapperError(2));
+            assert.rejects(() => nameMc.getPlayer("1 2 3"));
         });
 
         it("Checking name history length", async () => {
             const player = await nameMc.getPlayer("jeb_");
 
             assert.ok(player.names.length > 0);
-        });
-    });
-
-    describe("getPlayerInfo();", () => {
-        it("Checking the method for errors", async () => {
-            await nameMc.getPlayerInfo("MrZillaGold");
-        });
-
-        it("Checking the method for errors with uuid", async () => {
-            await nameMc.getPlayerInfo("5dcafb2f-bd76-4a85-8b25-3c22079ce358");
-        });
-
-        it("Check for an error with an incorrect nickname format", () => {
-            assert.rejects(() => nameMc.getPlayerInfo("1 2 3"), new WrapperError(2));
         });
     });
 });
@@ -171,7 +144,10 @@ describe("Servers", () => {
             await Promise.all([
                 nameMc.getServer("hypixel.net"),
                 nameMc.getServer("minecraftonline.com")
-            ]);
+            ])
+                .then(async ([hypixel]) => {
+                    await hypixel.loadPayload();
+                });
         });
     });
 

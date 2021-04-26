@@ -1,25 +1,29 @@
-const errors: Map<number, string> = new Map([
-    [0, "Unknown error."],
-    [1, "Axios request error. $0"],
-    [2, "Invalid Minecraft nickname."],
-    [3, "Resource $0 does not exist."],
-    [4, "There is no useful information in the data received, if the problem repeats please report this to the Github issue."],
-    [5, "Server $0 offline."],
-    [6, "Invalid argument type $0. Check available types in docs."],
-    [7, "The required parameters were not passed to the method. Check the necessary parameters in docs."]
-]);
+export enum ErrorDescription {
+    UNKNOWN = "Unknown error.",
+    AXIOS = "Axios request error. $0",
+    INVALID_NICKNAME = "$0 is invalid Minecraft nickname.",
+    NOT_FOUND = "Resource $0 not found.",
+    NO_USEFUL = "There is no useful information in the data received, try later report this to the Github issue.",
+    SERVER_OFFLINE = "Server $0 offline."
+}
 
 export class WrapperError extends Error {
 
     code: number;
     name: string;
 
-    constructor(code: number, params: string[] = []) {
-        let error = errors.get(code);
+    constructor(error: keyof typeof ErrorDescription, params: string | string[] = []) {
+        if (typeof params === "string") {
+            params = [params];
+        }
 
-        params.forEach((param, index) => error = error?.replace(`$${index}`, param));
+        const code = Object.keys(ErrorDescription).indexOf(error);
 
-        super(error);
+        let description = ErrorDescription[error] as string;
+
+        params.forEach((param, index) => description = description.replace(`$${index}`, param));
+
+        super(description);
 
         this.code = code;
         this.name = this.constructor.name;

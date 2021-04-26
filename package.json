@@ -13,10 +13,10 @@
     ],
     "./esm": "./esm/NameMC.mjs"
   },
-  "types": "./dist/interfaces.d.ts",
+  "types": "./dist/interfaces/index.d.ts",
   "scripts": {
-    "tsc": "tsc && node --experimental-modules --es-module-specifier-resolution=node ./scripts/removeEmptyFiles.mjs",
-    "build": "npm run-script tsc && babel build --out-dir dist --copy-files",
+    "prebuild": "tsc",
+    "build": "babel build --out-dir dist --copy-files",
     "pretest": "npm run-script build",
     "test": "mocha --reporter spec --timeout 180000",
     "eslint:check": "eslint ./src/**/*",
@@ -38,6 +38,7 @@
   },
   "homepage": "https://github.com/MrZillaGold/NameMCWrapper#readme",
   "dependencies": {
+    "any-date-parser": "^1.3.1",
     "axios": "^0.21.1",
     "cheerio": "1.0.0-rc.6"
   },
@@ -52,6 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
+    "inspectable": "^1.1.1",
     "mocha": "^8.0.1",
     "typescript": "^4.1.3"
   }
