@@ -47,7 +47,7 @@ export class CapeContext extends Context implements ICapeContext {
         return CapeName.OPTIFINE;
     }
 
-    [kSerializeData](): Record<string, unknown> {
+    [kSerializeData](): ICapeContext {
         return pickProperties(this, [
             "hash",
             "url",

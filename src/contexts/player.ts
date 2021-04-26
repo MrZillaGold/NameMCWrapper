@@ -132,7 +132,7 @@ export class PlayerContext extends Context implements IPlayerContext {
         this.setupPayload();
     }
 
-    [kSerializeData](): Record<string, unknown> {
+    [kSerializeData](): IPlayerContext {
         return pickProperties(this, [
             "uuid",
             "username",

@@ -235,7 +235,7 @@ export class ServerContext extends Context implements IServerContext {
         return null;
     }
 
-    [kSerializeData](): Record<string, unknown> {
+    [kSerializeData](): IServerContext {
         return pickProperties(this, [
             "ip",
             "title",

@@ -29,7 +29,7 @@ export class Context {
         return this[kSerializeData]();
     }
 
-    [kSerializeData](): Record<string, unknown> {
+    [kSerializeData](): any {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { options, client, ...payload } = this;
 
