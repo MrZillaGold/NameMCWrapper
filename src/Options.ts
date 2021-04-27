@@ -6,13 +6,12 @@ export class Options implements IOptions {
 
     readonly proxy: IOptions["proxy"] = "";
     readonly rendersIgnoreProxy: IOptions["rendersIgnoreProxy"];
-    readonly endpoint: IOptions["endpoint"] = "namemc.com";
+    readonly endpoint = "namemc.com";
     readonly defaultSkinsModel: IOptions["defaultSkinsModel"];
 
     constructor(options: IOptions) {
-        const urlOptions: ("proxy" | "endpoint")[] = [
-            "proxy",
-            "endpoint"
+        const urlOptions: ["proxy"] = [
+            "proxy"
         ];
 
         urlOptions.forEach((option) => {
