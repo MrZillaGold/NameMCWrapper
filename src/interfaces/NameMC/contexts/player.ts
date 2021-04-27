@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-import { CapeContext, SkinContext } from "../../../contexts";
+import { CapeContext, ServerContext, SkinContext } from "../../../contexts";
 import { IContextOptions } from "./context";
 import { IFriend } from "../../API";
 import Element = cheerio.Element;
@@ -18,6 +18,7 @@ export interface IPlayerContext {
     capes: CapeContext[];
     friends: IFriend[];
     names: INickname[];
+    servers: ServerContext[];
     badlion: IBadlion | null;
 }
 

@@ -1,9 +1,9 @@
 import * as cheerio from "cheerio";
 import * as moment from "moment";
 
-import { Context, SkinContext, CapeContext } from "./";
+import { Context, SkinContext, CapeContext, ServerContext } from "./";
 
-import { kSerializeData, parseDuration, pickProperties } from "../utils";
+import { kSerializeData, serverRegExp, parseDuration, pickProperties } from "../utils";
 
 import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
 import TagElement = cheerio.TagElement;
@@ -18,6 +18,7 @@ export class PlayerContext extends Context implements IPlayerContext {
     readonly skins: IPlayerContext["skins"] = [];
     readonly capes: IPlayerContext["capes"] = [];
     readonly friends: IPlayerContext["friends"] = [];
+    readonly servers: IPlayerContext["servers"] = [];
     readonly badlion: IPlayerContext["badlion"] = null;
 
     private extended = false;
@@ -43,11 +44,31 @@ export class PlayerContext extends Context implements IPlayerContext {
                 }
             }))
             .get();
+
         this.capes = $("canvas.cape-2d") // @ts-ignore
             .map((index, { attribs: { "data-cape-hash": hash } }) => new CapeContext({
                 ...this,
                 hash
             }))
+            .get();
+
+        this.servers = $("a > img.server-icon")
+            .map((index, element) => {
+                const ip = ((element as unknown as TagElement).parent as TagElement).attribs.href
+                    .replace(serverRegExp, "$1");
+                const title = element.next?.data || "";
+                const { attribs: { src: icon } } = element as TagElement;
+
+                return new ServerContext({
+                    ...this,
+                    extended: false,
+                    payload: {
+                        ip,
+                        title,
+                        icon
+                    }
+                });
+            })
             .get();
 
         const badlion = $("div.card.badlion > div.card-body > div.row.no-gutters")
@@ -205,6 +226,7 @@ export class PlayerContext extends Context implements IPlayerContext {
             "skins",
             "capes",
             "friends",
+            "servers",
             "badlion"
         ]);
     }
