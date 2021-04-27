@@ -1,6 +1,6 @@
 {
   "name": "namemcwrapper",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "ES6 Promise based wrapper for NameMC.com",
   "main": "./dist/NameMC.js",
   "exports": {
@@ -40,6 +40,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cheerio": "1.0.0-rc.6",
+    "inspectable": "^1.1.1",
     "moment": "^2.29.1"
   },
   "devDependencies": {
@@ -53,7 +54,6 @@
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
-    "inspectable": "^1.1.1",
     "mocha": "^8.0.1",
     "typescript": "^4.1.3"
   }
