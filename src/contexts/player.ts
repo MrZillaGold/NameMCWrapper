@@ -71,46 +71,58 @@ export class PlayerContext extends Context implements IPlayerContext {
             })
             .get();
 
-        const badlion = $("div.card.badlion > div.card-body > div.row.no-gutters")
-            .map((index, element) => {
-                const $ = cheerio.load(element);
-
-                switch (index) {
-                    case 0: {
-                        return moment.duration(
-                            parseDuration(
-                                $("div.col-12")
-                                    .text()
-                            )
-                        )
-                            .asSeconds();
-                    }
-                    case 1: {
-                        const [current, max] = $("div.col-12").text()
-                            .match(/([\d]+)/g) || [0, 0];
-
-                        return {
-                            current: Number(current),
-                            max: Number(max)
-                        };
-                    }
-                    case 3: {
-                        const time = $("div.col-12 > time").get(0);
-                        const lastOnline = time?.attribs?.datetime || null;
-
-                        return lastOnline ?
-                            new Date(lastOnline)
-                                .getTime()
-                            :
-                            null;
-                    }
-                    case 2:
-                    case 4: {
-                        return $("div.col-12").text();
-                    }
-                }
-            })
+        const rawBadlionStatistic: (TagElement | any)[] = $("div.card.badlion > div.card-body > div.row.no-gutters")
             .get();
+
+        if (rawBadlionStatistic.length === 4) {
+            rawBadlionStatistic.splice(1, 0, {
+                current: 0,
+                max: 0
+            });
+        }
+
+        const badlion: any[] = rawBadlionStatistic.map((element, index) => {
+            const $ = cheerio.load(element);
+
+            switch (index) {
+                case 0: {
+                    return moment.duration(
+                        parseDuration(
+                            $("div.col-12")
+                                .text()
+                        )
+                    )
+                        .asSeconds();
+                }
+                case 1: {
+                    if (element?.current) {
+                        return element;
+                    }
+
+                    const [current, max] = $("div.col-12").text()
+                        .match(/([\d]+)/g) || [0, 0];
+
+                    return {
+                        current: Number(current),
+                        max: Number(max)
+                    };
+                }
+                case 3: {
+                    const time = $("div.col-12 > time").get(0);
+                    const lastOnline = time?.attribs?.datetime || null;
+
+                    return lastOnline ?
+                        new Date(lastOnline)
+                            .getTime()
+                        :
+                        null;
+                }
+                case 2:
+                case 4: {
+                    return $("div.col-12").text();
+                }
+            }
+        });
 
         let [baseInfo, nicknameHistory] = $("div.card.mb-3 > div.card-body")
             .map((index, element) => {
