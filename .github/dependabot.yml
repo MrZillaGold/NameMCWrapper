@@ -1,0 +1,25 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "08:00"
+    timezone: Asia/Vladivostok
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: cheerio
+    versions:
+    - 1.0.0-rc.6
+  - dependency-name: eslint
+    versions:
+    - 7.23.0
+  - dependency-name: "@babel/plugin-transform-modules-commonjs"
+    versions:
+    - 7.13.0
+  - dependency-name: "@babel/plugin-proposal-nullish-coalescing-operator"
+    versions:
+    - 7.13.0
+  - dependency-name: "@types/cheerio"
+    versions:
+    - 0.22.24
