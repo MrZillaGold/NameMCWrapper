@@ -114,13 +114,14 @@ export function escapeHtml(elements: Element[]): string {
 }
 
 export function parseDuration(duration: string): DurationInputObject {
+    const keys = ["m", "h", "d"];
+
     return Object.fromEntries(
         duration.split(" ")
-            .map((value) => {
-                const type = value.slice(-1);
-
-                return [type, Number(value.replace(type, ""))];
-            })
+            .reverse()
+            .map((value, index) => (
+                [keys[index], Number(value.replace(/[^\d]+/g, ""))]
+            ))
     );
 }
 
