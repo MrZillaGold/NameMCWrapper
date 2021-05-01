@@ -42,8 +42,8 @@ export class NameMC extends DataParser {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
                 this.client.get(`/profile/${nickname}`)
-                    .then(({ request, data }: AxiosResponse) => {
-                        if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
+                    .then(({ request, headers, data }: AxiosResponse) => {
+                        if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                             const userId: string = this.getProfileId(data);
 
                             if (!userId) {
@@ -90,8 +90,8 @@ export class NameMC extends DataParser {
             }
 
             this.client.get(`/profile/${nickname}`)
-                .then(({ request, data }) => {
-                    if ((request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
+                .then(({ request, headers, data }) => {
+                    if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                         resolve(
                             new PlayerContext({
                                 data,
