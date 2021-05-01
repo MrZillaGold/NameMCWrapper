@@ -29,9 +29,12 @@ export class NameMC extends DataParser {
         // @ts-ignore
         this.client = axios.create({
             baseURL: this.options.getEndpoint(),
-            headers: {
-                "User-Agent": DESKTOP_USER_AGENT
-            }
+            headers: typeof window === "undefined" ?
+                {
+                    "User-Agent": DESKTOP_USER_AGENT
+                }
+                :
+                {}
         });
     }
 
