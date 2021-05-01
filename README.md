@@ -12,6 +12,9 @@
  <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
    <img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="...">
  </a>
+ <a href="https://discord.gg/99sV5b4RV3">
+   <img src="https://img.shields.io/discord/714407016604369008.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" alt="...">
+ </a>
 </p>
 
 ## Install 📦
