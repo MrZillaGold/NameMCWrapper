@@ -47,6 +47,14 @@ export class CapeContext extends Context implements ICapeContext {
         return CapeName.OPTIFINE;
     }
 
+    get isMinecraft(): boolean {
+        return this.type === CapeType.MINECRAFT;
+    }
+
+    get isOptifine(): boolean {
+        return this.type === CapeType.OPTIFINE;
+    }
+
     [kSerializeData](): ICapeContext {
         return pickProperties(this, [
             "hash",
