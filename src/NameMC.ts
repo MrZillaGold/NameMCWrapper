@@ -161,7 +161,7 @@ export class NameMC extends DataParser {
     getSkins(options: IGetSkinsOptions<"tag", string, number>): Promise<SkinContext[]>;
     getSkins(options: IGetSkinsOptions<"trending", "top", number>): Promise<SkinContext[]>;
     getSkins(options: IGetSkinsOptions<"random", undefined, undefined>): Promise<SkinContext[]>;
-    getSkins({ tab, page, section = "weekly" }: IGetSkinsOptions<Tab, Section, number | undefined>): Promise<SkinContext[]> {
+    getSkins({ tab, page = 1, section = "weekly" }: IGetSkinsOptions<Tab, Section, number | undefined>): Promise<SkinContext[]> {
         return new Promise(((resolve, reject) => {
             this.client.get(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}?page=${page}`)
                 .then(({ data }) => {
