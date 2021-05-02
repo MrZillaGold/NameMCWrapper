@@ -57,7 +57,7 @@ export class NameMC extends DataParser {
                                 .then(({ data }) => {
                                     const skins = this.parseSkins(data);
 
-                                    if (skins[0].hash) {
+                                    if (skins[0]?.hash) {
                                         return resolve(skins);
                                     }
 
@@ -214,7 +214,7 @@ export class NameMC extends DataParser {
                 .then(({ data }) => {
                     const servers = this.parseServers(data);
 
-                    if (!servers[0].ip) {
+                    if (!servers[0]?.ip) {
                         return reject(
                             new WrapperError("NO_USEFUL")
                         );
