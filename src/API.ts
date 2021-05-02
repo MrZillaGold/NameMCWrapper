@@ -19,9 +19,12 @@ export class API {
     constructor() {
         this.worker = axios.create({
             baseURL: API_ENDPOINT,
-            headers: {
-                "User-Agent": `NameMCWrapper/${version} (${homepage})`
-            }
+            headers: typeof window === "undefined" ?
+                {
+                    "User-Agent": `NameMCWrapper/${version} (${homepage})`
+                }
+                :
+                {}
         });
 
         for (const group of groups) {
