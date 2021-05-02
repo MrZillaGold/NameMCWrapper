@@ -28,7 +28,11 @@ export class WrapperError extends Error {
         this.code = code;
         this.name = this.constructor.name;
 
-        Error.captureStackTrace(this, this.constructor);
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, this.constructor);
+        } else {
+            this.stack = (new Error()).stack;
+        }
     }
 
     get [Symbol.toStringTag](): string {
