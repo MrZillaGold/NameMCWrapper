@@ -128,58 +128,57 @@ export class PlayerContext extends Context implements IPlayerContext {
             .map((index, element) => {
                 const $ = cheerio.load(element);
 
-                return $("div.card-body");
+                return $("div.card-body")
+                    .children("div.row.no-gutters");
             })
             .get();
 
-        baseInfo = baseInfo.children("div.row.no-gutters")
-            .map((index: number, element: TagElement) => {
-                const $ = cheerio.load(element);
+        baseInfo = baseInfo.map((index: number, element: TagElement) => {
+            const $ = cheerio.load(element);
 
-                switch (index) {
-                    case 0:
-                    case 1:
-                        return $("div.col-12 > samp")
-                            .text();
-                    case 2: {
-                        const link = $("div.col-12 > a")
-                            .text();
+            switch (index) {
+                case 0:
+                case 1:
+                    return $("div.col-12 > samp")
+                        .text();
+                case 2: {
+                    const link = $("div.col-12 > a")
+                        .text();
 
-                        return `https://${link}`;
-                    }
-                    case 3: {
-                        const views = $("div.col-auto")
-                            .text()
-                            .replace(/\s\/ [^]+/, "");
-
-                        return Number(views);
-                    }
+                    return `https://${link}`;
                 }
-            })
+                case 3: {
+                    const views = $("div.col-auto")
+                        .text()
+                        .replace(/\s\/ [^]+/, "");
+
+                    return Number(views);
+                }
+            }
+        })
             .get();
 
-        nicknameHistory = nicknameHistory
-            .map((index: number, element: TagElement) => {
-                const $ = cheerio.load(element);
+        nicknameHistory = nicknameHistory.map((index: number, element: TagElement) => {
+            const $ = cheerio.load(element);
 
-                const name = $("div.col > a").get(0);
-                const time = $("div.col-12 > time").get(0);
+            const name = $("div.col > a").get(0);
+            const time = $("div.col-12 > time").get(0);
 
-                if (name) {
-                    const { children: [{ data: nickname }] } = name;
-                    const changed_at = time?.attribs?.datetime || null;
+            if (name) {
+                const { children: [{ data: nickname }] } = name;
+                const changed_at = time?.attribs?.datetime || null;
 
-                    return {
-                        nickname,
-                        changed_at,
-                        timestamp: changed_at ?
-                            new Date(changed_at)
-                                .getTime()
-                            :
-                            null
-                    };
-                }
-            })
+                return {
+                    nickname,
+                    changed_at,
+                    timestamp: changed_at ?
+                        new Date(changed_at)
+                            .getTime()
+                        :
+                        null
+                };
+            }
+        })
             .get()
             .reverse();
 
