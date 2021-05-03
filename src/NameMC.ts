@@ -9,7 +9,7 @@ import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext 
 
 import { nameRegExp, profileRegExp, getUUID } from "./utils";
 
-import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, Model } from "./interfaces";
+import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, CapeName, CapeType, Model } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
 import AxiosResponse = axios.AxiosResponse;
 
@@ -264,6 +264,11 @@ export class NameMC extends DataParser {
             .checkLike(nickname);
     }
 }
+
+export const capeHash = CapeHash;
+export const capeName = CapeName;
+export const capeType = CapeType;
+export const model = Model;
 
 export {
     API,
