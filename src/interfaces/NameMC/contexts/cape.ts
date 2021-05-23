@@ -38,6 +38,7 @@ export enum CapeName {
     SPADE = "Spade",
     PRISMARINE = "Prismarine",
     TURTLE = "Turtle",
+    BIRTHDAY = "Birthday",
     OPTIFINE = "Optifine"
 }
 
@@ -61,5 +62,6 @@ export enum CapeHash {
     MILLIONTH_CUSTOMER = "d3c7ac835b24eb29",
     SPADE = "7a939dc1a7ad4505",
     PRISMARINE = "88f1509813f4e324",
-    TURTLE = "8c05ef3c54870d04"
+    TURTLE = "8c05ef3c54870d04",
+    BIRTHDAY = "aab5a23c7495fc70",
 }
