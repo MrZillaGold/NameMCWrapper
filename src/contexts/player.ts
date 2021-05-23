@@ -6,7 +6,6 @@ import { Context, SkinContext, CapeContext, ServerContext } from "./";
 import { kSerializeData, serverRegExp, parseDuration, pickProperties } from "../utils";
 
 import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
-import TagElement = cheerio.TagElement;
 
 export class PlayerContext extends Context implements IPlayerContext {
 
@@ -45,7 +44,7 @@ export class PlayerContext extends Context implements IPlayerContext {
             }))
             .get();
 
-        this.capes = $("canvas.cape-2d") // @ts-ignore
+        this.capes = $("canvas.cape-2d")
             .map((index, { attribs: { "data-cape-hash": hash } }) => new CapeContext({
                 ...this,
                 hash
@@ -54,10 +53,12 @@ export class PlayerContext extends Context implements IPlayerContext {
 
         this.servers = $("a > img.server-icon")
             .map((index, element) => {
-                const ip = ((element as unknown as TagElement).parent as TagElement).attribs.href
+                // @ts-ignore
+                const ip = element.parent?.attribs?.href
                     .replace(serverRegExp, "$1");
+                // @ts-ignore
                 const title = element.next?.data || "";
-                const { attribs: { src: icon } } = element as TagElement;
+                const { attribs: { src: icon } } = element;
 
                 return new ServerContext({
                     ...this,
@@ -71,7 +72,7 @@ export class PlayerContext extends Context implements IPlayerContext {
             })
             .get();
 
-        const rawBadlionStatistic: (TagElement | any)[] = $("div.card.badlion > div.card-body > div.row.no-gutters")
+        const rawBadlionStatistic: any[] = $("div.card.badlion > div.card-body > div.row.no-gutters")
             .get();
 
         if (rawBadlionStatistic.length === 4) {
@@ -124,7 +125,7 @@ export class PlayerContext extends Context implements IPlayerContext {
             }
         });
 
-        let [baseInfo, nicknameHistory] = $("div.card.mb-3 > div.card-body")
+        const [baseInfoRaw, nicknameHistoryRaw] = $("div.card.mb-3 > div.card-body")
             .map((index, element) => {
                 const $ = cheerio.load(element);
 
@@ -133,7 +134,7 @@ export class PlayerContext extends Context implements IPlayerContext {
             })
             .get();
 
-        baseInfo = baseInfo.map((index: number, element: TagElement) => {
+        const baseInfo = baseInfoRaw.map((index, element) => {
             const $ = cheerio.load(element);
 
             switch (index) {
@@ -156,15 +157,16 @@ export class PlayerContext extends Context implements IPlayerContext {
                 }
             }
         })
-            .get();
+            .get() as [string, string, string, number];
 
-        nicknameHistory = nicknameHistory.map((index: number, element: TagElement) => {
+        const nicknameHistory = nicknameHistoryRaw.map((index, element) => {
             const $ = cheerio.load(element);
 
             const name = $("div.col > a").get(0);
             const time = $("div.col-12 > time").get(0);
 
             if (name) {
+                // @ts-ignore
                 const { children: [{ data: nickname }] } = name;
                 const changed_at = time?.attribs?.datetime || null;
 

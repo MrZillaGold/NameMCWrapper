@@ -3,10 +3,9 @@ import * as cheerio from "cheerio";
 import { CapeContext, ServerContext, SkinContext } from "../../../contexts";
 import { IContextOptions } from "./context";
 import { IFriend } from "../../API";
-import Element = cheerio.Element;
 
 export interface IPlayerContextOptions extends IContextOptions {
-    data?: string | Element | Element[];
+    data?: string | cheerio.Element | cheerio.Element[];
 }
 
 export interface IPlayerContext {

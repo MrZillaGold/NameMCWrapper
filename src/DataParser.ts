@@ -8,7 +8,6 @@ import { ServerContext, SkinContext } from "./contexts";
 import { profileSkinsRegExp } from "./utils";
 
 import AxiosInstance = axios.AxiosInstance;
-import TagElement = cheerio.TagElement;
 
 export abstract class DataParser {
 
@@ -43,7 +42,7 @@ export abstract class DataParser {
 
         const [profileId] = $("div.card-header.py-1 > strong > a")
             .map((index, element) => {
-                const isProfileSkinsUrl = profileSkinsRegExp.exec((element as TagElement).attribs.href);
+                const isProfileSkinsUrl = profileSkinsRegExp.exec(element.attribs.href);
 
                 if (isProfileSkinsUrl) {
                     return isProfileSkinsUrl[1];

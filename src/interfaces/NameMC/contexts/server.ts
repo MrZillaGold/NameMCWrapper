@@ -2,10 +2,9 @@ import * as cheerio from "cheerio";
 
 import { IContextOptions } from "./context";
 import { Nickname } from "./player";
-import Element = cheerio.Element;
 
 export interface IServerContextOptions extends IContextOptions {
-    data?: string | Element | Element[];
+    data?: string | cheerio.Element | cheerio.Element[];
     extended?: boolean;
 }
 

@@ -2,10 +2,9 @@ import * as cheerio from "cheerio";
 
 import { IContextOptions } from "./context";
 import { IRendersContext } from "./renders";
-import Element = cheerio.Element;
 
 export interface ISkinContextOptions extends IContextOptions<ISkinContext> {
-    data?: string | Element | Element[];
+    data?: string | cheerio.Element | cheerio.Element[];
     type?: "extended";
 }
 

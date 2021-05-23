@@ -7,8 +7,6 @@ import { WrapperError } from "../WrapperError";
 import { kSerializeData, pickProperties, skinRegExp } from "../utils";
 
 import { ISkinContext, ISkinContextOptions, Model, Transformation } from "../interfaces";
-import Root = cheerio.Root;
-import TagElement = cheerio.TagElement;
 
 export class SkinContext extends Context implements ISkinContext {
 
@@ -35,7 +33,7 @@ export class SkinContext extends Context implements ISkinContext {
             case "extended": {
                 this.extended = true;
 
-                const $ = cheerio.load(data as string);
+                const $ = cheerio.load(data);
 
                 const { attribs: { href } } = $("#render-button.btn")
                     .get(0);
@@ -51,7 +49,8 @@ export class SkinContext extends Context implements ISkinContext {
                     this.createdAt = this.parseSkinTime($);
                     this.tags = $("div.card-body.text-center.py-1 > a.badge.badge-pill")
                         .map((index, element) => {
-                            const { children: [{ data: tag }] } = element as TagElement;
+                            // @ts-ignore
+                            const { children: [{ data: tag }] } = element;
 
                             return tag;
                         })
@@ -61,22 +60,26 @@ export class SkinContext extends Context implements ISkinContext {
                 break;
             }
             default: {
-                const cardLinkHash = ((data as unknown as TagElement).parent as TagElement).attribs.href
+                // @ts-ignore
+                const cardLinkHash = (data as cheerio.Element)?.parent?.attribs.href
                     .replace(skinRegExp, "$1");
-                const cardHeader = (((data as unknown as TagElement).parent as TagElement).children as TagElement[])
+                const cardHeader = (data as cheerio.Element)?.parent?.children
+                    // @ts-ignore
                     .filter(({ name, attribs: { class: className = "" } = {} }) => name === "div" && className.includes("card-header"))[0];
                 const cardName = cardHeader ?
-                    cardHeader.children[0]?.data as string
+                    // @ts-ignore
+                    (cardHeader as cheerio.NodeWithChildren).children[0]?.data as string
                     :
                     "";
 
                 const $ = cheerio.load(data as string);
 
-                const [{ hash, model }] = $("div > img.drop-shadow") // @ts-ignore
+                const [{ hash, model }] = $("div > img.drop-shadow")
                     .map((index, { attribs: { "data-src": src } }) => {
                         const isValidSkin = this.checkSkinLink(src);
 
                         return {
+                            model: Model.UNKNOWN,
                             ...isValidSkin,
                             hash: cardLinkHash
                         };
@@ -197,7 +200,7 @@ export class SkinContext extends Context implements ISkinContext {
         }
     }
 
-    protected parseSkinRating($: Root): number {
+    protected parseSkinRating($: cheerio.CheerioAPI): number {
         const ratingElement = $(".position-absolute.bottom-0.right-0.text-muted")
             .get(0)
             .children;
@@ -208,12 +211,13 @@ export class SkinContext extends Context implements ISkinContext {
                 :
                 ratingElement[0]
         )
+            // @ts-ignore
             .data;
 
         return Number(rating.replace(/[^\d]+([\d]+)/, "$1"));
     }
 
-    protected parseSkinTime($: Root): number {
+    protected parseSkinTime($: cheerio.CheerioAPI): number {
         const date = $(".position-absolute.bottom-0.left-0.text-muted.title-time")
             .get(0)
             .attribs

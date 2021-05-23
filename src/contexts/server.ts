@@ -6,7 +6,7 @@ import { WrapperError } from "../WrapperError";
 import { applyPayload, escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from "../utils";
 
 import { ICheckServerLikeOptions, IServerContext, IServerContextOptions } from "../interfaces";
-import TagElement = cheerio.TagElement;
+import { Element } from "cheerio";
 
 export class ServerContext extends Context implements IServerContext {
 
@@ -37,17 +37,17 @@ export class ServerContext extends Context implements IServerContext {
             return;
         }
 
-        const $ = cheerio.load(data as string);
+        const $ = cheerio.load(data);
 
         const serverCard = extended ?
             this.parseServerCard(
                 $("div.card.mb-3")
-                    .filter((index, element) => (element as TagElement)?.attribs?.style?.includes("#0F0F0F"))
+                    .filter((index, element) => element?.attribs?.style?.includes("#0F0F0F"))
                     .get(0),
                 !extended
             )
             :
-            this.parseServerCard(data as TagElement, !extended);
+            this.parseServerCard(data as cheerio.Element, !extended);
 
         if (extended) {
             this.extended = extended;
@@ -78,7 +78,7 @@ export class ServerContext extends Context implements IServerContext {
                 }
 
                 const content = rowValue.contents()
-                    .get(0)
+                    .get(0) // @ts-ignore
                     .data;
 
                 const isUptime = content.endsWith("%");
@@ -144,12 +144,14 @@ export class ServerContext extends Context implements IServerContext {
         this.setupPayload();
     }
 
-    protected parseServerCard<P = boolean>(data: TagElement, isPreview: P): Omit<IServerContext, "version" | "uptime"> | Omit<IServerContext, "country" | "ip" | "version" | "uptime"> {
+    protected parseServerCard<P = boolean>(data: cheerio.Element, isPreview: P): Omit<IServerContext, "version" | "uptime"> | Omit<IServerContext, "country" | "ip" | "version" | "uptime"> {
         const $ = cheerio.load(data);
 
         const header = $("div.card-header.p-0 > div.row.no-gutters");
+        // @ts-ignore
         const { children: [{ data: title }] } = header.find(`div.col.text-center.text-nowrap.text-ellipsis.mc-bold${isPreview ? ".p-1" : ".p-2.mc-white"}`)
             .get(0);
+        // @ts-ignore
         const { children: [{ data: rating }] } = header.find(`div.col-auto.mc-gray${isPreview ? ".p-1" : ".p-2"}`)
             .get(1);
 
@@ -160,31 +162,33 @@ export class ServerContext extends Context implements IServerContext {
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
 
-        if (!(bodyMotd.children()[0] as TagElement)?.attribs?.class?.includes("float-right") && !bodyMotd.children()[0]?.next) {
+        if (!bodyMotd.children()[0]?.attribs?.class?.includes("float-right") && !bodyMotd.children()[0]?.next) {
             throw new WrapperError("SERVER_OFFLINE", title);
         }
 
         const { attribs: { title: motdTitle } } = bodyMotd.get(0);
+        // @ts-ignore
         let [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: bodyMotdNext }, rawMotd] = bodyMotd.children()
             .get();
 
         if (!bodyMotdNext) {
             bodyMotdNext = {
                 data: ""
-            };
+            } as any;
         }
 
+        // @ts-ignore
         const { data: textMotd } = bodyMotdNext;
 
         const motdHtml = typeof rawMotd === "object" ? // @ts-ignore Invalid lib type
-            cheerio.html(escapeColorsClasses(rawMotd.children))
+            cheerio.default.html(escapeColorsClasses(rawMotd.children))
             :
             textMotd;
         const motdClear = isPreview ?
             motdTitle
             :
             typeof rawMotd === "object" ?
-                escapeHtml(rawMotd.children)
+                escapeHtml(rawMotd.children as Element[])
                 :
                 textMotd;
 
@@ -221,7 +225,7 @@ export class ServerContext extends Context implements IServerContext {
         return parsedData;
     }
 
-    protected parseServerCountry(data?: TagElement): IServerContext["country"] {
+    protected parseServerCountry(data?: cheerio.Element): IServerContext["country"] {
         if (data) {
             const { attribs: { title: name, src: image, alt: emoji } } = data;
 

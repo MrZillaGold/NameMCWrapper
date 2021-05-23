@@ -1,11 +1,10 @@
+import { Element } from "cheerio";
 import { AxiosError, AxiosInstance } from "axios";
 import { DurationInputObject } from "moment";
 
 import { WrapperError } from "./WrapperError";
 
 import { Nickname } from "./interfaces";
-import TagElement = cheerio.TagElement;
-import Element = cheerio.Element;
 
 export const steveSkinHash = "12b92a9206470fe2";
 
@@ -70,10 +69,10 @@ export function getUUID(client: AxiosInstance, endpoint: string, nickname: strin
     });
 }
 
-export function escapeColorsClasses(elements: TagElement[]): any[] {
-    return elements.map((element: TagElement) => {
+export function escapeColorsClasses(elements: Element[]): any[] {
+    return elements.map((element) => {
         if (element.children && element.children.length !== 1) {
-            return escapeColorsClasses(element.children as TagElement[]);
+            return escapeColorsClasses(element.children as Element[]);
         }
 
         if (element.attribs?.class) {
@@ -105,9 +104,10 @@ export function escapeColorsClasses(elements: TagElement[]): any[] {
 export function escapeHtml(elements: Element[]): string {
     return elements.map((element: Element) => {
         if (element.type !== "text") {
-            return escapeHtml((element as TagElement).children);
+            return escapeHtml(element.children as Element[]);
         }
 
+        // @ts-ignore
         return element.data;
     })
         .join("");
