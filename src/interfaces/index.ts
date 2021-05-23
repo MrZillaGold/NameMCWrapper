@@ -1,5 +1,5 @@
 export * from "./NameMC";
 export * from "./API";
 
-export * from "../NameMC";
+export { NameMC } from "../NameMC";
 export * from "../API";

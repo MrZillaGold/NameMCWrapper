@@ -12,8 +12,8 @@ export const {
     ServerContext,
     RendersContext,
 
-    capeHash,
-    capeType,
-    capeName,
-    model
+    CapeHash,
+    CapeName,
+    CapeType,
+    Model
 } = NameMCWrapper;

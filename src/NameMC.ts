@@ -265,16 +265,17 @@ export class NameMC extends DataParser {
     }
 }
 
-export const capeHash = CapeHash;
-export const capeName = CapeName;
-export const capeType = CapeType;
-export const model = Model;
-
 export {
     API,
+
     RendersContext,
     ServerContext,
     SkinContext,
     CapeContext,
-    PlayerContext
+    PlayerContext,
+
+    CapeHash,
+    CapeName,
+    CapeType,
+    Model
 };
