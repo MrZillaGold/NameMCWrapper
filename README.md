@@ -5,8 +5,8 @@
 <p align="center"><b>NameMCWrapper</b></p>
 <p align="center">ES6 Promise based wrapper for NameMC.com</p>
 
-| 📖 [Documentation](docs/DOCS.md) |
-| -------------------------------- |
+| 📖 [Documentation](https://mrzillagold.github.io/NameMCWrapper/index.html) |
+| ------------------------------------------------------------------------- |
 
 <p align="center">
  <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
@@ -24,16 +24,25 @@
 `npm i namemcwrapper`
 
 ## Usage 🔧
+Check all available methods in [📖 Documentation](https://mrzillagold.github.io/NameMCWrapper/index.html).
 ```js
-import { NameMC } from "namemcwrapper"; // ESM
+import { NameMC, API } from "namemcwrapper"; // ESM
 // OR
-const { NameMC } = require("namemcwrapper"); // CommonJS
+const { NameMC, API } = require("namemcwrapper"); // CommonJS
 
 const nameMc = new NameMC();
 
+// Get player skin history
 nameMc.skinHistory({ nickname: "MrZillaGold" })
     .then((skins) => console.log(skins))
     .catch((error) => console.log(error));
+
+const api = new API();
+
+// Get player friends from API
+api.profile.friends({ 
+    target: '2e9d9da1-97e9-4564-890b-6f056c4e372f'
+});
 ```
 
 ## Warning ⚠
