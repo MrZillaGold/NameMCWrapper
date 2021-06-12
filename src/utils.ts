@@ -16,6 +16,9 @@ export const serverRegExp = /(?:[^]+)?\/server\/([^]+)/;
 
 export const kSerializeData = Symbol("serializeData");
 
+/**
+ * Minecraft HEX colors
+ */
 export enum Color {
     BLACK = "000000",
     DARK_BLUE = "0000AA",
@@ -36,6 +39,9 @@ export enum Color {
     RESET = "AAAAAA"
 }
 
+/**
+ * Minecraft formatting css styles
+ */
 export enum Style {
     BOLD = "font-weight: bold;",
     UNDERLINED = "text-decoration: underline;",

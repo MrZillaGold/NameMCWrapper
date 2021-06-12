@@ -12,11 +12,17 @@ export interface ICapeContext {
     type: CapeType;
 }
 
+/**
+ * Capes types
+ */
 export enum CapeType {
     MINECRAFT = "minecraft",
     OPTIFINE = "optifine"
 }
 
+/**
+ * Capes names
+ */
 export enum CapeName {
     MINECON_2016 = "MineCon 2016",
     MINECON_2015 = "MineCon 2015",
@@ -42,6 +48,9 @@ export enum CapeName {
     OPTIFINE = "Optifine"
 }
 
+/**
+ * Capes hashes
+ */
 export enum CapeHash {
     MINECON_2016 = "1981aad373fa9754",
     MINECON_2015 = "72ee2cfcefbfc081",

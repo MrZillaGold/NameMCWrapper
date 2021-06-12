@@ -9,19 +9,58 @@ import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
 
 export class PlayerContext extends Context implements IPlayerContext {
 
+    /**
+     * Player uuid
+     */
     readonly uuid: IPlayerContext["uuid"] = "";
+    /**
+     * Player username
+     */
     readonly username: IPlayerContext["username"] = "";
+    /**
+     * NameMC profile short url
+     */
     readonly url: IPlayerContext["url"] = "";
+    /**
+     * Profile views
+     */
     readonly views: IPlayerContext["views"] = 0;
+    /**
+     * Nickname history
+     */
     readonly names: IPlayerContext["names"] = [];
+    /**
+     * Skin history
+     */
     readonly skins: IPlayerContext["skins"] = [];
+    /**
+     * Player capes
+     */
     readonly capes: IPlayerContext["capes"] = [];
+    /**
+     * Player friends
+     */
     readonly friends: IPlayerContext["friends"] = [];
+    /**
+     * Player favorite servers
+     */
     readonly servers: IPlayerContext["servers"] = [];
+    /**
+     * Badlion Client statistics
+     *
+     * @see {@link https://www.badlion.net/forum/thread/309559 | Announce from Badlion Client}
+     */
     readonly badlion: IPlayerContext["badlion"] = null;
 
+    /**
+     * Payload loaded
+     * @hidden
+     */
     private extended = false;
 
+    /**
+     * @hidden
+     */
     constructor({ data, ...options }: IPlayerContextOptions) {
         super(options);
 
@@ -205,14 +244,23 @@ export class PlayerContext extends Context implements IPlayerContext {
         }
     }
 
+    /**
+     * Check payload loaded
+     */
     get isExtended(): boolean {
         return this.extended;
     }
 
+    /**
+     * Does the player use Badlion Client
+     */
     get usesBadlion(): boolean {
         return Boolean(this.badlion);
     }
 
+    /**
+     * Load all profile information
+     */
     async loadPayload(): Promise<void> {
         if (this.isExtended) {
             return;
@@ -229,6 +277,9 @@ export class PlayerContext extends Context implements IPlayerContext {
         this.setupPayload();
     }
 
+    /**
+     * @hidden
+     */
     [kSerializeData](): IPlayerContext {
         return pickProperties(this, [
             "uuid",

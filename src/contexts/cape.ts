@@ -6,20 +6,35 @@ import { CapeHash, CapeName, CapeType, ICapeContext, ICapeContextOptions } from 
 
 export class CapeContext extends Context implements ICapeContext {
 
+    /**
+     * Cape hash
+     */
     readonly hash: ICapeContext["hash"];
 
+    /**
+     * @hidden
+     */
     protected endpoint = this.options.getEndpoint();
 
+    /**
+     * @hidden
+     */
     constructor({ hash, ...options }: ICapeContextOptions) {
         super(options);
 
         this.hash = hash;
     }
 
+    /**
+     * Get cape url
+     */
     get url(): ICapeContext["url"] {
         return `${this.endpoint}/texture/${this.hash}.png`;
     }
 
+    /**
+     * Get cape type
+     */
     get type(): ICapeContext["type"] {
         return Object.values(CapeHash)
             .includes(this.hash as CapeHash) ?
@@ -28,6 +43,9 @@ export class CapeContext extends Context implements ICapeContext {
             CapeType.OPTIFINE;
     }
 
+    /**
+     * Get cape name
+     */
     get name(): ICapeContext["name"] {
         const cape = new Map(
             Object.entries(CapeHash)
@@ -47,14 +65,23 @@ export class CapeContext extends Context implements ICapeContext {
         return CapeName.OPTIFINE;
     }
 
+    /**
+     * Check is Minecraft cape
+     */
     get isMinecraft(): boolean {
         return this.type === CapeType.MINECRAFT;
     }
 
+    /**
+     * Check is Optifine cape
+     */
     get isOptifine(): boolean {
         return this.type === CapeType.OPTIFINE;
     }
 
+    /**
+     * @hidden
+     */
     [kSerializeData](): ICapeContext {
         return pickProperties(this, [
             "hash",

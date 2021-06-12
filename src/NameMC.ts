@@ -9,7 +9,7 @@ import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext 
 
 import { nameRegExp, profileRegExp, getUUID } from "./utils";
 
-import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, CapeName, CapeType, Model } from "./interfaces";
+import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, CapeName, CapeType, Model, Transformation } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
 import AxiosResponse = axios.AxiosResponse;
 
@@ -17,8 +17,17 @@ const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKi
 
 export class NameMC extends DataParser {
 
+    /**
+     * @hidden
+     */
     readonly client: AxiosInstance;
+    /**
+     * Parameters passed to the constructor during class initialization
+     */
     readonly options: Options;
+    /**
+     * Class for API Requests
+     */
     readonly api: API;
 
     constructor(options: IOptions = {}) {
@@ -157,13 +166,56 @@ export class NameMC extends DataParser {
     }
 
     /**
-     * Get skins from a specific tab of the site
+     * Get new skins
+     *
+     * @see {@link https://namemc.com/minecraft-skins/new | NameMC New Skins}
      */
     getSkins(options: IGetSkinsOptions<"new", undefined, number>): Promise<SkinContext[]>;
+    /**
+     * Get skins tags
+     *
+     * @see {@link https://namemc.com/minecraft-skins/tag | NameMC Tagged Skins}
+     */
     getSkins(options: IGetSkinsOptions<"tag", undefined, number>): Promise<SkinContext[]>;
+    /**
+     * Get skins by tag
+     *
+     * @see {@link https://namemc.com/minecraft-skins/tag/girl | NameMC Girl Tag Skins}
+     */
     getSkins(options: IGetSkinsOptions<"tag", string, number>): Promise<SkinContext[]>;
+    /**
+     * Get daily trending skins
+     *
+     * @see {@link https://namemc.com/minecraft-skins/trending/daily | NameMC Daily Trending Skins}
+     */
+    getSkins(options: IGetSkinsOptions<"trending", "daily", number>): Promise<SkinContext[]>;
+    /**
+     * Get weekly trending skins
+     *
+     * @see {@link https://namemc.com/minecraft-skins/trending/weekly | NameMC Weekly Trending Skins}
+     */
+    getSkins(options: IGetSkinsOptions<"trending", "weekly", number>): Promise<SkinContext[]>;
+    /**
+     * Get monthly trending skins
+     *
+     * @see {@link https://namemc.com/minecraft-skins/trending/monthly | NameMC Monthly Trending Skins}
+     */
+    getSkins(options: IGetSkinsOptions<"trending", "monthly", number>): Promise<SkinContext[]>;
+    /**
+     * Get top trending skins
+     *
+     * @see {@link https://namemc.com/minecraft-skins/trending/top | NameMC Top Trending Skins}
+     */
     getSkins(options: IGetSkinsOptions<"trending", "top", number>): Promise<SkinContext[]>;
-    getSkins(options: IGetSkinsOptions<"random", undefined, undefined>): Promise<SkinContext[]>;
+    /**
+     * Get random skins
+     *
+     * @see {@link https://namemc.com/minecraft-skins/random | NameMC Random Skins}
+     */
+    getSkins(options: IGetSkinsOptions<"random">): Promise<SkinContext[]>;
+    /**
+     * Get skins from a specific tab of the site
+     */
     getSkins({ tab, page = 1, section = "weekly" }: IGetSkinsOptions<Tab, Section, number | undefined>): Promise<SkinContext[]> {
         return new Promise(((resolve, reject) => {
             this.client.get(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}?page=${page}`)
@@ -265,6 +317,8 @@ export class NameMC extends DataParser {
     }
 }
 
+export * from "./interfaces";
+
 export {
     API,
 
@@ -274,6 +328,7 @@ export {
     CapeContext,
     PlayerContext,
 
+    Transformation,
     CapeHash,
     CapeName,
     CapeType,

@@ -2,16 +2,35 @@ import { IFriend, IFriendsParams } from "./profile";
 import { IServerLikesParams } from "./server";
 
 export interface IMethods {
+    /**
+     * API Profile section methods
+     */
     profile: {
+        /**
+         * Get player friends
+         */
         friends(params: IFriendsParams): Promise<IFriend[]>;
     };
+    /**
+     * API Server section methods
+     */
     server: {
+        /**
+         * Check player server like
+         */
         likes(params: IParams): Promise<string[]>;
+        /**
+         * Get all players list server likes
+         */
         likes(params: IServerLikesParams): Promise<boolean>;
     };
 }
 
 export interface IParams {
+    /**
+     * Target for request
+     * Player UUID, Server IP & etc.
+     */
     target: string;
 }
 

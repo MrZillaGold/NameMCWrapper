@@ -7,10 +7,13 @@ export enum ErrorDescription {
     SERVER_OFFLINE = "Server $0 offline."
 }
 
+/**
+ * @hidden
+ */
 export class WrapperError extends Error {
 
-    code: number;
-    name: string;
+    readonly code: number;
+    readonly name: string;
 
     constructor(error: keyof typeof ErrorDescription, params: string | string[] = []) {
         if (typeof params === "string") {

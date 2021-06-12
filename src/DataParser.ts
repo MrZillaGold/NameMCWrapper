@@ -9,12 +9,18 @@ import { profileSkinsRegExp } from "./utils";
 
 import AxiosInstance = axios.AxiosInstance;
 
+/**
+ * @hidden
+ */
 export abstract class DataParser {
 
     abstract readonly options: Options;
     abstract readonly client: AxiosInstance;
     abstract readonly api: API;
 
+    /**
+     * @hidden
+     */
     protected parseSkins(data: string): SkinContext[] {
         const $ = cheerio.load(data);
 
@@ -26,6 +32,9 @@ export abstract class DataParser {
             .get();
     }
 
+    /**
+     * @hidden
+     */
     protected parseServers(data: string): ServerContext[] {
         const $ = cheerio.load(data);
 
@@ -37,6 +46,9 @@ export abstract class DataParser {
             .get();
     }
 
+    /**
+     * @hidden
+     */
     protected getProfileId(data: string): string {
         const $ = cheerio.load(data);
 

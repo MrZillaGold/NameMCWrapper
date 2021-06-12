@@ -2,6 +2,9 @@ import { applyPayload } from "./utils";
 
 import { IGetEndpointOptions, IOptions } from "./interfaces";
 
+/**
+ * @hidden
+ */
 export class Options implements IOptions {
 
     readonly proxy: IOptions["proxy"] = "";

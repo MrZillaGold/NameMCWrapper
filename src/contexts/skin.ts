@@ -6,20 +6,48 @@ import { WrapperError } from "../WrapperError";
 
 import { kSerializeData, pickProperties, skinRegExp } from "../utils";
 
-import { ISkinContext, ISkinContextOptions, Model, Transformation } from "../interfaces";
+import { ISkinContext, ISkinContextOptions, Model, Transformation, TransformationUnion } from "../interfaces";
 
 export class SkinContext extends Context implements ISkinContext {
 
+    /**
+     * SKin hash
+     */
     readonly hash: ISkinContext["hash"] = "";
+    /**
+     * Skin name
+     */
     readonly name: ISkinContext["name"] = "";
+    /**
+     * Skin model
+     */
     readonly model: ISkinContext["model"] = Model.UNKNOWN;
+    /**
+     * Skin tags
+     */
     readonly tags: ISkinContext["tags"] = [];
+    /**
+     * Skin rating
+     */
     readonly rating: ISkinContext["rating"] = 0;
+    /**
+     * Skin creation timestamp
+     */
     readonly createdAt: ISkinContext["createdAt"] = 0;
+    /**
+     * Skin transformation type
+     */
     readonly transformation: ISkinContext["transformation"] = null;
 
+    /**
+     * Payload loaded
+     * @hidden
+     */
     private extended = false;
 
+    /**
+     * @hidden
+     */
     constructor({ data, type, ...options }: ISkinContextOptions) {
         super(options);
 
@@ -94,10 +122,16 @@ export class SkinContext extends Context implements ISkinContext {
         }
     }
 
+    /**
+     * Get skin url
+     */
     get url(): ISkinContext["url"] {
         return `${this.options.getEndpoint()}/texture/${this.hash}.png`;
     }
 
+    /**
+     * Get skin renders
+     */
     get renders(): ISkinContext["renders"] {
         const { options, client, api } = this;
 
@@ -110,19 +144,33 @@ export class SkinContext extends Context implements ISkinContext {
         });
     }
 
+    /**
+     * Check is slim skin model
+     */
     get isSlim(): boolean {
         return this.model === Model.SLIM;
     }
 
+    /**
+     * Check payload loaded
+     */
     get isExtended(): boolean {
         return this.extended;
     }
 
+    /**
+     * Check is transformed
+     */
     get isTransformed(): boolean {
         return Boolean(this.transformation);
     }
 
-    transform(transformation: Transformation): Promise<SkinContext> {
+    /**
+     * Transform skin
+     *
+     * @see {@link https://namemc.com/skin/ee40191789e621d3 | Check "Tools" card}
+     */
+    transform(transformation: Transformation | TransformationUnion): Promise<SkinContext> {
         return this.client.post("/transform-skin", `skin=${this.hash}&transformation=${transformation}`, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -153,6 +201,9 @@ export class SkinContext extends Context implements ISkinContext {
             });
     }
 
+    /**
+     * Load all skin information
+     */
     async loadPayload(): Promise<void> {
         if (this.isExtended) {
             return;
@@ -186,6 +237,9 @@ export class SkinContext extends Context implements ISkinContext {
         this.setupPayload();
     }
 
+    /**
+     * @hidden
+     */
     protected checkSkinLink(link: string): Pick<ISkinContext, "hash" | "model"> | void {
         const skinRegExp = /skin=([^]+?)(?:&[^]+)?&model=([^]+?)&[^]+/;
         const idValidSkin = skinRegExp.exec(link);
@@ -200,6 +254,9 @@ export class SkinContext extends Context implements ISkinContext {
         }
     }
 
+    /**
+     * @hidden
+     */
     protected parseSkinRating($: cheerio.CheerioAPI): number {
         const ratingElement = $(".position-absolute.bottom-0.right-0.text-muted")
             .get(0)
@@ -217,6 +274,9 @@ export class SkinContext extends Context implements ISkinContext {
         return Number(rating.replace(/[^\d]+([\d]+)/, "$1"));
     }
 
+    /**
+     * @hidden
+     */
     protected parseSkinTime($: cheerio.CheerioAPI): number {
         const date = $(".position-absolute.bottom-0.left-0.text-muted.title-time")
             .get(0)
@@ -227,6 +287,9 @@ export class SkinContext extends Context implements ISkinContext {
             .getTime();
     }
 
+    /**
+     * @hidden
+     */
     [kSerializeData](): ISkinContext {
         return pickProperties(this, [
             "hash",

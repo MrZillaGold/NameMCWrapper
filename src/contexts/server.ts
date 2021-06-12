@@ -10,24 +10,58 @@ import { Element } from "cheerio";
 
 export class ServerContext extends Context implements IServerContext {
 
+    /**
+     * Server ip
+     */
     readonly ip: IServerContext["ip"] = "";
+    /**
+     * Server title
+     */
     readonly title: IServerContext["title"] = "";
+    /**
+     * Server icon url
+     */
     readonly icon: IServerContext["icon"] = "";
+    /**
+     * Server motd
+     */
     readonly motd: IServerContext["motd"] = {
         clear: "",
         html: ""
     };
+    /**
+     * Server current players stats
+     */
     readonly players: IServerContext["players"] = {
         online: 0,
         max: 0
     };
+    /**
+     * Server country
+     */
     readonly country: IServerContext["country"] = null;
+    /**
+     * Server rating
+     */
     readonly rating: IServerContext["rating"] = 0;
+    /**
+     * Server version
+     */
     readonly version: IServerContext["version"] = null;
+    /**
+     * Server uptime
+     */
     readonly uptime: IServerContext["uptime"] = null;
 
+    /**
+     * Payload loaded
+     * @hidden
+     */
     private extended = false;
 
+    /**
+     * @hidden
+     */
     constructor({ data, extended, ...options }: IServerContextOptions) {
         super(options);
 
@@ -106,10 +140,16 @@ export class ServerContext extends Context implements IServerContext {
         applyPayload(this, serverCard);
     }
 
+    /**
+     * Check payload loaded
+     */
     get isExtended(): boolean {
         return this.extended;
     }
 
+    /**
+     * Check like status for player
+     */
     async checkLike(nickname: ICheckServerLikeOptions["nickname"]): Promise<boolean> {
         const uuid = await getUUID(this.client, this.options.getEndpoint({ domain: "api.ashcon.app" }), nickname);
 
@@ -119,6 +159,9 @@ export class ServerContext extends Context implements IServerContext {
         });
     }
 
+    /**
+     * Load all server information
+     */
     async loadPayload(): Promise<void> {
         if (this.isExtended) {
             return;
@@ -144,6 +187,9 @@ export class ServerContext extends Context implements IServerContext {
         this.setupPayload();
     }
 
+    /**
+     * @hidden
+     */
     protected parseServerCard<P = boolean>(data: cheerio.Element, isPreview: P): Omit<IServerContext, "version" | "uptime"> | Omit<IServerContext, "country" | "ip" | "version" | "uptime"> {
         const $ = cheerio.load(data);
 
@@ -225,6 +271,9 @@ export class ServerContext extends Context implements IServerContext {
         return parsedData;
     }
 
+    /**
+     * @hidden
+     */
     protected parseServerCountry(data?: cheerio.Element): IServerContext["country"] {
         if (data) {
             const { attribs: { title: name, src: image, alt: emoji } } = data;
@@ -239,6 +288,9 @@ export class ServerContext extends Context implements IServerContext {
         return null;
     }
 
+    /**
+     * @hidden
+     */
     [kSerializeData](): IServerContext {
         return pickProperties(this, [
             "ip",
