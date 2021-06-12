@@ -1,10 +1,10 @@
 import { IContextOptions } from "./context";
-import { Hash, Model } from "./skin";
+import { Hash, Model, ModelUnion } from "./skin";
 
 export interface IRendersContextOptions extends IContextOptions<IRendersContext> {
     skin: Hash;
     cape?: Hash;
-    model?: Model;
+    model?: Model | ModelUnion;
     width?: number;
     height?: number;
     theta?: number;
