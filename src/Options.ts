@@ -32,6 +32,15 @@ export class Options implements IOptions {
     getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
         const { proxy, endpoint, rendersIgnoreProxy, cloudProxy } = this;
 
-        return `${(rendersIgnoreProxy && subdomain === "render") || (cloudProxy && proxy) ? "" : proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
+        const prefix =
+            (rendersIgnoreProxy && subdomain === "render")
+            || (cloudProxy && proxy) ?
+                ""
+                : proxy ?
+                    `${proxy}/`
+                    :
+                    "";
+
+        return `${prefix}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 }
