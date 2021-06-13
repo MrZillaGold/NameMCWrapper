@@ -1,13 +1,13 @@
 import { inspectable } from "inspectable";
 
-import { IContextOptions } from "../interfaces";
+import { ContextUnion, IContextOptions } from "../interfaces";
 
 import { applyPayload, kSerializeData } from "../utils";
 
 /**
  * @hidden
  */
-export class Context {
+export class Context<T extends ContextUnion> {
 
     /**
      * Parameters passed to the constructor during NameMC class initialization
@@ -49,7 +49,7 @@ export class Context {
     /**
      * Get context JSON
      */
-    toJSON(): any {
+    toJSON(): T {
         return this[kSerializeData]();
     }
 

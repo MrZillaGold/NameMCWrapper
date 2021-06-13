@@ -4,7 +4,7 @@ import { kSerializeData, pickProperties } from "../utils";
 
 import { CapeHash, CapeName, CapeType, ICapeContext, ICapeContextOptions } from "../interfaces";
 
-export class CapeContext extends Context implements ICapeContext {
+export class CapeContext extends Context<ICapeContext> implements ICapeContext {
 
     /**
      * Cape hash

@@ -7,7 +7,7 @@ import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDat
 
 import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
 
-export class PlayerContext extends Context implements IPlayerContext {
+export class PlayerContext extends Context<IPlayerContext> implements IPlayerContext {
 
     /**
      * Player uuid

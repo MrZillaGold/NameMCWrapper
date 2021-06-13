@@ -4,7 +4,7 @@ import { applyPayload, steveSkinHash, kSerializeData, pickProperties } from "../
 
 import { IRendersContext, IRendersContextOptions, Model } from "../interfaces";
 
-export class RendersContext extends Context {
+export class RendersContext extends Context<IRendersContext> implements IRendersContext {
 
     /**
      * Skin hash

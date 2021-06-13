@@ -8,7 +8,7 @@ import { kSerializeData, pickProperties, skinRegExp } from "../utils";
 
 import { ISkinContext, ISkinContextOptions, Model, Transformation, TransformationUnion } from "../interfaces";
 
-export class SkinContext extends Context implements ISkinContext {
+export class SkinContext extends Context<ISkinContext> implements ISkinContext {
 
     /**
      * SKin hash

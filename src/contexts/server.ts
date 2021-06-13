@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { Element } from "cheerio";
 
 import { Context } from "./context";
 import { WrapperError } from "../WrapperError";
@@ -6,9 +7,8 @@ import { WrapperError } from "../WrapperError";
 import { applyPayload, escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from "../utils";
 
 import { ICheckServerLikeOptions, IServerContext, IServerContextOptions } from "../interfaces";
-import { Element } from "cheerio";
 
-export class ServerContext extends Context implements IServerContext {
+export class ServerContext extends Context<IServerContext> implements IServerContext {
 
     /**
      * Server ip
