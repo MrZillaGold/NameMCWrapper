@@ -9,10 +9,8 @@ import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext 
 
 import { nameRegExp, profileRegExp, getUUID } from "./utils";
 
-import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, CapeName, CapeType, Model, Transformation, ICloudProxyResponse } from "./interfaces";
+import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, CapeName, CapeType, Model, Transformation } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
-import AxiosResponse = axios.AxiosResponse;
-import AxiosRequestConfig = axios.AxiosRequestConfig;
 
 const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36";
 
@@ -50,7 +48,35 @@ export class NameMC extends DataParser {
         });
 
         if (proxy && cloudProxy) {
-            this.pathClient(proxy, cloudProxy);
+            this.client.interceptors.request.use((config) => {
+                const { url, baseURL, method, data } = config;
+
+                delete config.baseURL;
+
+                config.url = proxy;
+                config.method = "post";
+                config.data = {
+                    ...cloudProxy,
+                    url: `${baseURL}${url}`,
+                    cmd: `request.${method}`,
+                    headers: config.headers,
+                    postData: method === "post" ?
+                        data
+                        :
+                        undefined
+                };
+
+                return config;
+            });
+
+            this.client.interceptors.response.use((response) => {
+                const { data: { solution: { url, response: htmlPage } } } = response;
+
+                response.request.res.responseUrl = url;
+                response.data = htmlPage;
+
+                return response;
+            });
         }
     }
 
@@ -61,7 +87,7 @@ export class NameMC extends DataParser {
         return new Promise((resolve, reject) => {
             if (nickname.match(nameRegExp)) {
                 this.client.get(`/profile/${nickname}`)
-                    .then(({ request, headers, data }: AxiosResponse) => {
+                    .then(({ request, headers, data }) => {
                         if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                             const userId: string = this.getProfileId(data);
 
@@ -165,7 +191,8 @@ export class NameMC extends DataParser {
      * Get player friends by nickname
      */
     async getFriends(nickname: Nickname): Promise<IFriend[]> {
-        const uuid = await getUUID(this.client, this.options.getEndpoint({ domain: "api.ashcon.app" }), nickname);
+        const endpoint = this.options.getEndpoint({ domain: "api.ashcon.app" });
+        const uuid = await getUUID(endpoint, nickname);
 
         return this.api.profile.friends({
             target: uuid
@@ -321,63 +348,6 @@ export class NameMC extends DataParser {
             }
         })
             .checkLike(nickname);
-    }
-
-    /**
-     * Path axios client for CloudProxy Support
-     *
-     * @see {@link https://github.com/NoahCardoza/CloudProxy | CloudProxy}
-     *
-     * @hidden
-     */
-    private pathClient(proxy: IOptions["proxy"], cloudProxyOptions: IOptions["cloudProxy"]): void {
-        const clientConfig = this.client.defaults;
-
-        // @ts-ignore
-        this.client.get = (url: string, config: AxiosRequestConfig = {}) => (
-            this.client.request<ICloudProxyResponse>({
-                ...clientConfig,
-                ...config,
-                url: proxy,
-                method: "post",
-                data: {
-                    ...cloudProxyOptions,
-                    url: `${clientConfig.baseURL}${url}`,
-                    cmd: "request.get",
-                    headers: config.headers
-                }
-            })
-                .then(this.parseCloudProxySolution)
-        );
-
-        // @ts-ignore
-        this.client.post = (url: string, data: any, config: AxiosRequestConfig = {}) => (
-            this.client.request<ICloudProxyResponse>({
-                ...clientConfig,
-                ...config,
-                url: proxy,
-                data: {
-                    ...cloudProxyOptions,
-                    url: `${clientConfig.baseURL}${url}`,
-                    cmd: "request.post",
-                    postData: data,
-                    headers: config.headers
-                },
-                method: "post"
-            })
-                .then(this.parseCloudProxySolution)
-        );
-    }
-
-    private parseCloudProxySolution(cloudProxyResponse: AxiosResponse<ICloudProxyResponse>): AxiosResponse<string> {
-        const { data: { solution: { url, response: htmlPage } } } = cloudProxyResponse as unknown as AxiosResponse<ICloudProxyResponse>;
-
-        const response = cloudProxyResponse as unknown as AxiosResponse<string>;
-
-        response.request.res.responseUrl = url;
-        response.data = htmlPage;
-
-        return response;
     }
 }
 
