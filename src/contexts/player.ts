@@ -3,7 +3,7 @@ import * as moment from "moment";
 
 import { Context, SkinContext, CapeContext, ServerContext } from "./";
 
-import { kSerializeData, serverRegExp, parseDuration, pickProperties } from "../utils";
+import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDateToISO } from "../utils";
 
 import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
 
@@ -78,7 +78,7 @@ export class PlayerContext extends Context implements IPlayerContext {
                 payload: {
                     hash,
                     model, //@ts-ignore
-                    createdAt: moment(title).unix()
+                    createdAt: moment(convertDateToISO(title)).unix()
                 }
             }))
             .get();
