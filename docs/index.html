@@ -2752,6 +2752,12 @@ img {
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/icheckserverlikeoptions.html" class="tsd-kind-icon">ICheck<wbr>Server<wbr>Like<wbr>Options</a>
 		</li>
+		<li class=" tsd-kind-interface">
+			<a href="interfaces/icloudproxycookie.html" class="tsd-kind-icon">ICloud<wbr>Proxy<wbr>Cookie</a>
+		</li>
+		<li class=" tsd-kind-interface">
+			<a href="interfaces/icloudproxyresponse.html" class="tsd-kind-icon">ICloud<wbr>Proxy<wbr>Response</a>
+		</li>
 		<li class=" tsd-kind-interface tsd-has-type-parameter">
 			<a href="interfaces/icontextoptions.html" class="tsd-kind-icon">IContext<wbr>Options</a>
 		</li>
@@ -2842,7 +2848,7 @@ img {
 	<div class="content-wrap">
 		<div class="tsd-panel tsd-typography">
 			<p align="center">
-				<img src="https://github.com/MrZillaGold/NameMCWrapper/raw/master/docs/logo.png" alt="...">
+				<img src="https://github.com/MrZillaGold/NameMCWrapper/raw/master/.github/logo.png" alt="...">
 			</p>
 			<p align="center"><b>NameMCWrapper</b></p>
 			<p align="center">ES6 Promise based wrapper for NameMC.com</p>
@@ -2887,13 +2893,31 @@ img {
 
 <span style="color: #008000">// Get player friends from API</span>
 <span style="color: #001080">api</span><span style="color: #000000">.</span><span style="color: #001080">profile</span><span style="color: #000000">.</span><span style="color: #795E26">friends</span><span style="color: #000000">({ </span>
-<span style="color: #000000">    </span><span style="color: #001080">target:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;2e9d9da1-97e9-4564-890b-6f056c4e372f&#039;</span>
+<span style="color: #000000">    </span><span style="color: #001080">target:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;2e9d9da1-97e9-4564-890b-6f056c4e372f&quot;</span>
+<span style="color: #000000">});</span>
+</code></pre>
+			<a href="#cloudflare-bypass-⚔" id="cloudflare-bypass-⚔" style="color: inherit; text-decoration: none;">
+				<h2>CloudFlare bypass ⚔</h2>
+			</a>
+			<p><code>Error: Request failed with status code 403</code></p>
+			<p>NameMC often uses CloudFlare to protect against DDoS attacks.
+			If you want the library to work at such times, you need to deploy your own <a href="https://github.com/NoahCardoza/CloudProxy"><code>CloudProxy</code></a> instance.</p>
+			<p>NameMCWrapper fully supports <a href="https://github.com/NoahCardoza/CloudProxy"><code>CloudProxy</code></a>.</p>
+			<pre><code class="language-js"><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NameMC</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">proxy:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;http://192.168.1.51:25565/v1&quot;</span><span style="color: #000000"> </span><span style="color: #008000">// CloudProxy URL</span>
+<span style="color: #000000">    </span><span style="color: #001080">cloudProxy</span><span style="color: #000000">: {}</span>
+<span style="color: #000000">    </span><span style="color: #008000">// CloudProxy options.</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Optional.</span>
+<span style="color: #000000">    </span><span style="color: #008000">// To enable CloudProxy support, you cannot delete an object!</span>
 <span style="color: #000000">});</span>
 </code></pre>
 			<a href="#warning-⚠" id="warning-⚠" style="color: inherit; text-decoration: none;">
 				<h2>Warning ⚠</h2>
 			</a>
-			<p>Since NameMC does not provide an open API, this library is based on the parsing of HTML site pages. If the changes affect the HTML used for parsing, the library may break at any time and not give the expected result. I will try to update it as soon as possible. Use at your own risk!</p>
+			<p>Since NameMC does not provide an open API, this library is based on the parsing of HTML site pages.
+				If the changes affect the HTML used for parsing, the library may break at any time and not give the expected result.
+				I will try to update it as soon as possible.
+			Use at your own risk!</p>
 		</div>
 		<div style="position:relative;"><a name="typedoc-main-index" class="tsd-anchor"></a></div>
 		<section class="tsd-panel-group tsd-index-group">
@@ -2929,6 +2953,8 @@ img {
 							<li class="tsd-kind-interface"><a href="interfaces/icapecontext.html" class="tsd-kind-icon">ICape<wbr>Context</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/icapecontextoptions.html" class="tsd-kind-icon">ICape<wbr>Context<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/icheckserverlikeoptions.html" class="tsd-kind-icon">ICheck<wbr>Server<wbr>Like<wbr>Options</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/icloudproxycookie.html" class="tsd-kind-icon">ICloud<wbr>Proxy<wbr>Cookie</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/icloudproxyresponse.html" class="tsd-kind-icon">ICloud<wbr>Proxy<wbr>Response</a></li>
 							<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/icontextoptions.html" class="tsd-kind-icon">IContext<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/ifriend.html" class="tsd-kind-icon">IFriend</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/ifriendsparams.html" class="tsd-kind-icon">IFriends<wbr>Params</a></li>
@@ -2975,7 +3001,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/contexts/skin.ts#L21">interfaces/NameMC/contexts/skin.ts:21</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/contexts/skin.ts#L21">interfaces/NameMC/contexts/skin.ts:21</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2985,7 +3011,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Method<wbr>Group<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;profile&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;server&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/API/request.ts#L1">interfaces/API/request.ts:1</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/API/request.ts#L1">interfaces/API/request.ts:1</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2995,7 +3021,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Model<wbr>Union<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;unknown&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;classic&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;slim&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/contexts/skin.ts#L19">interfaces/NameMC/contexts/skin.ts:19</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/contexts/skin.ts#L19">interfaces/NameMC/contexts/skin.ts:19</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3005,7 +3031,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Nickname<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/contexts/player.ts#L35">interfaces/NameMC/contexts/player.ts:35</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/contexts/player.ts#L35">interfaces/NameMC/contexts/player.ts:35</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3015,7 +3041,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Section<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;daily&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;weekly&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;monthly&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;top&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/skin.ts#L9">interfaces/NameMC/skin.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/skin.ts#L9">interfaces/NameMC/skin.ts:9</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3025,7 +3051,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Tab<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;trending&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;new&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;random&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;tag&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/skin.ts#L8">interfaces/NameMC/skin.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/skin.ts#L8">interfaces/NameMC/skin.ts:8</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3035,7 +3061,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Transformation<wbr>Union<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;grayscale&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;invert&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rotate-hue-180&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rotate-head-left&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rotate-head-right&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-1&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-2&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-3&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-4&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-creeper&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-santa&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/contexts/skin.ts#L40">interfaces/NameMC/contexts/skin.ts:40</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/contexts/skin.ts#L40">interfaces/NameMC/contexts/skin.ts:40</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3055,6 +3081,9 @@ img {
 					</ul>
 					<ul class="tsd-legend">
 						<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+					</ul>
+					<ul class="tsd-legend">
+						<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 					</ul>
 				</div>
 			</div>

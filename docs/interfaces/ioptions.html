@@ -2708,6 +2708,9 @@ img {
 			<a href="ioptions.html" class="tsd-kind-icon">IOptions</a>
 			<ul>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
+					<a href="ioptions.html#cloudproxy" class="tsd-kind-icon">cloud<wbr>Proxy</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface">
 					<a href="ioptions.html#defaultskinsmodel" class="tsd-kind-icon">default<wbr>Skins<wbr>Model</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface">
@@ -2737,6 +2740,7 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ioptions.html#cloudproxy" class="tsd-kind-icon">cloud<wbr>Proxy</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ioptions.html#defaultskinsmodel" class="tsd-kind-icon">default<wbr>Skins<wbr>Model</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ioptions.html#proxy" class="tsd-kind-icon">proxy</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="ioptions.html#rendersignoreproxy" class="tsd-kind-icon">renders<wbr>Ignore<wbr>Proxy</a></li>
@@ -2748,12 +2752,64 @@ img {
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<a name="cloudproxy" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> cloud<wbr>Proxy</h3>
+				<div class="tsd-signature tsd-kind-icon">cloud<wbr>Proxy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>cookies<span class="tsd-signature-symbol">?: </span><a href="icloudproxycookie.html" class="tsd-signature-type" data-tsd-kind="Interface">ICloudProxyCookie</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>maxTimeout<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>session<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/options.ts#L29">interfaces/NameMC/options.ts:29</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>CloudProxy options for requests
+							NameMC often uses CloudFlare to protect against DDoS attacks
+						If you want the library to work at such times, you need to deploy your own Cloud Proxy instance</p>
+					</div>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><pre><code><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NameMC</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">proxy:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;http://192.168.1.51:25565/v1&quot;</span><span style="color: #000000"> </span><span style="color: #008000">// CloudProxy URL</span>
+<span style="color: #000000">    </span><span style="color: #001080">cloudProxy</span><span style="color: #000000">: {}</span>
+<span style="color: #000000">    </span><span style="color: #008000">// CloudProxy options.</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Optional.</span>
+<span style="color: #000000">    </span><span style="color: #008000">// To enable CloudProxy support, you cannot delete an object!</span>
+<span style="color: #000000">});</span>
+</code></pre>
+						</dd>
+						<dt>see</dt>
+						<dd><p><a href="https://github.com/NoahCardoza/CloudProxy" class="external">CloudProxy</a></p>
+						</dd>
+						<dt>see</dt>
+						<dd><p><a href="https://github.com/NoahCardoza/CloudProxy#-requestget" class="external">CloudProxy Request Get options description</a></p>
+						</dd>
+					</dl>
+				</div>
+				<div class="tsd-type-declaration">
+					<h4>Type declaration</h4>
+					<ul class="tsd-parameters">
+						<li class="tsd-parameter">
+							<h5><span class="tsd-flag ts-flagOptional">Optional</span> cookies<span class="tsd-signature-symbol">?: </span><a href="icloudproxycookie.html" class="tsd-signature-type" data-tsd-kind="Interface">ICloudProxyCookie</a><span class="tsd-signature-symbol">[]</span></h5>
+						</li>
+						<li class="tsd-parameter">
+							<h5><span class="tsd-flag ts-flagOptional">Optional</span> headers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+						</li>
+						<li class="tsd-parameter">
+							<h5><span class="tsd-flag ts-flagOptional">Optional</span> max<wbr>Timeout<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
+						</li>
+						<li class="tsd-parameter">
+							<h5><span class="tsd-flag ts-flagOptional">Optional</span> session<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+						</li>
+					</ul>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 				<a name="defaultskinsmodel" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagOptional">Optional</span> default<wbr>Skins<wbr>Model</h3>
 				<div class="tsd-signature tsd-kind-icon">default<wbr>Skins<wbr>Model<span class="tsd-signature-symbol">:</span> <a href="../enums/model.html#classic" class="tsd-signature-type" data-tsd-kind="Enumeration member">CLASSIC</a><span class="tsd-signature-symbol"> | </span><a href="../enums/model.html#slim" class="tsd-signature-type" data-tsd-kind="Enumeration member">SLIM</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;classic&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;slim&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/options.ts#L15">interfaces/NameMC/options.ts:15</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/options.ts#L42">interfaces/NameMC/options.ts:42</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2768,12 +2824,13 @@ img {
 				<div class="tsd-signature tsd-kind-icon">proxy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/options.ts#L7">interfaces/NameMC/options.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/options.ts#L9">interfaces/NameMC/options.ts:9</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Proxy url for requests</p>
+						<p>Proxy url for requests
+						Support <a href="https://github.com/NoahCardoza/CloudProxy" class="external">CloudProxy</a></p>
 					</div>
 				</div>
 			</section>
@@ -2783,7 +2840,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">renders<wbr>Ignore<wbr>Proxy<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7dd70be/src/interfaces/NameMC/options.ts#L11">interfaces/NameMC/options.ts:11</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/dd5a20d/src/interfaces/NameMC/options.ts#L38">interfaces/NameMC/options.ts:38</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2808,6 +2865,9 @@ img {
 					</ul>
 					<ul class="tsd-legend">
 						<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+					</ul>
+					<ul class="tsd-legend">
+						<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 					</ul>
 				</div>
 			</div>

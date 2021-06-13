@@ -1,6 +1,6 @@
 {
   "name": "namemcwrapper",
-  "version": "2.0.7",
+  "version": "2.1.0",
   "description": "ES6 Promise based wrapper for NameMC.com",
   "main": "./dist/NameMC.js",
   "exports": {
@@ -55,7 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
-    "mocha": "^8.0.1",
+    "mocha": "^9.0.0",
     "typedoc": "^0.20.36",
     "typescript": "^4.1.3"
   }

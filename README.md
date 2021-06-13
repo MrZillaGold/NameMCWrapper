@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/MrZillaGold/NameMCWrapper/raw/master/docs/logo.png" alt="...">
+  <img src="https://github.com/MrZillaGold/NameMCWrapper/raw/master/.github/logo.png" alt="...">
 </p>
 
 <p align="center"><b>NameMCWrapper</b></p>
@@ -41,9 +41,30 @@ const api = new API();
 
 // Get player friends from API
 api.profile.friends({ 
-    target: '2e9d9da1-97e9-4564-890b-6f056c4e372f'
+    target: "2e9d9da1-97e9-4564-890b-6f056c4e372f"
+});
+```
+
+## CloudFlare bypass ⚔
+`Error: Request failed with status code 403`
+
+NameMC often uses CloudFlare to protect against DDoS attacks.
+If you want the library to work at such times, you need to deploy your own [`CloudProxy`](https://github.com/NoahCardoza/CloudProxy) instance.
+
+NameMCWrapper fully supports [`CloudProxy`](https://github.com/NoahCardoza/CloudProxy).
+
+```js
+new NameMC({
+    proxy: "http://192.168.1.51:25565/v1" // CloudProxy URL
+    cloudProxy: {}
+    // CloudProxy options.
+    // Optional.
+    // To enable CloudProxy support, you cannot delete an object!
 });
 ```
 
 ## Warning ⚠
-Since NameMC does not provide an open API, this library is based on the parsing of HTML site pages. If the changes affect the HTML used for parsing, the library may break at any time and not give the expected result. I will try to update it as soon as possible. Use at your own risk!
+Since NameMC does not provide an open API, this library is based on the parsing of HTML site pages.
+If the changes affect the HTML used for parsing, the library may break at any time and not give the expected result.
+I will try to update it as soon as possible.
+Use at your own risk!

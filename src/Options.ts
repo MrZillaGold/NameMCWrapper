@@ -8,12 +8,13 @@ import { IGetEndpointOptions, IOptions } from "./interfaces";
 export class Options implements IOptions {
 
     readonly proxy: IOptions["proxy"] = "";
+    readonly cloudProxy: IOptions["cloudProxy"];
     readonly rendersIgnoreProxy: IOptions["rendersIgnoreProxy"];
     readonly endpoint = "namemc.com";
     readonly defaultSkinsModel: IOptions["defaultSkinsModel"];
 
     constructor(options: IOptions) {
-        const urlOptions: ["proxy"] = [
+        const urlOptions = <const>[
             "proxy"
         ];
 
@@ -29,8 +30,8 @@ export class Options implements IOptions {
     }
 
     getEndpoint({ subdomain = "", domain = "" }: IGetEndpointOptions = {}): string {
-        const { proxy, endpoint, rendersIgnoreProxy } = this;
+        const { proxy, endpoint, rendersIgnoreProxy, cloudProxy } = this;
 
-        return `${rendersIgnoreProxy && subdomain === "render" ? "" : proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
+        return `${(rendersIgnoreProxy && subdomain === "render") || (cloudProxy && proxy) ? "" : proxy ? `${proxy}/` : ""}https://${subdomain ? `${subdomain}.` : ""}${domain || endpoint}`;
     }
 }

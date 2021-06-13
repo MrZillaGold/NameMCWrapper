@@ -12,6 +12,7 @@ export const {
     ServerContext,
     RendersContext,
 
+    Transformation,
     CapeHash,
     CapeName,
     CapeType,
