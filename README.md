@@ -55,7 +55,7 @@ NameMCWrapper fully supports [`CloudProxy`](https://github.com/NoahCardoza/Cloud
 
 ```js
 new NameMC({
-    proxy: "http://192.168.1.51:25565/v1" // CloudProxy URL
+    proxy: "http://192.168.1.51:25565/v1", // CloudProxy URL
     cloudProxy: {}
     // CloudProxy options.
     // Optional.
