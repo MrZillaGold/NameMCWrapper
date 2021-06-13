@@ -137,7 +137,7 @@ export function applyPayload<T, P>(context: T, payload: P): void {
     });
 }
 
-export const pickProperties = <T, K extends keyof T>(params: T, properties: K[]): Pick<T, K> => {
+export function pickProperties<T, K extends keyof T>(params: T, properties: K[]): Pick<T, K> {
     const copies = {} as Pick<T, K>;
 
     for (const property of properties) {
@@ -145,4 +145,15 @@ export const pickProperties = <T, K extends keyof T>(params: T, properties: K[])
     }
 
     return copies;
-};
+}
+
+export function convertDateToISO(fullDate: string): string {
+    const [date, time] = fullDate.split(", ");
+
+    const ISODate = date
+        .split(".")
+        .reverse()
+        .join("-");
+
+    return `${ISODate}T${time}`;
+}
