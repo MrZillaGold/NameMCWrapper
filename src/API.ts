@@ -1,9 +1,10 @@
-import axios, { AxiosInstance } from "axios";
+import * as axios from "axios";
 
 // @ts-ignore
 import { version, homepage } from "../package.json";
 
 import { IRequestOptions, IMethods, MethodGroup } from "./interfaces";
+import AxiosInstance = axios.AxiosInstance;
 
 const API_ENDPOINT = "https://api.namemc.com/";
 
@@ -35,6 +36,7 @@ export class API {
      * @hidden
      */
     constructor() {
+        // @ts-ignore
         this.worker = axios.create({
             baseURL: API_ENDPOINT,
             headers: typeof window === "undefined" ?
