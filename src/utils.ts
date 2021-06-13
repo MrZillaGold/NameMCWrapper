@@ -1,10 +1,12 @@
+import * as axios from "axios";
 import { Element } from "cheerio";
-import { AxiosError, AxiosInstance } from "axios";
 import { DurationInputObject } from "moment";
 
 import { WrapperError } from "./WrapperError";
 
 import { Nickname } from "./interfaces";
+import AxiosError = axios.AxiosError;
+import AxiosResponse = axios.AxiosResponse;
 
 export const steveSkinHash = "12b92a9206470fe2";
 
@@ -49,7 +51,7 @@ export enum Style {
     ITALIC = "font-style: italic;"
 }
 
-export function getUUID(client: AxiosInstance, endpoint: string, nickname: string): Promise<Nickname> {
+export function getUUID(endpoint: string, nickname: string): Promise<Nickname> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
         const isNickname = nickname.match(nameRegExp);
@@ -60,8 +62,9 @@ export function getUUID(client: AxiosInstance, endpoint: string, nickname: strin
             );
         }
 
-        const uuid: string = isNickname.groups?.uuid ?? await client.get(`${endpoint}/mojang/v1/user/${nickname}`)
-            .then(({ data: { uuid } }) => uuid)
+        // @ts-ignore
+        const uuid = isNickname.groups?.uuid ?? await axios.get(`${endpoint}/mojang/v1/user/${nickname}`)
+            .then(({ data: { uuid } }: AxiosResponse) => uuid as string)
             .catch((error: AxiosError) => {
                 reject(
                     error?.response?.status === 404 ?

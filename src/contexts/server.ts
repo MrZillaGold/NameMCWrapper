@@ -151,7 +151,8 @@ export class ServerContext extends Context implements IServerContext {
      * Check like status for player
      */
     async checkLike(nickname: ICheckServerLikeOptions["nickname"]): Promise<boolean> {
-        const uuid = await getUUID(this.client, this.options.getEndpoint({ domain: "api.ashcon.app" }), nickname);
+        const endpoint = this.options.getEndpoint({ domain: "api.ashcon.app" });
+        const uuid = await getUUID(endpoint, nickname);
 
         return this.api.server.likes({
             target: this.ip,
