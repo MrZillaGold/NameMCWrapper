@@ -7,7 +7,7 @@ import { WrapperError } from "./WrapperError";
 
 import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext } from "./contexts";
 
-import { nameRegExp, profileRegExp, getUUID } from "./utils";
+import { getUUID } from "./utils";
 
 import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Username, CapeHash, CapeName, CapeType, Model, Transformation, Sort } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
@@ -55,44 +55,23 @@ export class NameMC extends DataParser {
     /**
      * Get skin history by nickname
      */
-    skinHistory({ username, page = 1 }: IGetSkinHistoryOptions): Promise<SkinContext[]> {
-        return new Promise((resolve, reject) => {
-            if (username.match(nameRegExp)) {
-                this.client.get(`/profile/${username}`)
-                    .then(({ request, headers, data }) => {
-                        if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
-                            const userId: string = this.getProfileId(data);
+    async skinHistory({ username, page = 1 }: IGetSkinHistoryOptions): Promise<SkinContext[]> {
+        const { uuid } = await this.getPlayer(username);
 
-                            if (!userId) {
-                                return resolve([]);
-                            }
-
-                            this.client.get(`/minecraft-skins/profile/${userId}?page=${page}`)
-                                .then(({ data }) => {
-                                    const skins = this.parseSkins(data);
-
-                                    if (skins[0]?.hash) {
-                                        return resolve(skins);
-                                    }
-
-                                    reject(
-                                        new WrapperError("NO_USEFUL")
-                                    );
-                                })
-                                .catch(reject);
-                        } else {
-                            reject(
-                                new WrapperError("NOT_FOUND", username)
-                            );
-                        }
-                    })
-                    .catch(reject);
-            } else {
-                reject(
-                    new WrapperError("INVALID_NICKNAME", username)
-                );
+        return this.client.get(`/minecraft-skins/profile/${uuid}`, {
+            params: {
+                page
             }
-        });
+        })
+            .then(({ data }) => {
+                const skins = this.parseSkins(data);
+
+                if (skins[0]?.hash) {
+                    return skins;
+                }
+
+                throw new WrapperError("NO_USEFUL");
+            });
     }
 
     /**
@@ -209,32 +188,26 @@ export class NameMC extends DataParser {
      * Get skins from a specific tab of the site
      */
     getSkins({ tab, page = 1, section = "weekly" }: IGetSkinsOptions<Tab, Section, number | undefined>): Promise<SkinContext[]> {
-        return new Promise(((resolve, reject) => {
-            this.client.get(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}`, {
-                params: {
-                    page
+        return this.client.get<string>(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}`, {
+            params: {
+                page
+            }
+        })
+            .then(({ data }) => {
+                const skins = this.parseSkins(data);
+
+                if (!skins.length) {
+                    throw new WrapperError("NO_USEFUL");
                 }
+
+                return skins;
             })
-                .then(({ data }) => {
-                    const skins = this.parseSkins(data);
-
-                    if (!skins.length) {
-                        reject(
-                            new WrapperError("NO_USEFUL")
-                        );
-                    }
-
-                    resolve(skins);
-                })
-                .catch((error) => {
-                    reject(
-                        error?.response?.status === 404 ?
-                            new WrapperError("NOT_FOUND", section)
-                            :
-                            error
-                    );
-                });
-        }));
+            .catch((error) => {
+                throw error?.response?.status === 404 ?
+                    new WrapperError("NOT_FOUND", section)
+                    :
+                    error;
+            });
     }
 
     /**
@@ -257,21 +230,16 @@ export class NameMC extends DataParser {
      * Get servers list
      */
     getServers(page = 1): Promise<ServerContext[]> {
-        return new Promise((resolve, reject) => {
-            this.client.get(`/minecraft-servers/${page}`)
-                .then(({ data }) => {
-                    const servers = this.parseServers(data);
+        return this.client.get(`/minecraft-servers/${page}`)
+            .then(({ data }) => {
+                const servers = this.parseServers(data);
 
-                    if (!servers[0]?.ip) {
-                        return reject(
-                            new WrapperError("NO_USEFUL")
-                        );
-                    }
+                if (!servers[0]?.ip) {
+                    throw new WrapperError("NO_USEFUL");
+                }
 
-                    resolve(servers);
-                })
-                .catch(reject);
-        });
+                return servers;
+            });
     }
 
     /**
