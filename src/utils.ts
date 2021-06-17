@@ -1,10 +1,9 @@
 import * as axios from "axios";
 import { Element } from "cheerio";
-import { DurationInputObject } from "moment";
 
 import { WrapperError } from "./WrapperError";
 
-import { Nickname } from "./interfaces";
+import { Username } from "./interfaces";
 import AxiosError = axios.AxiosError;
 import AxiosResponse = axios.AxiosResponse;
 
@@ -51,31 +50,23 @@ export enum Style {
     ITALIC = "font-style: italic;"
 }
 
-export function getUUID(endpoint: string, nickname: string): Promise<Nickname> {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-        const isNickname = nickname.match(nameRegExp);
+export async function getUUID(endpoint: string, username: string): Promise<Username> {
+    const isNickname = username.match(nameRegExp);
 
-        if (!isNickname) {
-            return reject(
-                new WrapperError("INVALID_NICKNAME", nickname)
-            );
-        }
-
-        // @ts-ignore
-        const uuid = isNickname.groups?.uuid ?? await axios.get(`${endpoint}/mojang/v1/user/${nickname}`)
-            .then(({ data: { uuid } }: AxiosResponse) => uuid as string)
-            .catch((error: AxiosError) => {
-                reject(
-                    error?.response?.status === 404 ?
-                        new WrapperError("NOT_FOUND", nickname)
-                        :
-                        error
-                );
-            });
-
-        resolve(uuid);
-    });
+    if (!isNickname) {
+        throw new WrapperError("INVALID_NICKNAME", username);
+    }
+    
+    // @ts-ignore
+    // eslint-disable-next-line no-return-await
+    return isNickname.groups?.uuid ?? await axios.get(`${endpoint}/mojang/v1/user/${username}`)
+        .then(({ data: { uuid } }: AxiosResponse) => uuid as string)
+        .catch((error: AxiosError) => {
+            throw error?.response?.status === 404 ?
+                new WrapperError("NOT_FOUND", username)
+                :
+                error;
+        });
 }
 
 export function escapeColorsClasses(elements: Element[]): any[] {
@@ -122,16 +113,22 @@ export function escapeHtml(elements: Element[]): string {
         .join("");
 }
 
-export function parseDuration(duration: string): DurationInputObject {
-    const keys = ["m", "h", "d"];
+export function parseDuration(duration: string): number {
+    const minute = 60;
+    const hour = 60 * minute;
+    const day = 24 * hour;
 
-    return Object.fromEntries(
-        duration.split(" ")
-            .reverse()
-            .map((value, index) => (
-                [keys[index], Number(value.replace(/[^\d]+/g, ""))]
-            ))
-    );
+    const offset = [minute, hour, day];
+
+    return duration.split(" ")
+        .reverse()
+        .reduce((acc, rawValue, index) => {
+            const value = Number(rawValue.replace(/[^\d]+/g, ""));
+
+            acc += value * offset[index];
+
+            return acc;
+        }, 0);
 }
 
 export function applyPayload<T, P>(context: T, payload: P): void {
@@ -150,7 +147,7 @@ export function pickProperties<T, K extends keyof T>(params: T, properties: K[])
     return copies;
 }
 
-export function convertDateToISO(fullDate: string): string {
+export function convertDate(fullDate: string): number {
     const [date, time] = fullDate.split(", ");
 
     const ISODate = date
@@ -158,5 +155,6 @@ export function convertDateToISO(fullDate: string): string {
         .reverse()
         .join("-");
 
-    return `${ISODate}T${time}`;
+    return new Date(`${ISODate}T${time}`)
+        .getTime();
 }
