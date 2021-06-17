@@ -8,19 +8,19 @@ describe("Skins", () => {
     describe("skinHistory();", () => {
         it("Checking the method for errors", async () => {
             await nameMc.skinHistory({
-                nickname: "MrZillaGold"
+                username: "MrZillaGold"
             });
         });
 
         it("Checking the method for errors with uuid", async () => {
             await nameMc.skinHistory({
-                nickname: "5dcafb2f-bd76-4a85-8b25-3c22079ce358"
+                username: "5dcafb2f-bd76-4a85-8b25-3c22079ce358"
             });
         });
 
         it("Check for an error with an incorrect nickname format", () => {
             assert.rejects(() => nameMc.skinHistory({
-                nickname: "1 2 3"
+                username: "1 2 3"
             }));
         });
     });
@@ -162,7 +162,7 @@ describe("Servers", () => {
         it("Check server like with uuid", async () => {
             await nameMc.checkServerLike({
                 ip: "hypixel.net",
-                nickname: "5dcafb2f-bd76-4a85-8b25-3c22079ce358"
+                username: "5dcafb2f-bd76-4a85-8b25-3c22079ce358"
             })
                 .then(assert.ok);
         });
@@ -170,7 +170,7 @@ describe("Servers", () => {
         it("Check server like with nickname", async () => {
             await nameMc.checkServerLike({
                 ip: "hypixel.net",
-                nickname: "MrZillaGold"
+                username: "MrZillaGold"
             })
                 .then(assert.ok);
         });
