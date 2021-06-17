@@ -9,7 +9,7 @@ import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext 
 
 import { nameRegExp, profileRegExp, getUUID } from "./utils";
 
-import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Nickname, CapeHash, CapeName, CapeType, Model, Transformation } from "./interfaces";
+import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Username, CapeHash, CapeName, CapeType, Model, Transformation, Sort } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
 
 const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36";
@@ -48,45 +48,17 @@ export class NameMC extends DataParser {
         });
 
         if (proxy && cloudProxy) {
-            this.client.interceptors.request.use((config) => {
-                const { url, baseURL, method, data } = config;
-
-                delete config.baseURL;
-
-                config.url = proxy;
-                config.method = "post";
-                config.data = {
-                    ...cloudProxy,
-                    url: `${baseURL}${url}`,
-                    cmd: `request.${method}`,
-                    headers: config.headers,
-                    postData: method === "post" ?
-                        data
-                        :
-                        undefined
-                };
-
-                return config;
-            });
-
-            this.client.interceptors.response.use((response) => {
-                const { data: { solution: { url, response: htmlPage } } } = response;
-
-                response.request.res.responseUrl = url;
-                response.data = htmlPage;
-
-                return response;
-            });
+            this.addCloudProxyInterceptor();
         }
     }
 
     /**
      * Get skin history by nickname
      */
-    skinHistory({ nickname, page = 1 }: IGetSkinHistoryOptions): Promise<SkinContext[]> {
+    skinHistory({ username, page = 1 }: IGetSkinHistoryOptions): Promise<SkinContext[]> {
         return new Promise((resolve, reject) => {
-            if (nickname.match(nameRegExp)) {
-                this.client.get(`/profile/${nickname}`)
+            if (username.match(nameRegExp)) {
+                this.client.get(`/profile/${username}`)
                     .then(({ request, headers, data }) => {
                         if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                             const userId: string = this.getProfileId(data);
@@ -110,14 +82,14 @@ export class NameMC extends DataParser {
                                 .catch(reject);
                         } else {
                             reject(
-                                new WrapperError("NOT_FOUND", [nickname])
+                                new WrapperError("NOT_FOUND", username)
                             );
                         }
                     })
                     .catch(reject);
             } else {
                 reject(
-                    new WrapperError("INVALID_NICKNAME", nickname)
+                    new WrapperError("INVALID_NICKNAME", username)
                 );
             }
         });
@@ -126,31 +98,17 @@ export class NameMC extends DataParser {
     /**
      * Get player info by nickname
      */
-    getPlayer(nickname: Nickname): Promise<PlayerContext> {
-        return new Promise((resolve, reject) => {
-            if (!nickname.match(nameRegExp)) {
-                reject(
-                    new WrapperError("INVALID_NICKNAME", nickname)
-                );
-            }
-
-            this.client.get(`/profile/${nickname}`)
-                .then(({ request, headers, data }) => {
-                    if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
-                        resolve(
-                            new PlayerContext({
-                                data,
-                                ...this
-                            })
-                        );
-                    } else {
-                        reject(
-                            new WrapperError("NOT_FOUND", nickname)
-                        );
-                    }
-                })
-                .catch(reject);
+    async getPlayer(username: Username): Promise<PlayerContext> {
+        const context = new PlayerContext({
+            payload: {
+                username
+            },
+            ...this
         });
+
+        await context.loadPayload();
+
+        return context;
     }
 
     /**
@@ -190,9 +148,9 @@ export class NameMC extends DataParser {
     /**
      * Get player friends by nickname
      */
-    async getFriends(nickname: Nickname): Promise<IFriend[]> {
+    async getFriends(username: Username): Promise<IFriend[]> {
         const endpoint = this.options.getEndpoint({ domain: "api.ashcon.app" });
-        const uuid = await getUUID(endpoint, nickname);
+        const uuid = await getUUID(endpoint, username);
 
         return this.api.profile.friends({
             target: uuid
@@ -252,7 +210,11 @@ export class NameMC extends DataParser {
      */
     getSkins({ tab, page = 1, section = "weekly" }: IGetSkinsOptions<Tab, Section, number | undefined>): Promise<SkinContext[]> {
         return new Promise(((resolve, reject) => {
-            this.client.get(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}?page=${page}`)
+            this.client.get(`/minecraft-skins/${tab}${tab === "trending" || (tab === "tag" && section !== "weekly") ? `/${section}` : ""}`, {
+                params: {
+                    page
+                }
+            })
                 .then(({ data }) => {
                     const skins = this.parseSkins(data);
 
@@ -267,7 +229,7 @@ export class NameMC extends DataParser {
                 .catch((error) => {
                     reject(
                         error?.response?.status === 404 ?
-                            new WrapperError("NOT_FOUND", [section])
+                            new WrapperError("NOT_FOUND", section)
                             :
                             error
                     );
@@ -338,16 +300,62 @@ export class NameMC extends DataParser {
     }
 
     /**
-     * Check server like value by nickname
+     * Check server like value by username
      */
-    checkServerLike({ ip, nickname }: ICheckServerLikeOptions): Promise<boolean> {
+    checkServerLike({ ip, username }: ICheckServerLikeOptions): Promise<boolean> {
         return new ServerContext({
             ...this,
             payload: {
                 ip
             }
         })
-            .checkLike(nickname);
+            .checkLike(username);
+    }
+
+    /**
+     * @hidden
+     */
+    private addCloudProxyInterceptor(): void {
+        const { proxy, cloudProxy } = this.options;
+
+        this.client.interceptors.request.use((config) => {
+            const { url, baseURL, method, data, params } = config;
+
+            delete config.baseURL;
+            delete config.params;
+
+            const searchParams = params ?
+                new URLSearchParams(
+                    Object.entries(params)
+                )
+                    .toString()
+                :
+                null;
+
+            config.url = proxy;
+            config.method = "post";
+            config.data = {
+                ...cloudProxy,
+                url: `${baseURL}${url}${searchParams ? `?${searchParams}` : ""}`,
+                cmd: `request.${method}`,
+                headers: config.headers,
+                postData: method === "post" ?
+                    data
+                    :
+                    undefined
+            };
+
+            return config;
+        });
+
+        this.client.interceptors.response.use((response) => {
+            const { data: { solution: { url, response: htmlPage } } } = response;
+
+            response.request.res.responseUrl = url;
+            response.data = htmlPage;
+
+            return response;
+        });
     }
 }
 
@@ -366,5 +374,6 @@ export {
     CapeHash,
     CapeName,
     CapeType,
-    Model
+    Model,
+    Sort
 };

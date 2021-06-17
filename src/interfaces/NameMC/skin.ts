@@ -1,7 +1,7 @@
-import { Nickname } from "./contexts";
+import { Username } from "./contexts";
 
 export interface IGetSkinHistoryOptions {
-    nickname: Nickname;
+    username: Username;
     page?: number;
 }
 

@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
 import { IContextOptions } from "./context";
-import { Nickname } from "./player";
+import { Username } from "./player";
 
 export interface IServerContextOptions extends IContextOptions {
     data?: string | cheerio.Element | cheerio.Element[];
@@ -32,5 +32,5 @@ export interface IServerContext {
 
 export interface ICheckServerLikeOptions {
     ip: string;
-    nickname: Nickname;
+    username: Username;
 }
