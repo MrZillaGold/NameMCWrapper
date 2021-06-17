@@ -2717,6 +2717,9 @@ img {
 			<a href="enums/model.html" class="tsd-kind-icon">Model</a>
 		</li>
 		<li class=" tsd-kind-enum">
+			<a href="enums/sort.html" class="tsd-kind-icon">Sort</a>
+		</li>
+		<li class=" tsd-kind-enum">
 			<a href="enums/transformation.html" class="tsd-kind-icon">Transformation</a>
 		</li>
 		<li class=" tsd-kind-class">
@@ -2765,10 +2768,10 @@ img {
 			<a href="interfaces/ifriend.html" class="tsd-kind-icon">IFriend</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="interfaces/ifriendsparams.html" class="tsd-kind-icon">IFriends<wbr>Params</a>
+			<a href="interfaces/igetendpointoptions.html" class="tsd-kind-icon">IGet<wbr>Endpoint<wbr>Options</a>
 		</li>
 		<li class=" tsd-kind-interface">
-			<a href="interfaces/igetendpointoptions.html" class="tsd-kind-icon">IGet<wbr>Endpoint<wbr>Options</a>
+			<a href="interfaces/igetfollowersoptions.html" class="tsd-kind-icon">IGet<wbr>Followers<wbr>Options</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/igetskinhistoryoptions.html" class="tsd-kind-icon">IGet<wbr>Skin<wbr>History<wbr>Options</a>
@@ -2778,9 +2781,6 @@ img {
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/imethods.html" class="tsd-kind-icon">IMethods</a>
-		</li>
-		<li class=" tsd-kind-interface">
-			<a href="interfaces/inickname.html" class="tsd-kind-icon">INickname</a>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/ioptions.html" class="tsd-kind-icon">IOptions</a>
@@ -2821,8 +2821,14 @@ img {
 		<li class=" tsd-kind-interface">
 			<a href="interfaces/itransformskinoptions.html" class="tsd-kind-icon">ITransform<wbr>Skin<wbr>Options</a>
 		</li>
+		<li class=" tsd-kind-interface">
+			<a href="interfaces/iusername.html" class="tsd-kind-icon">IUsername</a>
+		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="modules.html#contextunion" class="tsd-kind-icon">Context<wbr>Union</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="modules.html#followerssort" class="tsd-kind-icon">Followers<wbr>Sort</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="modules.html#hash" class="tsd-kind-icon">Hash</a>
@@ -2834,16 +2840,19 @@ img {
 			<a href="modules.html#modelunion" class="tsd-kind-icon">Model<wbr>Union</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
-			<a href="modules.html#nickname" class="tsd-kind-icon">Nickname</a>
+			<a href="modules.html#section" class="tsd-kind-icon">Section</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
-			<a href="modules.html#section" class="tsd-kind-icon">Section</a>
+			<a href="modules.html#sortunion" class="tsd-kind-icon">Sort<wbr>Union</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="modules.html#tab" class="tsd-kind-icon">Tab</a>
 		</li>
 		<li class=" tsd-kind-type-alias">
 			<a href="modules.html#transformationunion" class="tsd-kind-icon">Transformation<wbr>Union</a>
+		</li>
+		<li class=" tsd-kind-type-alias">
+			<a href="modules.html#username" class="tsd-kind-icon">Username</a>
 		</li>
 	</ul>
 </nav>
@@ -2863,14 +2872,20 @@ img {
 				</thead>
 			</table>
 			<p align="center">
+				<a href="https://npmjs.com/package/namemcwrapper">
+					<img src="https://img.shields.io/npm/v/namemcwrapper?label=version&logo=npm&color=ligthgreen" alt="Version">
+				</a>
+				<a href="https://npmjs.com/package/namemcwrapper">
+					<img src="https://img.shields.io/npm/dt/namemcwrapper?&logo=npm" alt="Version">
+				</a>
 				<a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
-					<img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="">
+					<img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="Build Status">
 				</a>
 				<a href="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper">
-					<img src="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper.svg" alt="">
+					<img src="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper.svg" alt="WakaTime Stats">
 				</a>
 				<a href="https://discord.gg/99sV5b4RV3">
-					<img src="https://img.shields.io/discord/714407016604369008.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" alt="">
+					<img src="https://img.shields.io/discord/714407016604369008.svg?label=&logo=discord&logoColor=ffffff&color=5865F2&labelColor=5865F2" alt="Discord Server">
 				</a>
 			</p>
 			<a href="#install-📦" id="install-📦" style="color: inherit; text-decoration: none;">
@@ -2934,6 +2949,7 @@ img {
 							<li class="tsd-kind-enum"><a href="enums/capename.html" class="tsd-kind-icon">Cape<wbr>Name</a></li>
 							<li class="tsd-kind-enum"><a href="enums/capetype.html" class="tsd-kind-icon">Cape<wbr>Type</a></li>
 							<li class="tsd-kind-enum"><a href="enums/model.html" class="tsd-kind-icon">Model</a></li>
+							<li class="tsd-kind-enum"><a href="enums/sort.html" class="tsd-kind-icon">Sort</a></li>
 							<li class="tsd-kind-enum"><a href="enums/transformation.html" class="tsd-kind-icon">Transformation</a></li>
 						</ul>
 					</section>
@@ -2960,12 +2976,11 @@ img {
 							<li class="tsd-kind-interface"><a href="interfaces/icloudproxyresponse.html" class="tsd-kind-icon">ICloud<wbr>Proxy<wbr>Response</a></li>
 							<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/icontextoptions.html" class="tsd-kind-icon">IContext<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/ifriend.html" class="tsd-kind-icon">IFriend</a></li>
-							<li class="tsd-kind-interface"><a href="interfaces/ifriendsparams.html" class="tsd-kind-icon">IFriends<wbr>Params</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/igetendpointoptions.html" class="tsd-kind-icon">IGet<wbr>Endpoint<wbr>Options</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/igetfollowersoptions.html" class="tsd-kind-icon">IGet<wbr>Followers<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/igetskinhistoryoptions.html" class="tsd-kind-icon">IGet<wbr>Skin<wbr>History<wbr>Options</a></li>
 							<li class="tsd-kind-interface tsd-has-type-parameter"><a href="interfaces/igetskinsoptions.html" class="tsd-kind-icon">IGet<wbr>Skins<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/imethods.html" class="tsd-kind-icon">IMethods</a></li>
-							<li class="tsd-kind-interface"><a href="interfaces/inickname.html" class="tsd-kind-icon">INickname</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/ioptions.html" class="tsd-kind-icon">IOptions</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/iparams.html" class="tsd-kind-icon">IParams</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/iplayercontext.html" class="tsd-kind-icon">IPlayer<wbr>Context</a></li>
@@ -2979,19 +2994,22 @@ img {
 							<li class="tsd-kind-interface"><a href="interfaces/iskincontext.html" class="tsd-kind-icon">ISkin<wbr>Context</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/iskincontextoptions.html" class="tsd-kind-icon">ISkin<wbr>Context<wbr>Options</a></li>
 							<li class="tsd-kind-interface"><a href="interfaces/itransformskinoptions.html" class="tsd-kind-icon">ITransform<wbr>Skin<wbr>Options</a></li>
+							<li class="tsd-kind-interface"><a href="interfaces/iusername.html" class="tsd-kind-icon">IUsername</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
 						<h3>Type aliases</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-type-alias"><a href="modules.html#contextunion" class="tsd-kind-icon">Context<wbr>Union</a></li>
+							<li class="tsd-kind-type-alias"><a href="modules.html#followerssort" class="tsd-kind-icon">Followers<wbr>Sort</a></li>
 							<li class="tsd-kind-type-alias"><a href="modules.html#hash" class="tsd-kind-icon">Hash</a></li>
 							<li class="tsd-kind-type-alias"><a href="modules.html#methodgroup" class="tsd-kind-icon">Method<wbr>Group</a></li>
 							<li class="tsd-kind-type-alias"><a href="modules.html#modelunion" class="tsd-kind-icon">Model<wbr>Union</a></li>
-							<li class="tsd-kind-type-alias"><a href="modules.html#nickname" class="tsd-kind-icon">Nickname</a></li>
 							<li class="tsd-kind-type-alias"><a href="modules.html#section" class="tsd-kind-icon">Section</a></li>
+							<li class="tsd-kind-type-alias"><a href="modules.html#sortunion" class="tsd-kind-icon">Sort<wbr>Union</a></li>
 							<li class="tsd-kind-type-alias"><a href="modules.html#tab" class="tsd-kind-icon">Tab</a></li>
 							<li class="tsd-kind-type-alias"><a href="modules.html#transformationunion" class="tsd-kind-icon">Transformation<wbr>Union</a></li>
+							<li class="tsd-kind-type-alias"><a href="modules.html#username" class="tsd-kind-icon">Username</a></li>
 						</ul>
 					</section>
 				</div>
@@ -3005,7 +3023,17 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Context<wbr>Union<span class="tsd-signature-symbol">:</span> <a href="interfaces/iskincontext.html" class="tsd-signature-type" data-tsd-kind="Interface">ISkinContext</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/icapecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">ICapeContext</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/irenderscontext.html" class="tsd-signature-type" data-tsd-kind="Interface">IRendersContext</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/iplayercontext.html" class="tsd-signature-type" data-tsd-kind="Interface">IPlayerContext</a><span class="tsd-signature-symbol"> | </span><a href="interfaces/iservercontext.html" class="tsd-signature-type" data-tsd-kind="Interface">IServerContext</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/contexts/index.ts#L14">interfaces/NameMC/contexts/index.ts:14</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/index.ts#L14">interfaces/NameMC/contexts/index.ts:14</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias">
+				<a name="followerssort" class="tsd-anchor"></a>
+				<h3>Followers<wbr>Sort</h3>
+				<div class="tsd-signature tsd-kind-icon">Followers<wbr>Sort<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;profile&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;date&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;following&quot;</span><span class="tsd-signature-symbol">, </span><a href="enums/sort.html" class="tsd-signature-type" data-tsd-kind="Enumeration">Sort</a><span class="tsd-signature-symbol"> | </span><a href="modules.html#sortunion" class="tsd-signature-type" data-tsd-kind="Type alias">SortUnion</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/player.ts#L119">interfaces/NameMC/contexts/player.ts:119</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3015,7 +3043,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/contexts/skin.ts#L21">interfaces/NameMC/contexts/skin.ts:21</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/skin.ts#L21">interfaces/NameMC/contexts/skin.ts:21</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3025,7 +3053,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Method<wbr>Group<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;profile&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;server&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/API/request.ts#L1">interfaces/API/request.ts:1</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/API/request.ts#L1">interfaces/API/request.ts:1</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3035,17 +3063,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Model<wbr>Union<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;unknown&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;classic&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;slim&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/contexts/skin.ts#L19">interfaces/NameMC/contexts/skin.ts:19</a></li>
-					</ul>
-				</aside>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-type-alias">
-				<a name="nickname" class="tsd-anchor"></a>
-				<h3>Nickname</h3>
-				<div class="tsd-signature tsd-kind-icon">Nickname<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/contexts/player.ts#L35">interfaces/NameMC/contexts/player.ts:35</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/skin.ts#L19">interfaces/NameMC/contexts/skin.ts:19</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3055,7 +3073,17 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Section<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;daily&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;weekly&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;monthly&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;top&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/skin.ts#L9">interfaces/NameMC/skin.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/skin.ts#L15">interfaces/NameMC/skin.ts:15</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias">
+				<a name="sortunion" class="tsd-anchor"></a>
+				<h3>Sort<wbr>Union</h3>
+				<div class="tsd-signature tsd-kind-icon">Sort<wbr>Union<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;asc&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;desc&quot;</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/player.ts#L117">interfaces/NameMC/contexts/player.ts:117</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3065,7 +3093,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Tab<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;trending&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;new&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;random&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;tag&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/skin.ts#L8">interfaces/NameMC/skin.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/skin.ts#L14">interfaces/NameMC/skin.ts:14</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3075,7 +3103,17 @@ img {
 				<div class="tsd-signature tsd-kind-icon">Transformation<wbr>Union<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;grayscale&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;invert&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rotate-hue-180&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rotate-head-left&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;rotate-head-right&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-1&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-2&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-3&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-mask-4&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-pumpkin-creeper&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;hat-santa&quot;</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/interfaces/NameMC/contexts/skin.ts#L40">interfaces/NameMC/contexts/skin.ts:40</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/skin.ts#L40">interfaces/NameMC/contexts/skin.ts:40</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-type-alias">
+				<a name="username" class="tsd-anchor"></a>
+				<h3>Username</h3>
+				<div class="tsd-signature tsd-kind-icon">Username<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/interfaces/NameMC/contexts/player.ts#L104">interfaces/NameMC/contexts/player.ts:104</a></li>
 					</ul>
 				</aside>
 			</section>

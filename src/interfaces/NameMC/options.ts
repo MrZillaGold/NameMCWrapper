@@ -27,9 +27,21 @@ export interface IOptions {
      * @see {@link https://github.com/NoahCardoza/CloudProxy#-requestget | CloudProxy Request Get options description}
      */
     cloudProxy?: {
+        /**
+         * Session ID
+         */
         session?: string;
+        /**
+         * Headers for requests
+         */
         headers?: Record<string, any>;
+        /**
+         * Max request timeout
+         */
         maxTimeout?: number;
+        /**
+         * Cookies for requests
+         */
         cookies?: ICloudProxyCookie[];
     };
     /**

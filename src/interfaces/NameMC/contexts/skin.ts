@@ -52,19 +52,55 @@ export type TransformationUnion =
     | "hat-santa";
 
 export interface ISkinContext {
+    /**
+     * Skin hash
+     */
     hash: Hash;
+    /**
+     * Skin model
+     */
     model: Model | ModelUnion;
+    /**
+     * Skin url
+     */
     url: string;
+    /**
+     * Skin transformation type
+     */
     transformation: Transformation | TransformationUnion | null;
+    /**
+     * Skin renders
+     */
     renders: IRendersContext;
+    /**
+     * Skin rating
+     */
     rating: number;
+    /**
+     * Skin name
+     */
     name: string;
+    /**
+     * Skin tags
+     */
     tags: string[];
+    /**
+     * Skin creation timestamp
+     */
     createdAt: number;
 }
 
 export interface ITransformSkinOptions {
+    /**
+     * Skin hash
+     */
     skin: Hash;
+    /**
+     * Skin transformation type
+     */
     transformation?: Transformation | TransformationUnion;
+    /**
+     * Skin model
+     */
     model?: Model | ModelUnion;
 }

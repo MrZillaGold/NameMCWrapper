@@ -11,7 +11,7 @@ import { ISkinContext, ISkinContextOptions, Model, Transformation, Transformatio
 export class SkinContext extends Context<ISkinContext> implements ISkinContext {
 
     /**
-     * SKin hash
+     * Skin hash
      */
     readonly hash: ISkinContext["hash"] = "";
     /**

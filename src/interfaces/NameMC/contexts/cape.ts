@@ -2,13 +2,28 @@ import { IContextOptions } from "./context";
 import { Hash } from "./skin";
 
 export interface ICapeContextOptions extends IContextOptions<ICapeContext> {
+    /**
+     * Cape hash
+     */
     hash: Hash;
 }
 
 export interface ICapeContext {
+    /**
+     * Cape hash
+     */
     hash: string;
+    /**
+     * Cape url
+     */
     url: string;
+    /**
+     * Cape name
+     */
     name: CapeName;
+    /**
+     * Cape type
+     */
     type: CapeType;
 }
 

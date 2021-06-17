@@ -13,7 +13,7 @@ const { FOLLOWING, FOLLOWERS } = FollowersSection;
 export class PlayerContext extends Context<IPlayerContext> implements IPlayerContext {
 
     /**
-     * Player NameMC Profile ID
+     * Profile ID
      */
     readonly id: IPlayerContext["id"] = 0;
     /**
@@ -25,7 +25,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
      */
     readonly username: IPlayerContext["username"] = "";
     /**
-     * NameMC profile short url
+     * Profile short url
      */
     readonly url: IPlayerContext["url"] = "";
     /**

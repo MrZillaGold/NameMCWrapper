@@ -9,30 +9,95 @@ export interface IPlayerContextOptions extends IContextOptions {
 }
 
 export interface IPlayerContext {
+    /**
+     * Profile ID
+     */
     id: number;
+    /**
+     * Player uuid
+     */
     uuid: string;
+    /**
+     * Player username
+     */
     username: string;
+    /**
+     * Profile views
+     */
     views: number;
+    /**
+     * Profile short url
+     */
     url: string;
+    /**
+     * Skin history
+     */
     skins: SkinContext[];
+    /**
+     * Player capes
+     */
     capes: CapeContext[];
+    /**
+     * Player friends
+     */
     friends: IFriend[];
+    /**
+     * Nickname history
+     */
     names: IUsername[];
+    /**
+     * Player favorite servers
+     */
     servers: ServerContext[];
+    /**
+     * Player followers
+     */
     followers: PlayerContext[];
+    /**
+     * Player following
+     */
     following: PlayerContext[];
+    /**
+     * Following date, available when receiving player followers/following
+     */
     followingDate: number;
+    /**
+     * Badlion Client statistics
+     *
+     * @see {@link https://www.badlion.net/forum/thread/309559 | Announce from Badlion Client}
+     */
     badlion: IBadlion | null;
 }
 
 export interface IBadlion {
+    /**
+     * Total time spent in the game
+     */
     play_time: number;
+    /**
+     * Login streak
+     */
     login_streak: {
+        /**
+         * Current value
+         */
         current: number;
+        /**
+         * Max value
+         */
         max: number;
     };
+    /**
+     * Last game server
+     */
     last_server: string;
+    /**
+     * Last online
+     */
     last_online: number;
+    /**
+     * Used game version
+     */
     version: string;
 }
 

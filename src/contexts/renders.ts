@@ -84,6 +84,9 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
         applyPayload(this, rendersOptions);
     }
 
+    /**
+     * Get body render model
+     */
     get body(): IRendersContext["body"] {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { endpoint, options, client, api, payload, ...params } = this;
@@ -96,6 +99,9 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
         };
     }
 
+    /**
+     * Get face render model url
+     */
     get face(): IRendersContext["face"] {
         const { endpoint, skin, overlay, scale } = this;
 

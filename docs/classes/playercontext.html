@@ -2717,7 +2717,19 @@ img {
 					<a href="playercontext.html#capes" class="tsd-kind-icon">capes</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="playercontext.html#followers" class="tsd-kind-icon">followers</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="playercontext.html#following" class="tsd-kind-icon">following</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="playercontext.html#followingdate" class="tsd-kind-icon">following<wbr>Date</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="playercontext.html#friends" class="tsd-kind-icon">friends</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="playercontext.html#id" class="tsd-kind-icon">id</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class">
 					<a href="playercontext.html#names" class="tsd-kind-icon">names</a>
@@ -2748,6 +2760,12 @@ img {
 				</li>
 				<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 					<a href="playercontext.html#usesbadlion" class="tsd-kind-icon">uses<wbr>Badlion</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="playercontext.html#getfollowers" class="tsd-kind-icon">get<wbr>Followers</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="playercontext.html#getfollowing" class="tsd-kind-icon">get<wbr>Following</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="playercontext.html#loadpayload" class="tsd-kind-icon">load<wbr>Payload</a>
@@ -2790,7 +2808,11 @@ img {
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="playercontext.html#api" class="tsd-kind-icon">api</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#badlion" class="tsd-kind-icon">badlion</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#capes" class="tsd-kind-icon">capes</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#followers" class="tsd-kind-icon">followers</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#following" class="tsd-kind-icon">following</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#followingdate" class="tsd-kind-icon">following<wbr>Date</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#friends" class="tsd-kind-icon">friends</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#id" class="tsd-kind-icon">id</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#names" class="tsd-kind-icon">names</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="playercontext.html#options" class="tsd-kind-icon">options</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class"><a href="playercontext.html#servers" class="tsd-kind-icon">servers</a></li>
@@ -2811,6 +2833,8 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="playercontext.html#getfollowers" class="tsd-kind-icon">get<wbr>Followers</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="playercontext.html#getfollowing" class="tsd-kind-icon">get<wbr>Following</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="playercontext.html#loadpayload" class="tsd-kind-icon">load<wbr>Payload</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="playercontext.html#tojson" class="tsd-kind-icon">toJSON</a></li>
 						</ul>
@@ -2827,7 +2851,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from Context.api</p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/context.ts#L19">contexts/context.ts:19</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/context.ts#L19">contexts/context.ts:19</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2843,7 +2867,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#badlion">badlion</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L53">contexts/player.ts:53</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L72">contexts/player.ts:72</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2864,12 +2888,60 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#capes">capes</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L39">contexts/player.ts:39</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L46">contexts/player.ts:46</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
 						<p>Player capes</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="followers" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> followers</h3>
+				<div class="tsd-signature tsd-kind-icon">followers<span class="tsd-signature-symbol">:</span> <a href="playercontext.html" class="tsd-signature-type" data-tsd-kind="Class">PlayerContext</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#followers">followers</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L58">contexts/player.ts:58</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Player followers</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="following" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> following</h3>
+				<div class="tsd-signature tsd-kind-icon">following<span class="tsd-signature-symbol">:</span> <a href="playercontext.html" class="tsd-signature-type" data-tsd-kind="Class">PlayerContext</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#following">following</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L62">contexts/player.ts:62</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Player following</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="followingdate" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> following<wbr>Date</h3>
+				<div class="tsd-signature tsd-kind-icon">following<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#followingdate">followingDate</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L66">contexts/player.ts:66</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Following date, available when receiving player followers/following</p>
 					</div>
 				</div>
 			</section>
@@ -2880,7 +2952,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#friends">friends</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L43">contexts/player.ts:43</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L50">contexts/player.ts:50</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2890,13 +2962,29 @@ img {
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="id" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> id</h3>
+				<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#id">id</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L18">contexts/player.ts:18</a></li>
+					</ul>
+				</aside>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Profile ID</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 				<a name="names" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> names</h3>
-				<div class="tsd-signature tsd-kind-icon">names<span class="tsd-signature-symbol">:</span> <a href="../interfaces/inickname.html" class="tsd-signature-type" data-tsd-kind="Interface">INickname</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+				<div class="tsd-signature tsd-kind-icon">names<span class="tsd-signature-symbol">:</span> <a href="../interfaces/iusername.html" class="tsd-signature-type" data-tsd-kind="Interface">IUsername</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#names">names</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L31">contexts/player.ts:31</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L38">contexts/player.ts:38</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2912,7 +3000,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from Context.options</p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/context.ts#L15">contexts/context.ts:15</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/context.ts#L15">contexts/context.ts:15</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2928,7 +3016,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#servers">servers</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L47">contexts/player.ts:47</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L54">contexts/player.ts:54</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2944,7 +3032,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#skins">skins</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L35">contexts/player.ts:35</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L42">contexts/player.ts:42</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2960,12 +3048,12 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#url">url</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L23">contexts/player.ts:23</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L30">contexts/player.ts:30</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>NameMC profile short url</p>
+						<p>Profile short url</p>
 					</div>
 				</div>
 			</section>
@@ -2976,7 +3064,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#username">username</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L19">contexts/player.ts:19</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L26">contexts/player.ts:26</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -2992,7 +3080,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#uuid">uuid</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L15">contexts/player.ts:15</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L22">contexts/player.ts:22</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -3008,7 +3096,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Implementation of <a href="../interfaces/iplayercontext.html">IPlayerContext</a>.<a href="../interfaces/iplayercontext.html#views">views</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L27">contexts/player.ts:27</a></li>
+						<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L34">contexts/player.ts:34</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -3030,7 +3118,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L250">contexts/player.ts:250</a></li>
+								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L267">contexts/player.ts:267</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3052,7 +3140,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L257">contexts/player.ts:257</a></li>
+								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L274">contexts/player.ts:274</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3068,6 +3156,62 @@ img {
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getfollowers" class="tsd-anchor"></a>
+				<h3>get<wbr>Followers</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Followers<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/igetfollowersoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IGetFollowersOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="playercontext.html" class="tsd-signature-type" data-tsd-kind="Class">PlayerContext</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L324">contexts/player.ts:324</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Get player followers</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>options: <a href="../interfaces/igetfollowersoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IGetFollowersOptions</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="playercontext.html" class="tsd-signature-type" data-tsd-kind="Class">PlayerContext</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getfollowing" class="tsd-anchor"></a>
+				<h3>get<wbr>Following</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Following<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/igetfollowersoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IGetFollowersOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="playercontext.html" class="tsd-signature-type" data-tsd-kind="Class">PlayerContext</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L334">contexts/player.ts:334</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Get player following</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>options: <a href="../interfaces/igetfollowersoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IGetFollowersOptions</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="playercontext.html" class="tsd-signature-type" data-tsd-kind="Class">PlayerContext</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 				<a name="loadpayload" class="tsd-anchor"></a>
 				<h3>load<wbr>Payload</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -3077,7 +3221,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/player.ts#L264">contexts/player.ts:264</a></li>
+								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/player.ts#L281">contexts/player.ts:281</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3100,7 +3244,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from Context.toJSON</p>
 							<ul>
-								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/a9974df/src/contexts/context.ts#L52">contexts/context.ts:52</a></li>
+								<li>Defined in <a href="https://github.com/MrZillaGold/NameMCWrapper/blob/7c1e3a6/src/contexts/context.ts#L52">contexts/context.ts:52</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
