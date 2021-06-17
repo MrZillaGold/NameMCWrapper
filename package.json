@@ -41,8 +41,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.10",
-    "inspectable": "^1.1.1",
-    "moment": "^2.29.1"
+    "inspectable": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
