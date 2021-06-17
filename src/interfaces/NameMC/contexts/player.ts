@@ -9,6 +9,7 @@ export interface IPlayerContextOptions extends IContextOptions {
 }
 
 export interface IPlayerContext {
+    id: number;
     uuid: string;
     username: string;
     views: number;

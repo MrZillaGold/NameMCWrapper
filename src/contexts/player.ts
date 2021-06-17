@@ -13,6 +13,10 @@ const { FOLLOWING, FOLLOWERS } = FollowersSection;
 export class PlayerContext extends Context<IPlayerContext> implements IPlayerContext {
 
     /**
+     * Player NameMC Profile ID
+     */
+    readonly id: IPlayerContext["id"] = 0;
+    /**
      * Player uuid
      */
     readonly uuid: IPlayerContext["uuid"] = "";
@@ -237,6 +241,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
         const [uuid, , url, views] = baseInfo;
 
+        this.id = Number(url.split(".").pop());
         this.uuid = uuid;
         this.username = usernameHistory[usernameHistory.length - 1].username;
         this.url = url;
@@ -278,7 +283,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
             return;
         }
 
-        if (!this.username || !this.uuid || !this.url) {
+        if (!this.username || !this.uuid || !this.url || !this.id) {
             const username = this.username || this.uuid;
 
             if (!username.match(nameRegExp)) {
@@ -422,6 +427,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
      */
     [kSerializeData](): IPlayerContext {
         return pickProperties(this, [
+            "id",
             "uuid",
             "username",
             "url",
