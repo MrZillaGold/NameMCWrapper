@@ -1,12 +1,4 @@
-import { Nickname } from "../../NameMC";
-import { IParams } from "./";
-
-export interface IFriendsParams extends IParams {
-    /**
-     * Return html instead array
-     */
-    html?: boolean;
-}
+import { Username } from "../../NameMC";
 
 export interface IFriend {
     /**
@@ -16,5 +8,5 @@ export interface IFriend {
     /**
      * Player nickname
      */
-    name: Nickname;
+    name: Username;
 }

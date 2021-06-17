@@ -1,18 +1,18 @@
-import { IFriend, IFriendsParams } from "./profile";
+import { IFriend } from "./profile";
 import { IServerLikesParams } from "./server";
 
 export interface IMethods {
     /**
-     * API Profile section methods
+     * Profile API section methods
      */
     profile: {
         /**
          * Get player friends
          */
-        friends(params: IFriendsParams): Promise<IFriend[]>;
+        friends(params: IParams): Promise<IFriend[]>;
     };
     /**
-     * API Server section methods
+     * Server API section methods
      */
     server: {
         /**
