@@ -16,5 +16,6 @@ export const {
     CapeHash,
     CapeName,
     CapeType,
-    Model
+    Model,
+    Sort
 } = NameMCWrapper;

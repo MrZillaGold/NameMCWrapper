@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-import { CapeContext, ServerContext, SkinContext } from "../../../contexts";
+import { CapeContext, PlayerContext, ServerContext, SkinContext } from "../../../contexts";
 import { IContextOptions } from "./context";
 import { IFriend } from "../../API";
 
@@ -16,8 +16,11 @@ export interface IPlayerContext {
     skins: SkinContext[];
     capes: CapeContext[];
     friends: IFriend[];
-    names: INickname[];
+    names: IUsername[];
     servers: ServerContext[];
+    followers: PlayerContext[];
+    following: PlayerContext[];
+    followingDate: number;
     badlion: IBadlion | null;
 }
 
@@ -32,10 +35,50 @@ export interface IBadlion {
     version: string;
 }
 
-export type Nickname = string;
+export type Username = string;
 
-export interface INickname {
-    nickname: Nickname;
+export interface IUsername {
+    username: Username;
     changed_at: string | null;
     timestamp: number | null;
+}
+
+export enum Sort {
+    ASC = "asc",
+    DESC = "desc"
+}
+
+export type SortUnion = "asc" | "desc";
+
+export type FollowersSort = Partial<Record<"profile" | "date" | "following", Sort | SortUnion>>;
+
+export interface IGetFollowersOptions {
+    /**
+     * Sort filter
+     */
+    sort?: FollowersSort;
+    /**
+     * Page number
+     */
+    page?: number;
+}
+
+/**
+ * @hidden
+ */
+export enum FollowersSection {
+    FOLLOWING = "following",
+    FOLLOWERS = "followers"
+}
+
+/**
+ * @hidden
+ */
+export type FollowersSectionUnion = "following" | "followers";
+
+/**
+ * @hidden
+ */
+export interface ILoadFollowersOptions extends IGetFollowersOptions {
+    section: FollowersSection | FollowersSectionUnion;
 }

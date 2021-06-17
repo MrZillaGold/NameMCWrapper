@@ -1,11 +1,14 @@
 import * as cheerio from "cheerio";
-import * as moment from "moment";
+import { Node } from "cheerio";
 
+import { WrapperError } from "../WrapperError";
 import { Context, SkinContext, CapeContext, ServerContext } from "./";
 
-import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDateToISO } from "../utils";
+import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDate, nameRegExp, profileRegExp } from "../utils";
 
-import { IPlayerContext, IPlayerContextOptions } from "../interfaces";
+import { FollowersSection, IGetFollowersOptions, ILoadFollowersOptions, IPlayerContext, IPlayerContextOptions } from "../interfaces";
+
+const { FOLLOWING, FOLLOWERS } = FollowersSection;
 
 export class PlayerContext extends Context<IPlayerContext> implements IPlayerContext {
 
@@ -46,6 +49,18 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
      */
     readonly servers: IPlayerContext["servers"] = [];
     /**
+     * Player followers
+     */
+    readonly followers: IPlayerContext["followers"] = [];
+    /**
+     * Player following
+     */
+    readonly following: IPlayerContext["following"] = [];
+    /**
+     * Following date, available when receiving player followers/following
+     */
+    readonly followingDate: IPlayerContext["followingDate"] = 0;
+    /**
      * Badlion Client statistics
      *
      * @see {@link https://www.badlion.net/forum/thread/309559 | Announce from Badlion Client}
@@ -77,8 +92,8 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 ...this,
                 payload: {
                     hash,
-                    model, //@ts-ignore
-                    createdAt: moment(convertDateToISO(title)).unix()
+                    model,
+                    createdAt: convertDate(title)
                 }
             }))
             .get();
@@ -126,13 +141,10 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
             switch (index) {
                 case 0: {
-                    return moment.duration(
-                        parseDuration(
-                            $("div.col-12")
-                                .text()
-                        )
-                    )
-                        .asSeconds();
+                    return parseDuration(
+                        $("div.col-12")
+                            .text()
+                    );
                 }
                 case 1: {
                     if (element?.current) {
@@ -164,7 +176,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
             }
         });
 
-        const [baseInfoRaw, nicknameHistoryRaw] = $("div.card.mb-3 > div.card-body")
+        const [baseInfoRaw, usernameHistoryRaw] = $("div.card.mb-3 > div.card-body")
             .map((index, element) => {
                 const $ = cheerio.load(element);
 
@@ -198,7 +210,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
         })
             .get() as [string, string, string, number];
 
-        const nicknameHistory = nicknameHistoryRaw.map((index, element) => {
+        const usernameHistory = usernameHistoryRaw.map((index, element) => {
             const $ = cheerio.load(element);
 
             const name = $("div.col > a").get(0);
@@ -206,11 +218,11 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
             if (name) {
                 // @ts-ignore
-                const { children: [{ data: nickname }] } = name;
+                const { children: [{ data: username }] } = name;
                 const changed_at = time?.attribs?.datetime || null;
 
                 return {
-                    nickname,
+                    username,
                     changed_at,
                     timestamp: changed_at ?
                         new Date(changed_at)
@@ -226,10 +238,10 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
         const [uuid, , url, views] = baseInfo;
 
         this.uuid = uuid;
-        this.username = nicknameHistory[nicknameHistory.length - 1].nickname;
+        this.username = usernameHistory[usernameHistory.length - 1].username;
         this.url = url;
         this.views = views;
-        this.names = nicknameHistory;
+        this.names = usernameHistory;
 
         if (badlion.length) {
             const [play_time, login_streak, last_server, last_online, version] = badlion;
@@ -266,15 +278,143 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
             return;
         }
 
+        if (!this.username || !this.uuid || !this.url) {
+            const username = this.username || this.uuid;
+
+            if (!username.match(nameRegExp)) {
+                throw new WrapperError("INVALID_NICKNAME", username);
+            }
+
+            await this.client.get(`/profile/${username}`)
+                .then(({ request, headers, data }) => {
+                    if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
+                        this.payload = new PlayerContext({
+                            data,
+                            ...this
+                        })
+                            .toJSON();
+
+                        this.setupPayload();
+                    } else {
+                        throw new WrapperError("NOT_FOUND", username);
+                    }
+                });
+        }
+
         this.payload = await this.api.profile.friends({
             target: this.uuid
         })
             .then((friends) => ({
                 friends
             }));
-        this.extended = true;
 
         this.setupPayload();
+
+        this.extended = true;
+    }
+
+    /**
+     * Get player followers
+     */
+    getFollowers(options: IGetFollowersOptions): Promise<IPlayerContext["followers"]> {
+        return this.loadFollowers({
+            ...options,
+            section: FOLLOWERS
+        });
+    }
+
+    /**
+     * Get player following
+     */
+    getFollowing(options: IGetFollowersOptions): Promise<IPlayerContext["followers"]> {
+        return this.loadFollowers({
+            ...options,
+            section: FOLLOWING
+        });
+    }
+
+    /**
+     * @hidden
+     */
+    private async loadFollowers({ section, page = 1, sort = {} }: ILoadFollowersOptions): Promise<IPlayerContext["followers"]> {
+        if (!this.extended) {
+            await this.loadPayload();
+        }
+
+        const filter = Object.entries(sort)
+            .map((filter) => filter.join(":"))
+            .join(",");
+
+        const loadedFollowers = await this.client.get<string>(`/profile/${this.uuid}/${section}`, {
+            params: {
+                page,
+                sort: filter
+            }
+        })
+            .then(({ data }) => (
+                this.parseFollowers(data)
+            ));
+
+        const followers = loadedFollowers.reduce<IPlayerContext["followers"]>((acc, follower) => {
+            if (!acc.filter(({ username }) => username === follower.username).length) {
+                acc.push(follower);
+            }
+
+            return acc;
+        }, this[section]);
+
+        this.payload = {
+            [section]: followers
+        };
+
+        this.setupPayload();
+
+        return loadedFollowers;
+    }
+
+    /**
+     * @hidden
+     */
+    private parseFollowers(data: string): IPlayerContext["followers"] {
+        const $ = cheerio.load(data);
+
+        const uuid = $("tbody > input[name='profile']")
+            .map((index, { attribs: { value: uuid } }) => (
+                uuid
+            ))
+            .get();
+
+        const names = $("tbody > tr")
+            .map((index, element) => {
+                const $ = cheerio.load(element.children);
+
+                const children = $("td");
+
+                const name = cheerio.load(children.get(2));
+                const username = name.text();
+
+                // @ts-ignore
+                const { attribs: { datetime } } = children.get(3)
+                    .firstChild as Node;
+
+                return {
+                    username,
+                    date: new Date(datetime)
+                        .getTime()
+                };
+            })
+            .get();
+
+        return names.map(({ username, date: followingDate }, index) => (
+            new PlayerContext({
+                ...this,
+                payload: {
+                    username,
+                    followingDate,
+                    uuid: uuid[index]
+                }
+            })
+        ));
     }
 
     /**
@@ -290,8 +430,11 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
             "skins",
             "capes",
             "friends",
-            "servers",
-            "badlion"
+            "followers",
+            "following",
+            "followingDate",
+            "badlion",
+            "servers"
         ]);
     }
 }
