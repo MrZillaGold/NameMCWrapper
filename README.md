@@ -9,14 +9,20 @@
 | ------------------------------------------------------------------------- |
 
 <p align="center">
+ <a href="https://npmjs.com/package/namemcwrapper">
+   <img src="https://img.shields.io/npm/v/namemcwrapper?label=version&logo=npm&color=ligthgreen" alt="Version">
+ </a>
+ <a href="https://npmjs.com/package/namemcwrapper">
+   <img src="https://img.shields.io/npm/dt/namemcwrapper?&logo=npm" alt="Version">
+ </a>
  <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
-   <img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="">
+   <img src="https://api.travis-ci.com/MrZillaGold/NameMCWrapper.svg" alt="Build Status">
  </a>
  <a href="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper">
-   <img src="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper.svg" alt="">
+   <img src="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper.svg" alt="WakaTime Stats">
  </a>
  <a href="https://discord.gg/99sV5b4RV3">
-   <img src="https://img.shields.io/discord/714407016604369008.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2" alt="">
+   <img src="https://img.shields.io/discord/714407016604369008.svg?label=&logo=discord&logoColor=ffffff&color=5865F2&labelColor=5865F2" alt="Discord Server">
  </a>
 </p>
 
