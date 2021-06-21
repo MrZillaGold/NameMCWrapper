@@ -58,7 +58,7 @@
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
     "mocha": "^9.0.0",
-    "typedoc": "^0.20.37",
+    "typedoc": "^0.21.0",
     "typescript": "^4.1.3"
   }
 }
