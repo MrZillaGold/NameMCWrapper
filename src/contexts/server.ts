@@ -4,7 +4,7 @@ import { Element } from "cheerio";
 import { Context } from "./context";
 import { WrapperError } from "../WrapperError";
 
-import { applyPayload, escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from "../utils";
+import { escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from "../utils";
 
 import { ICheckServerLikeOptions, IServerContext, IServerContextOptions } from "../interfaces";
 
@@ -62,7 +62,7 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
     /**
      * @hidden
      */
-    constructor({ data, extended, ...options }: IServerContextOptions) {
+    constructor({ data, extended, isSearch, ...options }: IServerContextOptions) {
         super(options);
 
         this.setupPayload();
@@ -72,6 +72,56 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
         }
 
         const $ = cheerio.load(data);
+
+        if (isSearch) {
+            this.payload.players = {};
+
+            $("td")
+                .get()
+                .forEach((element, index) => {
+                    const $ = cheerio.load(element);
+
+                    const image = $("img");
+                    const row = $("td");
+                    const title = $("a");
+
+                    switch (index) {
+                        case 0:
+                            this.payload.icon = image
+                                .attr()
+                                .src;
+                            break;
+                        case 1:
+                            this.payload.country = this.parseServerCountry(
+                                image.get(0)
+                            );
+                            break;
+                        case 2:
+                            this.payload.title = title.text();
+                            this.payload.ip = this.parseIP(title.get(0));
+                            break;
+                        case 3:
+                            this.payload.motd = {
+                                clear: row.attr().title,
+                                html: ""
+                            };
+                            break;
+                        case 4:
+                            this.payload.players.online = Number(row.text());
+                            break;
+                        case 6:
+                            this.payload.players.max = Number(row.text());
+                            break;
+                        case 7:
+                            this.payload.rating = Number(row.text().slice(1));
+                            break;
+                    }
+                });
+
+            this.setupPayload();
+
+            return;
+        }
 
         const serverCard = extended ?
             this.parseServerCard(
@@ -97,47 +147,56 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
                         .children();
                 });
 
-            const { version = null, uptime = null, country = null } = Object.assign.apply({}, [{}, ...infoCard.map((index, element) => {
-                const $ = cheerio.load(element);
+            const { version = null, uptime = null, country = null } = Object.assign.apply(
+                {},
+                [{}, ...infoCard.map((index, element) => {
+                    const $ = cheerio.load(element);
 
-                const rowValue = $("div.row > div.text-right");
+                    const rowValue = $("div.row > div.text-right");
 
-                if (rowValue.children().length) {
+                    if (rowValue.children().length) {
+                        return {
+                            country: this.parseServerCountry(
+                                rowValue.children("img")
+                                    .get(0)
+                            )
+                        };
+                    }
+
+                    const content = rowValue.contents()
+                        .get(0) // @ts-ignore
+                        .data;
+
+                    const isUptime = content.endsWith("%");
+
                     return {
-                        country: this.parseServerCountry(
-                            rowValue.children("img")
-                                .get(0)
-                        )
-                    };
-                }
-
-                const content = rowValue.contents()
-                    .get(0) // @ts-ignore
-                    .data;
-
-                const isUptime = content.endsWith("%");
-
-                return {
-                    [isUptime ? "uptime" : "version"]: content ?
-                        isUptime ?
-                            Number(content.replace("%", ""))
+                        [isUptime ? "uptime" : "version"]: content ?
+                            isUptime ?
+                                parseFloat(content)
+                                :
+                                content
                             :
-                            content
-                        :
-                        null
-                };
-            })
-                .get()
-            ]);
+                            null
+                    };
+                })
+                    .get()
+                ]
+            );
 
-            applyPayload(this, {
+            this.payload = {
                 version,
                 country,
                 uptime
-            });
+            };
+
+            this.setupPayload();
+
+            return;
         }
 
-        applyPayload(this, serverCard);
+        this.payload = serverCard;
+
+        this.setupPayload();
     }
 
     /**
@@ -191,20 +250,24 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
     /**
      * @hidden
      */
-    protected parseServerCard<P = boolean>(data: cheerio.Element, isPreview: P): Omit<IServerContext, "version" | "uptime"> | Omit<IServerContext, "country" | "ip" | "version" | "uptime"> {
+    protected parseServerCard(data: cheerio.Element, isPreview: boolean): Omit<IServerContext, "version" | "uptime"> | Omit<IServerContext, "country" | "ip" | "version" | "uptime"> {
         const $ = cheerio.load(data);
 
         const header = $("div.card-header.p-0 > div.row.no-gutters");
         // @ts-ignore
-        const { children: [{ data: title }] } = header.find(`div.col.text-center.text-nowrap.text-ellipsis.mc-bold${isPreview ? ".p-1" : ".p-2.mc-white"}`)
-            .get(0);
+        const [{ data: title }] = header.find(`div.col.text-center.text-nowrap.text-ellipsis.mc-bold${isPreview ? ".p-1" : ".p-2.mc-white"}`)
+            .get(0)
+            .children;
         // @ts-ignore
-        const { children: [{ data: rating }] } = header.find(`div.col-auto.mc-gray${isPreview ? ".p-1" : ".p-2"}`)
-            .get(1);
+        const [{ data: rating }] = header.find(`div.col-auto.mc-gray${isPreview ? ".p-1" : ".p-2"}`)
+            .get(1)
+            .children;
 
         const body = $("div.card-body.p-0 > div.row.no-gutters.flex-nowrap.align-items-center");
-        const { attribs: { src: icon } } = body.find(`div.col-auto${isPreview ? ".p-1" : ".p-2"} > img`)
-            .get(0);
+
+        const icon = body.find(`div.col-auto${isPreview ? ".p-1" : ".p-2"} > img`)
+            .attr()
+            .src;
 
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
             .children();
@@ -213,7 +276,9 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
             throw new WrapperError("SERVER_OFFLINE", title);
         }
 
-        const { attribs: { title: motdTitle } } = bodyMotd.get(0);
+        const motdTitle = bodyMotd
+            .attr()
+            .title;
         // @ts-ignore
         let [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: bodyMotdNext }, rawMotd] = bodyMotd.children()
             .get();
@@ -254,18 +319,14 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
         };
 
         if (isPreview) {
-            const ip = data.attribs.href.replace(/\/[^]+\//, "");
-
-            const country = this.parseServerCountry(
-                header.find("div.col-auto.p-1")
-                    .children("img")
-                    .get(0)
-            );
-
             return {
                 ...parsedData,
-                ip,
-                country
+                ip: this.parseIP(data),
+                country: this.parseServerCountry(
+                    header.find("div.col-auto.p-1")
+                        .children("img")
+                        .get(0)
+                )
             };
         }
 
@@ -287,6 +348,13 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
         }
 
         return null;
+    }
+
+    /**
+     * @hidden
+     */
+    protected parseIP(data: cheerio.Element): IServerContext["ip"] {
+        return data.attribs.href.replace(/\/[^]+\//, "");
     }
 
     /**

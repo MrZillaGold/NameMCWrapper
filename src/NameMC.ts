@@ -5,14 +5,14 @@ import { Options } from "./Options";
 import { DataParser } from "./DataParser";
 import { WrapperError } from "./WrapperError";
 
-import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext } from "./contexts";
+import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext, SearchContext } from "./contexts";
 
 import { getUUID } from "./utils";
 
-import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Username, CapeHash, CapeName, CapeType, Model, Transformation, Sort } from "./interfaces";
+import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Username, CapeHash, CapeName, CapeType, Model, Transformation, Sort, NameStatus } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
 
-const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36";
+const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 
 export class NameMC extends DataParser {
 
@@ -58,7 +58,7 @@ export class NameMC extends DataParser {
     async skinHistory({ username, page = 1 }: IGetSkinHistoryOptions): Promise<SkinContext[]> {
         const { uuid } = await this.getPlayer(username);
 
-        return this.client.get(`/minecraft-skins/profile/${uuid}`, {
+        return this.client.get<string>(`/minecraft-skins/profile/${uuid}`, {
             params: {
                 page
             }
@@ -230,7 +230,7 @@ export class NameMC extends DataParser {
      * Get servers list
      */
     getServers(page = 1): Promise<ServerContext[]> {
-        return this.client.get(`/minecraft-servers/${page}`)
+        return this.client.get<string>(`/minecraft-servers/${page}`)
             .then(({ data }) => {
                 const servers = this.parseServers(data);
 
@@ -278,6 +278,26 @@ export class NameMC extends DataParser {
             }
         })
             .checkLike(username);
+    }
+
+    /**
+     * Search
+     */
+    search(query: string): Promise<SearchContext> {
+        return this.client.get<string>("/search", {
+            params: {
+                q: query
+            }
+        })
+            .then(({ data }) => (
+                new SearchContext({
+                    ...this,
+                    data,
+                    payload: {
+                        query
+                    }
+                })
+            ));
     }
 
     /**
@@ -339,6 +359,7 @@ export {
     PlayerContext,
 
     Transformation,
+    NameStatus,
     CapeHash,
     CapeName,
     CapeType,

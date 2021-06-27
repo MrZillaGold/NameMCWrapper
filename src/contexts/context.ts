@@ -25,7 +25,7 @@ export class Context<T extends ContextUnion> {
     /**
      * @hidden
      */
-    payload: IContextOptions["payload"];
+    payload: Record<string, any> = {};
 
     /**
      * @hidden
@@ -34,7 +34,10 @@ export class Context<T extends ContextUnion> {
         this.options = options;
         this.client = client;
         this.api = api;
-        this.payload = payload;
+
+        if (payload) {
+            this.payload = payload;
+        }
     }
 
     /**

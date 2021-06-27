@@ -6,6 +6,7 @@ import { Username } from "./player";
 export interface IServerContextOptions extends IContextOptions {
     data?: string | cheerio.Element | cheerio.Element[];
     extended?: boolean;
+    isSearch?: boolean;
 }
 
 export interface IServerContext {

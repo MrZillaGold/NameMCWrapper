@@ -52,13 +52,14 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
     "@babel/plugin-transform-named-capturing-groups-regex": "^7.12.1",
-    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-env": "^7.14.7",
     "@types/node": "^15.6.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.17.0",
     "eslint": "^7.22.0",
     "mocha": "^9.0.0",
-    "typedoc": "^0.21.0",
+    "nyc": "^15.1.0",
+    "typedoc": "^0.20.37",
     "typescript": "^4.1.3"
   }
 }

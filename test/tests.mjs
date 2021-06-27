@@ -128,14 +128,31 @@ describe("Players", () => {
     });
 });
 
+describe("Search", () => {
+    it("Checking the method for errors", async () => {
+        await nameMc.search("hypixel");
+    });
+});
+
 describe("Servers", () => {
     describe("getServers();", () => {
-        describe("Checking the method for errors", () => {
+        it(`Check all pages for errors`, async () => {
+            const promises = [];
+
             for (let page = 1; page <= 30; page++) {
-                it(`Check ${page} page for errors`, async () => {
-                    await nameMc.getServers(page);
-                });
+                promises.push(nameMc.getServers(page));
             }
+
+            Promise.allSettled(promises)
+                .then((results) => {
+                    results.forEach(({ status, reason }, index) => {
+                        if (status === "rejected") {
+                            console.error(`Page ${index + 1}`);
+
+                            throw reason;
+                        }
+                    });
+                });
         });
     });
 

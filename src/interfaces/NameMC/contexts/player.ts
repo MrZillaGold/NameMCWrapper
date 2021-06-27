@@ -6,6 +6,7 @@ import { IFriend } from "../../API";
 
 export interface IPlayerContextOptions extends IContextOptions {
     data?: string | cheerio.Element | cheerio.Element[];
+    isSearch?: boolean;
 }
 
 export interface IPlayerContext {

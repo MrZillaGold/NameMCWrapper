@@ -108,8 +108,8 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
 
                         return {
                             model: Model.UNKNOWN,
-                            ...isValidSkin,
-                            hash: cardLinkHash
+                            hash: cardLinkHash,
+                            ...isValidSkin
                         };
                     })
                     .get();
@@ -260,16 +260,19 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
     protected parseSkinRating($: cheerio.CheerioAPI): number {
         const ratingElement = $(".position-absolute.bottom-0.right-0.text-muted")
             .get(0)
-            .children;
+            ?.children || null;
 
-        const rating = (
-            ratingElement.length > 1 ?
-                ratingElement[1]
-                :
-                ratingElement[0]
-        )
-            // @ts-ignore
-            .data;
+        const rating = ratingElement ?
+            (
+                ratingElement.length > 1 ?
+                    ratingElement[1]
+                    :
+                    ratingElement[0]
+            )
+                // @ts-ignore Invalid lib types
+                .data
+            :
+            "0";
 
         return Number(rating.replace(/[^\d]+([\d]+)/, "$1"));
     }

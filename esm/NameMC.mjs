@@ -13,6 +13,7 @@ export const {
     RendersContext,
 
     Transformation,
+    NameStatus,
     CapeHash,
     CapeName,
     CapeType,
