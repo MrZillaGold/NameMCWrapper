@@ -49,6 +49,9 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
      */
     readonly skin: ISearchContext["skin"] = null;
 
+    /**
+     * @hidden
+     */
     constructor({ data, ...options }: ISearchContextOptions) {
         super(options);
 
