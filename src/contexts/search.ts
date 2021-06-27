@@ -3,11 +3,11 @@ import * as cheerio from "cheerio";
 import { Context } from "./context";
 import { SkinContext } from "./skin";
 import { PlayerContext } from "./player";
+import { ServerContext } from "./server";
 
 import { kSerializeData, pickProperties } from "../utils";
 
 import { ISearchContext, ISearchContextOptions, NameStatus } from "../interfaces";
-import { ServerContext } from "./server";
 
 export class SearchContext extends Context<ISearchContext> implements ISearchContext {
 
@@ -147,7 +147,7 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
     /**
      * Check is query name is available available later
      */
-    isAvailableLater(): boolean {
+    get isAvailableLater(): boolean {
         return this.name.status === NameStatus.AVAILABLE_LATER;
     }
 
