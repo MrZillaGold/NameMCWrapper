@@ -19,7 +19,7 @@
     "build": "babel build --out-dir dist --copy-files",
     "pretest": "npm run-script build",
     "test": "mocha --reporter spec --timeout 180000",
-    "docs": "typedoc --out docs src/NameMC.ts --theme minimal",
+    "docs": "typedoc --out docs src/NameMC.ts --theme minimal --gitRevision master",
     "eslint:check": "eslint ./src/**/*",
     "eslint:fix": "eslint ./src/**/* --fix"
   },
