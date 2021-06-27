@@ -1,8 +1,0 @@
-language: node_js
-node_js:
-  - 12
-  - 14
-before_script:
-  - wget -O CloudProxy.tar.gz https://github.com/NoahCardoza/CloudProxy/archive/refs/tags/v1.0.0.tar.gz
-  - tar -xzvf CloudProxy.tar.gz
-  - cd CloudProxy && npm ci && npm build && npm start
