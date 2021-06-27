@@ -1,6 +1,6 @@
 import { Context } from "./context";
 
-import { applyPayload, steveSkinHash, kSerializeData, pickProperties } from "../utils";
+import { steveSkinHash, kSerializeData, pickProperties } from "../utils";
 
 import { IRendersContext, IRendersContextOptions, Model } from "../interfaces";
 
@@ -81,7 +81,12 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
             api
         });
 
-        applyPayload(this, rendersOptions);
+        this.payload = {
+            ...this.payload,
+            ...rendersOptions
+        };
+
+        this.setupPayload();
     }
 
     /**
