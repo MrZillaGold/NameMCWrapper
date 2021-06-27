@@ -11,13 +11,19 @@ export class Context<T extends ContextUnion> {
 
     /**
      * Parameters passed to the constructor during NameMC class initialization
+     *
+     * @hidden
      */
     readonly options: IContextOptions["options"];
     /**
      * Class for API Requests
+     *
+     * @hidden
      */
     readonly api: IContextOptions["api"];
     /**
+     * Axios Client for requests
+     *
      * @hidden
      */
     readonly client: IContextOptions["client"];
