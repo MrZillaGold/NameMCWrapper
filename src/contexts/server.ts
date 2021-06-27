@@ -235,16 +235,11 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
                 payload: {
                     ip: this.ip
                 }
-            }))
-            .catch((error) => {
-                throw error?.response?.status === 404 ?
-                    new WrapperError("NOT_FOUND", this.ip)
-                    :
-                    error;
-            });
-        this.extended = true;
+            }));
 
         this.setupPayload();
+
+        this.extended = true;
     }
 
     /**

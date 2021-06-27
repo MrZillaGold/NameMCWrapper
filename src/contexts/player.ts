@@ -294,7 +294,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 throw new WrapperError("INVALID_NICKNAME", username);
             }
 
-            await this.client.get(`/profile/${username}`)
+            await this.client.get<string>(`/profile/${username}`)
                 .then(({ request, headers, data }) => {
                     if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                         this.payload = new PlayerContext({
@@ -303,10 +303,10 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                         })
                             .toJSON();
 
-                        this.setupPayload();
-                    } else {
-                        throw new WrapperError("NOT_FOUND", username);
+                        return this.setupPayload();
                     }
+
+                    throw new WrapperError("NOT_FOUND", username);
                 });
         }
 

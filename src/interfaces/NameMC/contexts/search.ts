@@ -7,6 +7,9 @@ export interface ISearchContextOptions extends IContextOptions {
     data?: string | cheerio.Element | cheerio.Element[];
 }
 
+/**
+ * NameMC Search Name Status
+ */
 export enum NameStatus {
     AVAILABLE = "available",
     AVAILABLE_LATER = "available_later",

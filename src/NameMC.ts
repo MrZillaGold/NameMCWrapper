@@ -32,8 +32,6 @@ export class NameMC extends DataParser {
     constructor(options: IOptions = {}) {
         super();
 
-        const { proxy, cloudProxy } = options;
-
         this.options = new Options(options);
         this.api = new API();
         // @ts-ignore
@@ -47,9 +45,7 @@ export class NameMC extends DataParser {
                 {}
         });
 
-        if (proxy && cloudProxy) {
-            this.addCloudProxyInterceptor();
-        }
+        this.addInterceptors();
     }
 
     /**
@@ -201,12 +197,6 @@ export class NameMC extends DataParser {
                 }
 
                 return skins;
-            })
-            .catch((error) => {
-                throw error?.response?.status === 404 ?
-                    new WrapperError("NOT_FOUND", section)
-                    :
-                    error;
             });
     }
 
@@ -303,46 +293,59 @@ export class NameMC extends DataParser {
     /**
      * @hidden
      */
-    private addCloudProxyInterceptor(): void {
+    private addInterceptors(): void {
         const { proxy, cloudProxy } = this.options;
 
-        this.client.interceptors.request.use((config) => {
-            const { url, baseURL, method, data, params } = config;
+        if (proxy && cloudProxy) {
+            this.client.interceptors.request.use((config) => {
+                const { url, baseURL, method, data, params } = config;
 
-            delete config.baseURL;
-            delete config.params;
+                delete config.baseURL;
+                delete config.params;
 
-            const searchParams = params ?
-                new URLSearchParams(
-                    Object.entries(params)
-                )
-                    .toString()
-                :
-                null;
-
-            config.url = proxy;
-            config.method = "post";
-            config.data = {
-                ...cloudProxy,
-                url: `${baseURL}${url}${searchParams ? `?${searchParams}` : ""}`,
-                cmd: `request.${method}`,
-                headers: config.headers,
-                postData: method === "post" ?
-                    data
+                const searchParams = params ?
+                    new URLSearchParams(
+                        Object.entries(params)
+                    )
+                        .toString()
                     :
-                    undefined
-            };
+                    null;
 
-            return config;
-        });
+                config.url = proxy;
+                config.method = "post";
+                config.data = {
+                    ...cloudProxy,
+                    url: `${baseURL}${url}${searchParams ? `?${searchParams}` : ""}`,
+                    cmd: `request.${method}`,
+                    headers: config.headers,
+                    postData: method === "post" ?
+                        data
+                        :
+                        undefined
+                };
+
+                return config;
+            });
+        }
 
         this.client.interceptors.response.use((response) => {
-            const { data: { solution: { url, response: htmlPage } } } = response;
+            if (proxy && cloudProxy) {
+                const { data: { solution: { url, response: htmlPage } } } = response;
 
-            response.request.res.responseUrl = url;
-            response.data = htmlPage;
+                response.request.res.responseUrl = url;
+                response.data = htmlPage;
+            }
 
             return response;
+        }, (error) => {
+            switch (error?.response?.status) {
+                case 403:
+                    throw new WrapperError("CLOUDFLARE");
+                case 404:
+                    throw new WrapperError("NOT_FOUND");
+                default:
+                    throw error;
+            }
         });
     }
 }

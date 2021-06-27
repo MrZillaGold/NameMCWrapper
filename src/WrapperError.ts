@@ -1,8 +1,8 @@
 export enum ErrorDescription {
     UNKNOWN = "Unknown error.",
-    AXIOS = "Axios request error. $0",
+    CLOUDFLARE = "NameMC uses CloudFlare, which blocks requests from bots. Use CloudProxy. Check out the README for more information.",
     INVALID_NICKNAME = "$0 is invalid Minecraft nickname.",
-    NOT_FOUND = "Resource $0 not found.",
+    NOT_FOUND = "Resource not found.",
     NO_USEFUL = "There is no useful information in the data received, try later report this to the Github issue.",
     SERVER_OFFLINE = "Server $0 offline."
 }
@@ -12,15 +12,15 @@ export enum ErrorDescription {
  */
 export class WrapperError extends Error {
 
-    readonly code: number;
+    readonly code: keyof typeof ErrorDescription;
     readonly name: string;
 
     constructor(error: keyof typeof ErrorDescription, params: string | string[] = []) {
-        if (typeof params === "string") {
+        if (!Array.isArray(params)) {
             params = [params];
         }
 
-        const code = Object.keys(ErrorDescription).indexOf(error);
+        const code = error;
 
         let description = ErrorDescription[error] as string;
 

@@ -225,16 +225,11 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                 }
 
                 return skin;
-            })
-            .catch((error) => {
-                throw error?.response?.status === 404 ?
-                    new WrapperError("NOT_FOUND", this.hash)
-                    :
-                    error;
             });
-        this.extended = true;
 
         this.setupPayload();
+
+        this.extended = true;
     }
 
     /**
