@@ -2,7 +2,10 @@ import assert from "assert";
 
 import { NameMC } from "../esm/NameMC.mjs";
 
-const nameMc = new NameMC();
+const nameMc = new NameMC({
+    proxy: "http://localhost:8191/v1",
+    cloudProxy: {}
+});
 
 describe("Skins", () => {
     describe("skinHistory();", () => {
