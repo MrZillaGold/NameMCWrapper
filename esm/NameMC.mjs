@@ -11,6 +11,7 @@ export const {
     SkinContext,
     ServerContext,
     RendersContext,
+    SearchContext,
 
     Transformation,
     NameStatus,

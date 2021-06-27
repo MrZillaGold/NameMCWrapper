@@ -357,6 +357,7 @@ export {
     SkinContext,
     CapeContext,
     PlayerContext,
+    SearchContext,
 
     Transformation,
     NameStatus,
