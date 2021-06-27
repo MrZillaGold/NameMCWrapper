@@ -25,7 +25,7 @@ const groups: MethodGroup[] = [
  * });
  * ```
  */
-export class API {
+export class API implements IMethods {
 
     /**
      * @hidden
