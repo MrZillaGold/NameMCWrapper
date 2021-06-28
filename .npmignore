@@ -6,7 +6,6 @@
 /src
 /build
 .gitignore
-.travis.yml
 .eslintrc.json
 babel.config.json
 tsconfig.json
