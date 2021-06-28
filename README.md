@@ -15,7 +15,7 @@
  <a href="https://npmjs.com/package/namemcwrapper">
    <img src="https://img.shields.io/npm/dt/namemcwrapper?&logo=npm" alt="Version">
  </a>
- <a href="https://travis-ci.com/github/MrZillaGold/NameMCWrapper">
+ <a href="https://github.com/MrZillaGold/NameMCWrapper/actions/workflows/ci.yml">
    <img src="https://github.com/MrZillaGold/NameMCWRapper/actions/workflows/ci.yml/badge.svg" alt="Build Status">
  </a>
  <a href="https://wakatime.com/badge/github/MrZillaGold/NameMCWrapper">
