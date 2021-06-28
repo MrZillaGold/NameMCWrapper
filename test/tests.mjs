@@ -4,7 +4,7 @@ import axios from "axios";
 import { NameMC } from "../esm/NameMC.mjs";
 
 const nameMc = new NameMC({
-    proxy: "http://192.168.1.51:25565/v1",
+    proxy: "http://localhost:8191/v1",
     cloudProxy: {
         session: "namemc"
     }
