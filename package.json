@@ -20,7 +20,7 @@
     "pretest": "npm run-script build",
     "test": "mocha --reporter spec --timeout 180000 --delay",
     "docs": "typedoc --out docs src/NameMC.ts --theme minimal --gitRevision master",
-    "eslint:check": "eslint ./src/**/*",
+    "eslint:github-action": "eslint ./src/**/*",
     "eslint:fix": "eslint ./src/**/* --fix"
   },
   "repository": {
