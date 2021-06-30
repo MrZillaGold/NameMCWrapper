@@ -7,7 +7,7 @@ import { WrapperError } from "./WrapperError";
 
 import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext, SearchContext } from "./contexts";
 
-import { getUUID } from "./utils";
+import { getUUID, profileRegExp, serverRegExp } from "./utils";
 
 import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Username, CapeHash, CapeName, CapeType, Model, Transformation, Sort, NameStatus } from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
@@ -273,21 +273,38 @@ export class NameMC extends DataParser {
     /**
      * Search
      */
-    search(query: string): Promise<SearchContext> {
+    search(query: string): Promise<SearchContext | PlayerContext | ServerContext> {
         return this.client.get<string>("/search", {
             params: {
                 q: query
             }
         })
-            .then(({ data }) => (
-                new SearchContext({
+            .then(({ request, headers, data }) => {
+                const finalUrl = headers["x-final-url"] || request?.res?.responseUrl || request.responseURL;
+
+                if (finalUrl.match(profileRegExp)) {
+                    return new PlayerContext({
+                        ...this,
+                        data
+                    });
+                }
+
+                if (finalUrl.match(serverRegExp)) {
+                    return new ServerContext({
+                        ...this,
+                        data,
+                        extended: true
+                    });
+                }
+
+                return new SearchContext({
                     ...this,
                     data,
                     payload: {
                         query
                     }
-                })
-            ));
+                });
+            });
     }
 
     /**
