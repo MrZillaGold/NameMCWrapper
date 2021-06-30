@@ -190,8 +190,6 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
             };
 
             this.setupPayload();
-
-            return;
         }
 
         this.payload = serverCard;
