@@ -188,8 +188,19 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 .map((index, element) => {
                     const $ = cheerio.load(element);
 
-                    return $("div.card-body")
-                        .children("div.row.no-gutters");
+                    const body = $("div.card-body");
+
+                    switch (index) {
+                        case 0:
+                            return body.children("div.row.no-gutters");
+                        case 1:
+                            return body.find("tr:not([class])")
+                                .map((index, element) => {
+                                    element.children.push(element.next as Node);
+
+                                    return element;
+                                });
+                    }
                 })
                 .get();
 
@@ -241,17 +252,15 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 };
             }
         } else {
-            const [, , id] = $("div.card-header > a")
+            const [, , id] = $("div.card-header a")
                 .get(0)
                 .attribs
                 .href
                 .match(profileRegExp) as RegExpMatchArray;
 
             this.id = Number(id);
-            this.uuid = $("samp")
-                .text();
             this.names = this.parseUsernameHistory(
-                $("div.card-body div.row.no-gutters")
+                $("tr")
             );
         }
 
@@ -433,8 +442,8 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
         return element.map((index, element) => {
             const $ = cheerio.load(element);
 
-            const name = $("div.col > a").get(0);
-            const time = $("div.col-12 > time").get(0);
+            const name = $("a").get(0);
+            const time = $("time").get(0);
 
             if (name) {
                 // @ts-ignore

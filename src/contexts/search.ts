@@ -77,7 +77,7 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
             });
         }
 
-        mainCol("div:not(.ad-container) > div.card")
+        mainCol("div.card, div:not(.ad-container).mb-3")
             .get()
             .forEach((element) => {
                 const $ = cheerio.load(element);
@@ -113,7 +113,7 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
                     return;
                 }
 
-                const servers = $("tr");
+                const servers = $("div.table-responsive tr");
 
                 if (servers.length) {
                     this.servers.push(
