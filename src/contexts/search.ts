@@ -77,7 +77,7 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
             });
         }
 
-        mainCol("div.card, div:not(.ad-container).mb-3")
+        mainCol("div.card.mb-3, div:not(.ad-container).mb-3")
             .get()
             .forEach((element) => {
                 const $ = cheerio.load(element);
