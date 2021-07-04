@@ -115,7 +115,7 @@ export enum Sort {
     DESC = "desc"
 }
 
-export type SortUnion = "asc" | "desc";
+export type SortUnion = `${Sort}`;
 
 export type FollowersSort = Partial<Record<"profile" | "date" | "following", Sort | SortUnion>>;
 
@@ -141,7 +141,7 @@ export enum FollowersSection {
 /**
  * @hidden
  */
-export type FollowersSectionUnion = "following" | "followers";
+export type FollowersSectionUnion = `${FollowersSection}`;
 
 /**
  * @hidden

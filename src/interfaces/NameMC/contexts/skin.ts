@@ -16,7 +16,7 @@ export enum Model {
     CLASSIC = "classic",
     SLIM = "slim"
 }
-export type ModelUnion = "unknown" | "classic" | "slim";
+export type ModelUnion = `${Model}`;
 
 export type Hash = string;
 
@@ -37,19 +37,7 @@ export enum Transformation {
     HAT_PUMPKIN_CREEPER =  "hat-pumpkin-creeper",
     HAT_SANTA = "hat-santa"
 }
-export type TransformationUnion =
-    "grayscale"
-    | "invert"
-    | "rotate-hue-180"
-    | "rotate-head-left"
-    | "rotate-head-right"
-    | "hat-pumpkin-mask-1"
-    | "hat-pumpkin-mask-2"
-    | "hat-pumpkin-mask-3"
-    | "hat-pumpkin-mask-4"
-    | "hat-pumpkin"
-    | "hat-pumpkin-creeper"
-    | "hat-santa";
+export type TransformationUnion = `${Transformation}`;
 
 export interface ISkinContext {
     /**

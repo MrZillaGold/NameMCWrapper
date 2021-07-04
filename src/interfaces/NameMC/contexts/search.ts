@@ -17,7 +17,7 @@ export enum NameStatus {
     INVALID = "invalid"
 }
 
-export type NameStatusUnion = "available" | "unavailable" | "invalid" | "available_later";
+export type NameStatusUnion = `${NameStatus}`;
 
 export interface ISearchContext {
     /**
