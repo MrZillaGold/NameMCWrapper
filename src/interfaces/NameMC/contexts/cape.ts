@@ -61,6 +61,7 @@ export enum CapeName {
     TURTLE = "Turtle",
     BIRTHDAY = "Birthday",
     MIGRATOR = "Migrator",
+    MOJANG_STUDIOS = "Mojang Studios",
     OPTIFINE = "Optifine"
 }
 
@@ -89,5 +90,6 @@ export enum CapeHash {
     PRISMARINE = "88f1509813f4e324",
     TURTLE = "8c05ef3c54870d04",
     MIGRATOR = "8a6cc02cc86e43f1",
-    BIRTHDAY = "aab5a23c7495fc70"
+    BIRTHDAY = "aab5a23c7495fc70",
+    MOJANG_STUDIOS = "c00df589ebea3ad6"
 }
