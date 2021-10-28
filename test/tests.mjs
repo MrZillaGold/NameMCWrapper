@@ -165,7 +165,7 @@ describe("Servers", () => {
                 promises.push(nameMc.getServers(page));
             }
 
-            Promise.allSettled(promises)
+            await Promise.allSettled(promises)
                 .then((results) => {
                     results.forEach(({ status, reason }, index) => {
                         if (status === "rejected") {
