@@ -7,7 +7,7 @@ import { IRendersContext, IRendersContextOptions, Model } from "../interfaces";
 export class RendersContext extends Context<IRendersContext> implements IRendersContext {
 
     /**
-     * Skin hash
+     * Skin id
      */
     readonly skin: IRendersContextOptions["skin"] = steveSkinHash;
     /**
@@ -96,7 +96,7 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { endpoint, options, client, api, payload, ...params } = this;
 
-        const front = `${endpoint}/skin/3d/body.png?${new URLSearchParams(params as unknown as Record<string, string>)}`;
+        const front = `${endpoint}/skin/body.png?${new URLSearchParams(params as unknown as Record<string, string>)}`;
 
         return {
             front,
@@ -110,7 +110,7 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
     get face(): IRendersContext["face"] {
         const { endpoint, skin, overlay, scale } = this;
 
-        return `${endpoint}/skin/2d/face.png?skin=${skin}&overlay=${overlay}&scale=${scale}`;
+        return `${endpoint}/skin/face.png?skin=${skin}&overlay=${overlay}&scale=${scale}`;
     }
 
     [kSerializeData](): IRendersContext {

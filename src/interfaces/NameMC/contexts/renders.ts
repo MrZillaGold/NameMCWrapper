@@ -3,7 +3,7 @@ import { Hash, Model, ModelUnion } from "./skin";
 
 export interface IRendersContextOptions extends IContextOptions<IRendersContext> {
     /**
-     * Skin hash
+     * Skin id
      */
     skin: Hash;
     /**
