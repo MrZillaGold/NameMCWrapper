@@ -11,9 +11,9 @@ import { ISkinContext, ISkinContextOptions, Model, Transformation, Transformatio
 export class SkinContext extends Context<ISkinContext> implements ISkinContext {
 
     /**
-     * Skin hash
+     * Skin id
      */
-    readonly hash: ISkinContext["hash"] = "";
+    readonly id: ISkinContext["id"] = "";
     /**
      * Skin name
      */
@@ -69,9 +69,9 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                 const isValidSkin = this.checkSkinLink(href);
 
                 if (isValidSkin) {
-                    const { hash, model } = isValidSkin;
+                    const { id, model } = isValidSkin;
 
-                    this.hash = hash;
+                    this.id = id;
                     this.model = model;
                     this.rating = this.parseSkinRating($);
                     this.createdAt = this.parseSkinTime($);
@@ -102,20 +102,20 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
 
                 const $ = cheerio.load(data as string);
 
-                const [{ hash, model }] = $("div > img.drop-shadow")
+                const [{ id, model }] = $("div > img.drop-shadow")
                     .map((index, { attribs: { "data-src": src } }) => {
                         const isValidSkin = this.checkSkinLink(src);
 
                         return {
+                            id: cardLinkHash,
                             model: Model.UNKNOWN,
-                            hash: cardLinkHash,
                             ...isValidSkin
                         };
                     })
                     .get();
 
+                this.id = id;
                 this.model = model;
-                this.hash = hash;
                 this.name = cardName;
                 this.rating = this.parseSkinRating($);
             }
@@ -126,7 +126,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
      * Get skin url
      */
     get url(): ISkinContext["url"] {
-        return `${this.options.getEndpoint()}/texture/${this.hash}.png`;
+        return `${this.options.getEndpoint()}/texture/${this.id}.png`;
     }
 
     /**
@@ -136,7 +136,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
         const { options, client, api } = this;
 
         return new RendersContext({
-            skin: this.hash,
+            skin: this.id,
             model: this.model,
             options,
             client,
@@ -171,7 +171,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
      * @see {@link https://namemc.com/skin/ee40191789e621d3 | Check "Tools" card}
      */
     transform(transformation: Transformation | TransformationUnion): Promise<SkinContext> {
-        return this.client.post("/transform-skin", `skin=${this.hash}&transformation=${transformation}`, {
+        return this.client.post("/transform-skin", `skin=${this.id}&transformation=${transformation}`, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 origin: "https://ru.namemc.com"
@@ -195,7 +195,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
             })
             .catch((error) => {
                 throw error?.response?.status === 404 ?
-                    new WrapperError("NOT_FOUND", this.hash)
+                    new WrapperError("NOT_FOUND", this.id)
                     :
                     error;
             });
@@ -209,7 +209,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
             return;
         }
 
-        this.payload = await this.client.get<string>(`/skin/${this.hash}`)
+        this.payload = await this.client.get<string>(`/skin/${this.id}`)
             .then(({ data }) => {
                 const skin = new SkinContext({
                     ...this,
@@ -220,7 +220,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                     }
                 });
 
-                if (!skin.hash) {
+                if (!skin.id) {
                     throw new WrapperError("NO_USEFUL");
                 }
 
@@ -235,15 +235,15 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
     /**
      * @hidden
      */
-    protected checkSkinLink(link: string): Pick<ISkinContext, "hash" | "model"> | void {
-        const skinRegExp = /skin=([^]+?)(?:&[^]+)?&model=([^]+?)&[^]+/;
+    protected checkSkinLink(link: string): Pick<ISkinContext, "id" | "model"> | void {
+        const skinRegExp = /id=([^]+?)(?:&[^]+)?&model=([^]+?)&[^]+/;
         const idValidSkin = skinRegExp.exec(link);
 
         if (idValidSkin) {
-            const [, hash, model] = idValidSkin;
+            const [, id, model] = idValidSkin;
 
             return {
-                hash,
+                id,
                 model: model as Model
             };
         }
@@ -290,7 +290,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
      */
     [kSerializeData](): ISkinContext {
         return pickProperties(this, [
-            "hash",
+            "id",
             "name",
             "url",
             "model",

@@ -41,9 +41,9 @@ export type TransformationUnion = `${Transformation}`;
 
 export interface ISkinContext {
     /**
-     * Skin hash
+     * Skin id
      */
-    hash: Hash;
+    id: Hash;
     /**
      * Skin model
      */
@@ -80,7 +80,7 @@ export interface ISkinContext {
 
 export interface ITransformSkinOptions {
     /**
-     * Skin hash
+     * Skin id
      */
     skin: Hash;
     /**
