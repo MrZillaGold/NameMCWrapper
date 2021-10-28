@@ -91,18 +91,20 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
         const $ = cheerio.load(data);
 
-        this.skins = $(`canvas.skin-2d${!isSearch ? ".skin-button" : ""}`) // @ts-ignore
-            .map((index, { attribs: { "data-id": hash, "data-model": model = Model.UNKNOWN, title } }) => new SkinContext({
-                ...this,
-                payload: {
-                    id: hash,
-                    model,
-                    createdAt: !isSearch ?
-                        convertDate(title)
+        this.skins = $(isSearch ? "img.skin-2d" : "canvas.skin-2d.skin-button") // @ts-ignore
+            .map((index, { attribs: { "data-id": hash, "data-model": model = Model.UNKNOWN, title, src } }) => (
+                new SkinContext({
+                    ...this,
+                    payload: isSearch ?
+                        SkinContext.parseSkinLink(src)
                         :
-                        0
-                }
-            }))
+                        {
+                            id: hash,
+                            model,
+                            createdAt: convertDate(title)
+                        }
+                })
+            ))
             .get();
 
         if (!isSearch) {
