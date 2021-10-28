@@ -68,7 +68,7 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
     /**
      * @hidden
      */
-    protected endpoint = this.options.getEndpoint({ subdomain: "render" });
+    protected endpoint = this.options.getEndpoint({ domain: "r.n-mc.co" });
 
     /**
      * @hidden
