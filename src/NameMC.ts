@@ -83,7 +83,7 @@ export class NameMC extends DataParser {
             .then(({ data }) => {
                 const skins = this.parseSkins(data);
 
-                if (skins[0]?.hash) {
+                if (skins[0]?.id) {
                     return skins;
                 }
 
@@ -124,7 +124,7 @@ export class NameMC extends DataParser {
         return new SkinContext({
             ...this,
             payload: {
-                hash: skin,
+                id: skin,
                 model
             }
         })
@@ -224,11 +224,11 @@ export class NameMC extends DataParser {
     /**
      * Get information about skin
      */
-    async getSkin(hash: SkinContext["hash"]): Promise<SkinContext> {
+    async getSkin(id: SkinContext["id"]): Promise<SkinContext> {
         const skin = new SkinContext({
             ...this,
             payload: {
-                hash
+                id
             }
         });
 
