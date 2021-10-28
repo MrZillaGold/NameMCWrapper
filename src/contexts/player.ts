@@ -92,10 +92,10 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
         const $ = cheerio.load(data);
 
         this.skins = $(`canvas.skin-2d${!isSearch ? ".skin-button" : ""}`) // @ts-ignore
-            .map((index, { attribs: { "data-skin-hash": hash, "data-model": model = Model.UNKNOWN, title } }) => new SkinContext({
+            .map((index, { attribs: { "data-id": hash, "data-model": model = Model.UNKNOWN, title } }) => new SkinContext({
                 ...this,
                 payload: {
-                    hash,
+                    id: hash,
                     model,
                     createdAt: !isSearch ?
                         convertDate(title)
@@ -107,7 +107,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
         if (!isSearch) {
             this.capes = $("canvas.cape-2d")
-                .map((index, { attribs: { "data-cape-hash": hash } }) => new CapeContext({
+                .map((index, { attribs: { "data-cape": hash } }) => new CapeContext({
                     ...this,
                     hash
                 }))
