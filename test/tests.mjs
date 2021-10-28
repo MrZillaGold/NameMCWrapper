@@ -89,8 +89,8 @@ describe("Skins", () => {
         });
     });
 
-    describe("getSkins();", () => {
-        it("Get skins and check tags array size", async () => {
+    describe("getSkin();", () => {
+        it("Get skin and check tags array size", async () => {
             const skin = await nameMc.getSkin("a4eaf5f46753cf75");
 
             assert.ok(skin.tags.length > 1);
