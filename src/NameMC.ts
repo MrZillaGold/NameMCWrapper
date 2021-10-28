@@ -9,8 +9,29 @@ import { RendersContext, ServerContext, SkinContext, CapeContext, PlayerContext,
 
 import { getUUID, profileRegExp, serverRegExp } from "./utils";
 
-import { IOptions, ITransformSkinOptions, ICheckServerLikeOptions, IFriend, IGetSkinsOptions, IGetSkinHistoryOptions, IRendersContextOptions, IContextOptions, Tab, Section, Username, CapeHash, CapeName, CapeType, Model, Transformation, Sort, NameStatus } from "./interfaces";
+import {
+    IOptions,
+    ITransformSkinOptions,
+    ICheckServerLikeOptions,
+    IFriend,
+    IGetSkinsOptions,
+    IGetSkinHistoryOptions,
+    IRendersContextOptions,
+    IContextOptions,
+    Tab,
+    Section,
+    Username,
+    CapeHash,
+    CapeName,
+    CapeType,
+    Model,
+    Transformation,
+    Sort,
+    NameStatus,
+    ICloudProxyResponse
+} from "./interfaces";
 import AxiosInstance = axios.AxiosInstance;
+import AxiosResponse = axios.AxiosResponse;
 
 const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 
@@ -347,7 +368,7 @@ export class NameMC extends DataParser {
 
         this.client.interceptors.response.use((response) => {
             if (proxy && cloudProxy) {
-                const { data: { solution: { url, response: htmlPage } } } = response;
+                const { data: { solution: { url, response: htmlPage } } } = response as AxiosResponse<ICloudProxyResponse>;
 
                 response.request.res.responseUrl = url;
                 response.data = htmlPage;

@@ -60,7 +60,7 @@ export async function getUUID(endpoint: string, username: string): Promise<Usern
     // @ts-ignore
     // eslint-disable-next-line no-return-await
     return isNickname.groups?.uuid ?? await axios.get(`${endpoint}/mojang/v1/user/${username}`)
-        .then(({ data: { uuid } }: AxiosResponse) => uuid as string)
+        .then(({ data: { uuid } }: AxiosResponse<{ uuid: string }>) => uuid as string)
         .catch((error: AxiosError) => {
             throw error?.response?.status === 404 ?
                 new WrapperError("NOT_FOUND", username)

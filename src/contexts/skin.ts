@@ -209,7 +209,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
             return;
         }
 
-        this.payload = await this.client.get(`/skin/${this.hash}`)
+        this.payload = await this.client.get<string>(`/skin/${this.hash}`)
             .then(({ data }) => {
                 const skin = new SkinContext({
                     ...this,
