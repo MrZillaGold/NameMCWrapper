@@ -66,10 +66,10 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                 const { attribs: { href } } = $("#render-button.btn")
                     .get(0);
 
-                const isValidSkin = this.checkSkinLink(href);
+                const skin = SkinContext.parseSkinLink(href);
 
-                if (isValidSkin) {
-                    const { id, model } = isValidSkin;
+                if (skin) {
+                    const { id, model } = skin;
 
                     this.id = id;
                     this.model = model;
@@ -104,12 +104,12 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
 
                 const [{ id, model }] = $("div > img.drop-shadow")
                     .map((index, { attribs: { "data-src": src } }) => {
-                        const isValidSkin = this.checkSkinLink(src);
+                        const skin = SkinContext.parseSkinLink(src);
 
                         return {
                             id: cardLinkHash,
                             model: Model.UNKNOWN,
-                            ...isValidSkin
+                            ...skin
                         };
                     })
                     .get();
@@ -235,16 +235,15 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
     /**
      * @hidden
      */
-    protected checkSkinLink(link: string): Pick<ISkinContext, "id" | "model"> | void {
-        const skinRegExp = /id=([^]+?)(?:&[^]+)?&model=([^]+?)&[^]+/;
-        const idValidSkin = skinRegExp.exec(link);
+    static parseSkinLink(link: string): Pick<ISkinContext, "id" | "model"> | void {
+        const { searchParams } = new URL(link);
 
-        if (idValidSkin) {
-            const [, id, model] = idValidSkin;
+        const id = searchParams.get("id");
 
+        if (id) {
             return {
                 id,
-                model: model as Model
+                model: searchParams.get("model") as Model || Model.UNKNOWN
             };
         }
     }
