@@ -1,4 +1,4 @@
-import { Username } from "../../NameMC";
+import { Username } from '../../contexts';
 
 export interface IFriend {
     /**

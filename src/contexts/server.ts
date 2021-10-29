@@ -1,57 +1,91 @@
-import * as cheerio from "cheerio";
-import { Element } from "cheerio";
+import cheerio, { Element } from 'cheerio';
 
-import { Context } from "./context";
-import { WrapperError } from "../WrapperError";
+import { Context, IContextOptions } from './context';
+import { Username } from './player';
+import { WrapperError } from '../error';
 
-import { escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from "../utils";
+import { escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from '../utils';
 
-import { ICheckServerLikeOptions, IServerContext, IServerContextOptions } from "../interfaces";
+export interface IServerContextOptions extends IContextOptions {
+    data?: string | Element | Element[];
+    extended?: boolean;
+    isSearch?: boolean;
+}
 
-export class ServerContext extends Context<IServerContext> implements IServerContext {
+export interface ICheckServerLikeOptions {
+    /**
+     * Server IP
+     */
+    ip: string;
+    /**
+     * Player username
+     */
+    username: Username;
+}
+
+export class ServerContext extends Context<ServerContext> {
 
     /**
      * Server ip
      */
-    readonly ip: IServerContext["ip"] = "";
+    readonly ip: string = '';
     /**
      * Server title
      */
-    readonly title: IServerContext["title"] = "";
+    readonly title: string = '';
     /**
      * Server icon url
      */
-    readonly icon: IServerContext["icon"] = "";
+    readonly icon: string = '';
     /**
      * Server motd
      */
-    readonly motd: IServerContext["motd"] = {
-        clear: "",
-        html: ""
+    readonly motd = {
+        clear: '',
+        html: ''
     };
     /**
      * Server current players stats
      */
-    readonly players: IServerContext["players"] = {
+    readonly players = {
+        /**
+         * Online now
+         */
         online: 0,
+        /**
+         * Maximum online
+         */
         max: 0
     };
     /**
      * Server country
      */
-    readonly country: IServerContext["country"] = null;
+    readonly country: {
+        /**
+         * Country name
+         */
+        name: string;
+        /**
+         * Country SVG Emoji image
+         */
+        image: string;
+        /**
+         * Country Emoji
+         */
+        emoji: string;
+    } | null = null;
     /**
      * Server rating
      */
-    readonly rating: IServerContext["rating"] = 0;
+    readonly rating: number = 0;
     /**
      * Server version
      */
-    readonly version: IServerContext["version"] = null;
+    readonly version: string | null = null;
     /**
      * Server uptime
      */
-    readonly uptime: IServerContext["uptime"] = null;
+    readonly uptime: number | null = null;
 
     /**
      * Payload loaded
@@ -76,14 +110,14 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
         if (isSearch) {
             this.payload.players = {};
 
-            $("td")
+            $('td')
                 .get()
                 .forEach((element, index) => {
                     const $ = cheerio.load(element);
 
-                    const image = $("img");
-                    const row = $("td");
-                    const title = $("a");
+                    const image = $('img');
+                    const row = $('td');
+                    const title = $('a');
 
                     switch (index) {
                         case 0:
@@ -103,7 +137,7 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
                         case 3:
                             this.payload.motd = {
                                 clear: row.attr().title,
-                                html: ""
+                                html: ''
                             };
                             break;
                         case 4:
@@ -125,25 +159,25 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
 
         const serverCard = extended ?
             this.parseServerCard(
-                $("div.card.mb-3")
-                    .filter((index, element) => element?.attribs?.style?.includes("#0F0F0F"))
+                $('div.card.mb-3')
+                    .filter((index, element) => element?.attribs?.style?.includes('#0F0F0F'))
                     .get(0),
                 !extended
             )
             :
-            this.parseServerCard(data as cheerio.Element, !extended);
+            this.parseServerCard(data as Element, !extended);
 
         if (extended) {
             this.extended = extended;
 
-            const [, infoCard] = $("div.row > div.col-12.col-lg-5")
+            const [, infoCard] = $('div.row > div.col-12.col-lg-5')
                 .children()
-                .filter("div.card.mb-3")
+                .filter('div.card.mb-3')
                 .get()
                 .map((element) => {
                     const $ = cheerio.load(element);
 
-                    return $("div.card.mb-3 > div.card-body")
+                    return $('div.card.mb-3 > div.card-body')
                         .children();
                 });
 
@@ -152,12 +186,12 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
                 [{}, ...infoCard.map((index, element) => {
                     const $ = cheerio.load(element);
 
-                    const rowValue = $("div.row > div.text-right");
+                    const rowValue = $('div.row > div.text-right');
 
                     if (rowValue.children().length) {
                         return {
                             country: this.parseServerCountry(
-                                rowValue.children("img")
+                                rowValue.children('img')
                                     .get(0)
                             )
                         };
@@ -167,10 +201,10 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
                         .get(0) // @ts-ignore
                         .data;
 
-                    const isUptime = content.endsWith("%");
+                    const isUptime = content.endsWith('%');
 
                     return {
-                        [isUptime ? "uptime" : "version"]: content ?
+                        [isUptime ? 'uptime' : 'version']: content ?
                             isUptime ?
                                 parseFloat(content)
                                 :
@@ -207,8 +241,8 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
     /**
      * Check like status for player
      */
-    async checkLike(username: ICheckServerLikeOptions["username"]): Promise<boolean> {
-        const endpoint = this.options.getEndpoint({ domain: "api.ashcon.app" });
+    async checkLike(username: ICheckServerLikeOptions['username']): Promise<boolean> {
+        const endpoint = this.options.getEndpoint({ domain: 'api.ashcon.app' });
         const uuid = await getUUID(endpoint, username);
 
         return this.api.server.likes({
@@ -243,30 +277,32 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
     /**
      * @hidden
      */
-    protected parseServerCard(data: cheerio.Element, isPreview: boolean): Omit<IServerContext, "version" | "uptime"> | Omit<IServerContext, "country" | "ip" | "version" | "uptime"> {
+    protected parseServerCard(data: Element, isPreview: boolean): Partial<
+        Pick<ServerContext, 'ip' | 'title' | 'country' | 'motd' | 'players' | 'rating' | 'icon'>
+        > {
         const $ = cheerio.load(data);
 
-        const header = $("div.card-header.p-0 > div.row.no-gutters");
+        const header = $('div.card-header.p-0 > div.row.no-gutters');
         // @ts-ignore
-        const [{ data: title }] = header.find(`div.col.text-center.text-nowrap.text-ellipsis.mc-bold${isPreview ? ".p-1" : ".p-2.mc-white"}`)
+        const [{ data: title }] = header.find(`div.col.text-center.text-nowrap.text-ellipsis.mc-bold${isPreview ? '.p-1' : '.p-2.mc-white'}`)
             .get(0)
             .children;
         // @ts-ignore
-        const [{ data: rating }] = header.find(`div.col-auto.mc-gray${isPreview ? ".p-1" : ".p-2"}`)
+        const [{ data: rating }] = header.find(`div.col-auto.mc-gray${isPreview ? '.p-1' : '.p-2'}`)
             .get(1)
             .children;
 
-        const body = $("div.card-body.p-0 > div.row.no-gutters.flex-nowrap.align-items-center");
+        const body = $('div.card-body.p-0 > div.row.no-gutters.flex-nowrap.align-items-center');
 
-        const icon = body.find(`div.col-auto${isPreview ? ".p-1" : ".p-2"} > img`)
+        const icon = body.find(`div.col-auto${isPreview ? '.p-1' : '.p-2'} > img`)
             .attr()
             .src;
 
-        const bodyMotd = body.find(`div.col.mc-reset${isPreview ? ".p-1" : ".p-2"}`)
+        const bodyMotd = body.find(`div.col.mc-reset${isPreview ? '.p-1' : '.p-2'}`)
             .children();
 
-        if (!bodyMotd.children()[0]?.attribs?.class?.includes("float-right") && !bodyMotd.children()[0]?.next) {
-            throw new WrapperError("SERVER_OFFLINE", title);
+        if (!bodyMotd.children()[0]?.attribs?.class?.includes('float-right') && !bodyMotd.children()[0]?.next) {
+            throw new WrapperError('SERVER_OFFLINE', title);
         }
 
         const motdTitle = bodyMotd
@@ -278,31 +314,31 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
 
         if (!bodyMotdNext) {
             bodyMotdNext = {
-                data: ""
+                data: ''
             } as any;
         }
 
         // @ts-ignore
         const { data: textMotd } = bodyMotdNext;
 
-        const motdHtml = typeof rawMotd === "object" ? // @ts-ignore Invalid lib type
-            cheerio.default.html(escapeColorsClasses(rawMotd.children))
+        const motdHtml = typeof rawMotd === 'object' ?
+            cheerio.html(escapeColorsClasses(rawMotd.children as Element[]))
             :
             textMotd;
         const motdClear = isPreview ?
             motdTitle
             :
-            typeof rawMotd === "object" ?
+            typeof rawMotd === 'object' ?
                 escapeHtml(rawMotd.children as Element[])
                 :
                 textMotd;
 
         const parsedData = {
-            title,
             icon,
+            title: title as string,
             motd: {
-                clear: motdClear,
-                html: motdHtml
+                clear: motdClear as string,
+                html: motdHtml as string
             },
             players: {
                 online: Number(onlinePlayers),
@@ -316,8 +352,8 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
                 ...parsedData,
                 ip: this.parseIP(data),
                 country: this.parseServerCountry(
-                    header.find("div.col-auto.p-1")
-                        .children("img")
+                    header.find('div.col-auto.p-1')
+                        .children('img')
                         .get(0)
                 )
             };
@@ -329,7 +365,7 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
     /**
      * @hidden
      */
-    protected parseServerCountry(data?: cheerio.Element): IServerContext["country"] {
+    protected parseServerCountry(data?: Element): ServerContext['country'] {
         if (data) {
             const { attribs: { title: name, src: image, alt: emoji } } = data;
 
@@ -346,24 +382,24 @@ export class ServerContext extends Context<IServerContext> implements IServerCon
     /**
      * @hidden
      */
-    protected parseIP(data: cheerio.Element): IServerContext["ip"] {
-        return data.attribs.href.replace(/\/[^]+\//, "");
+    protected parseIP(data: Element): ServerContext['ip'] {
+        return data.attribs.href.replace(/\/[^]+\//, '');
     }
 
     /**
      * @hidden
      */
-    [kSerializeData](): IServerContext {
+    [kSerializeData](): any {
         return pickProperties(this, [
-            "ip",
-            "title",
-            "icon",
-            "motd",
-            "players",
-            "country",
-            "rating",
-            "version",
-            "uptime"
+            'ip',
+            'title',
+            'icon',
+            'motd',
+            'players',
+            'country',
+            'rating',
+            'version',
+            'uptime'
         ]);
     }
 }

@@ -2,24 +2,15 @@
   "name": "namemcwrapper",
   "version": "2.3.4",
   "description": "ES6 Promise based wrapper for NameMC.com",
-  "main": "./dist/NameMC.js",
-  "exports": {
-    ".": [
-      {
-        "require": "./dist/NameMC.js",
-        "import": "./esm/NameMC.mjs"
-      },
-      "./dist/NameMC.js"
-    ],
-    "./esm": "./esm/NameMC.mjs"
-  },
-  "types": "./dist/NameMC.d.ts",
+  "main": "./dist/index.js",
+  "exports": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "prebuild": "tsc",
     "build": "babel build --out-dir dist --copy-files",
     "pretest": "npm run-script build",
     "test": "mocha --reporter spec --timeout 180000 --delay",
-    "docs": "typedoc --out docs src/NameMC.ts --gitRevision master",
+    "docs": "typedoc --out docs src/index.ts --gitRevision master",
     "eslint:github-action": "eslint ./src/**/*",
     "eslint:fix": "eslint ./src/**/* --fix"
   },
@@ -49,9 +40,7 @@
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",
-    "@babel/plugin-transform-named-capturing-groups-regex": "^7.12.1",
     "@babel/preset-env": "^7.14.7",
     "@types/node": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",

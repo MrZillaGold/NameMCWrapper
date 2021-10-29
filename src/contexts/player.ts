@@ -1,75 +1,155 @@
-import * as cheerio from "cheerio";
-import { Node } from "cheerio";
+import cheerio, { Node, Element, Cheerio } from 'cheerio';
 
-import { WrapperError } from "../WrapperError";
-import { Context, SkinContext, CapeContext, ServerContext } from "./";
+import { WrapperError } from '../error';
+import { Context, SkinContext, CapeContext, ServerContext, IContextOptions, Model } from './';
 
-import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDate, nameRegExp, profileRegExp } from "../utils";
+import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDate, nameRegExp, profileRegExp } from '../utils';
+import { IFriend } from '../api';
 
-import { FollowersSection, IGetFollowersOptions, ILoadFollowersOptions, IPlayerContext, IPlayerContextOptions, Model } from "../interfaces";
+export interface IPlayerContextOptions extends IContextOptions {
+    data?: string | Element | Element[];
+    isSearch?: boolean;
+}
+
+export type Username = string;
+export type Hash = string;
+
+export interface IUsername {
+    username: Username;
+    changed_at: string | null;
+    timestamp: number | null;
+}
+
+export enum Sort {
+    ASC = 'asc',
+    DESC = 'desc'
+}
+export type SortUnion = `${Sort}`;
+
+export interface IGetFollowersOptions {
+    /**
+     * Sort filter
+     */
+    sort?: FollowersSort;
+    /**
+     * Page number
+     */
+    page?: number;
+}
+
+export type FollowersSort = Partial<Record<'profile' | 'date' | 'following', Sort | SortUnion>>;
+
+/**
+ * @hidden
+ */
+export enum FollowersSection {
+    FOLLOWING = 'following',
+    FOLLOWERS = 'followers'
+}
+/**
+ * @hidden
+ */
+export type FollowersSectionUnion = `${FollowersSection}`;
+
+/**
+ * @hidden
+ */
+export interface ILoadFollowersOptions extends IGetFollowersOptions {
+    section: FollowersSection | FollowersSectionUnion;
+}
 
 const { FOLLOWING, FOLLOWERS } = FollowersSection;
 
-export class PlayerContext extends Context<IPlayerContext> implements IPlayerContext {
+export class PlayerContext extends Context<PlayerContext> {
 
     /**
      * Profile ID
      */
-    readonly id: IPlayerContext["id"] = 0;
+    readonly id: number = 0;
     /**
      * Player uuid
      */
-    readonly uuid: IPlayerContext["uuid"] = "";
+    readonly uuid: string = '';
     /**
      * Player username
      */
-    readonly username: IPlayerContext["username"] = "";
+    readonly username: string = '';
     /**
      * Profile short url
      */
-    readonly url: IPlayerContext["url"] = "";
+    readonly url: string = '';
     /**
      * Profile views
      */
-    readonly views: IPlayerContext["views"] = 0;
+    readonly views: number = 0;
     /**
      * Nickname history
      */
-    readonly names: IPlayerContext["names"] = [];
+    readonly names: IUsername[] = [];
     /**
      * Skin history
      */
-    readonly skins: IPlayerContext["skins"] = [];
+    readonly skins: SkinContext[] = [];
     /**
      * Player capes
      */
-    readonly capes: IPlayerContext["capes"] = [];
+    readonly capes: CapeContext[] = [];
     /**
      * Player friends
      */
-    readonly friends: IPlayerContext["friends"] = [];
+    readonly friends: IFriend[] = [];
     /**
      * Player favorite servers
      */
-    readonly servers: IPlayerContext["servers"] = [];
+    readonly servers: ServerContext[] = [];
     /**
      * Player followers
      */
-    readonly followers: IPlayerContext["followers"] = [];
+    readonly followers: PlayerContext[] = [];
     /**
      * Player following
      */
-    readonly following: IPlayerContext["following"] = [];
+    readonly following: PlayerContext[] = [];
     /**
      * Following date, available when receiving player followers/following
      */
-    readonly followingDate: IPlayerContext["followingDate"] = 0;
+    readonly followingDate: number = 0;
     /**
      * Badlion Client statistics
      *
      * @see {@link https://www.badlion.net/forum/thread/309559 | Announce from Badlion Client}
      */
-    readonly badlion: IPlayerContext["badlion"] = null;
+    readonly badlion: {
+        /**
+         * Total time spent in the game
+         */
+        play_time: number;
+        /**
+         * Login streak
+         */
+        login_streak: {
+            /**
+             * Current value
+             */
+            current: number;
+            /**
+             * Max value
+             */
+            max: number;
+        };
+        /**
+         * Last game server
+         */
+        last_server: string;
+        /**
+         * Last online
+         */
+        last_online: number;
+        /**
+         * Used game version
+         */
+        version: string;
+    } | null = null;
 
     /**
      * Payload loaded
@@ -91,8 +171,8 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
         const $ = cheerio.load(data);
 
-        this.skins = $(isSearch ? "img.skin-2d" : "canvas.skin-2d.skin-button") // @ts-ignore
-            .map((index, { attribs: { "data-id": hash, "data-model": model = Model.UNKNOWN, title, src } }) => (
+        this.skins = $(isSearch ? 'img.skin-2d' : 'canvas.skin-2d.skin-button') // @ts-ignore
+            .map((index, { attribs: { 'data-id': hash, 'data-model': model = Model.UNKNOWN, title, src } }) => (
                 new SkinContext({
                     ...this,
                     payload: isSearch ?
@@ -108,20 +188,20 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
             .get();
 
         if (!isSearch) {
-            this.capes = $("canvas.cape-2d")
-                .map((index, { attribs: { "data-cape": hash } }) => new CapeContext({
+            this.capes = $('canvas.cape-2d')
+                .map((index, { attribs: { 'data-cape': hash } }) => new CapeContext({
                     ...this,
                     hash
                 }))
                 .get();
 
-            this.servers = $("a > img.server-icon")
+            this.servers = $('a > img.server-icon')
                 .map((index, element) => {
                     // @ts-ignore
                     const ip = element.parent?.attribs?.href
-                        .replace(serverRegExp, "$1");
+                        .replace(serverRegExp, '$1');
                     // @ts-ignore
-                    const title = element.next?.data || "";
+                    const title = element.next?.data || '';
                     const { attribs: { src: icon } } = element;
 
                     return new ServerContext({
@@ -136,7 +216,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 })
                 .get();
 
-            const rawBadlionStatistic: any[] = $("div.card.badlion > div.card-body > div.row.no-gutters")
+            const rawBadlionStatistic: any[] = $('div.card.badlion > div.card-body > div.row.no-gutters')
                 .get();
 
             if (rawBadlionStatistic.length === 4) {
@@ -152,7 +232,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 switch (index) {
                     case 0: {
                         return parseDuration(
-                            $("div.col-12")
+                            $('div.col-12')
                                 .text()
                         );
                     }
@@ -161,7 +241,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                             return element;
                         }
 
-                        const [current, max] = $("div.col-12").text()
+                        const [current, max] = $('div.col-12').text()
                             .match(/([\d]+)/g) || [0, 0];
 
                         return {
@@ -170,7 +250,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                         };
                     }
                     case 3: {
-                        const time = $("div.col-12 > time").get(0);
+                        const time = $('div.col-12 > time').get(0);
                         const lastOnline = time?.attribs?.datetime || null;
 
                         return lastOnline ?
@@ -181,22 +261,22 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                     }
                     case 2:
                     case 4: {
-                        return $("div.col-12").text();
+                        return $('div.col-12').text();
                     }
                 }
             });
 
-            const [baseInfoRaw, usernameHistoryRaw] = $("div.card.mb-3 > div.card-body")
+            const [baseInfoRaw, usernameHistoryRaw] = $('div.card.mb-3 > div.card-body')
                 .map((index, element) => {
                     const $ = cheerio.load(element);
 
-                    const body = $("div.card-body");
+                    const body = $('div.card-body');
 
                     switch (index) {
                         case 0:
-                            return body.children("div.row.no-gutters");
+                            return body.children('div.row.no-gutters');
                         case 1:
-                            return body.find("tr:not([class])")
+                            return body.find('tr:not([class])')
                                 .map((index, element) => {
                                     element.children.push(element.next as Node);
 
@@ -212,17 +292,17 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 switch (index) {
                     case 0:
                     case 1:
-                        return $("div.col-12 > samp")
+                        return $('div.col-12 > samp')
                             .text();
                     case 2: {
-                        const link = $("div.col-12 > a")
+                        const link = $('div.col-12 > a')
                             .text();
 
                         return `https://${link}`;
                     }
                     case 3: {
                         const views = parseInt(
-                            $("div.col-auto")
+                            $('div.col-auto')
                                 .text()
                         );
 
@@ -236,7 +316,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
             const [uuid, , url, views] = baseInfo;
 
-            this.id = Number(url.split(".").pop());
+            this.id = Number(url.split('.').pop());
             this.uuid = uuid;
             this.url = url;
             this.views = views;
@@ -254,7 +334,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 };
             }
         } else {
-            const [, , id] = $("div.card-header a")
+            const [, , id] = $('div.card-header a')
                 .get(0)
                 .attribs
                 .href
@@ -262,7 +342,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
 
             this.id = Number(id);
             this.names = this.parseUsernameHistory(
-                $("tr")
+                $('tr')
             );
         }
 
@@ -287,7 +367,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
      * Get clean UUID
      */
     get cleanUUID(): string {
-        return this.uuid.replace(/-/g, "");
+        return this.uuid.replace(/-/g, '');
     }
 
     /**
@@ -302,12 +382,12 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
             const username = this.uuid || this.username;
 
             if (!username.match(nameRegExp)) {
-                throw new WrapperError("INVALID_NICKNAME", username);
+                throw new WrapperError('INVALID_NICKNAME', username);
             }
 
             await this.client.get<string>(`/profile/${username}`)
                 .then(({ request, headers, data }) => {
-                    if ((headers["x-final-url"] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
+                    if ((headers['x-final-url'] || request?.res?.responseUrl || request.responseURL).match(profileRegExp)) {
                         this.payload = new PlayerContext({
                             data,
                             ...this
@@ -317,7 +397,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                         return this.setupPayload();
                     }
 
-                    throw new WrapperError("NOT_FOUND", username);
+                    throw new WrapperError('NOT_FOUND', username);
                 });
         }
 
@@ -336,7 +416,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
     /**
      * Get player followers
      */
-    getFollowers(options: IGetFollowersOptions): Promise<IPlayerContext["followers"]> {
+    getFollowers(options: IGetFollowersOptions): Promise<PlayerContext['followers']> {
         return this.loadFollowers({
             ...options,
             section: FOLLOWERS
@@ -346,7 +426,7 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
     /**
      * Get player following
      */
-    getFollowing(options: IGetFollowersOptions): Promise<IPlayerContext["followers"]> {
+    getFollowing(options: IGetFollowersOptions): Promise<PlayerContext['followers']> {
         return this.loadFollowers({
             ...options,
             section: FOLLOWING
@@ -356,14 +436,14 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
     /**
      * @hidden
      */
-    private async loadFollowers({ section, page = 1, sort = {} }: ILoadFollowersOptions): Promise<IPlayerContext["followers"]> {
+    private async loadFollowers({ section, page = 1, sort = {} }: ILoadFollowersOptions): Promise<PlayerContext['followers']> {
         if (!this.extended) {
             await this.loadPayload();
         }
 
         const filter = Object.entries(sort)
-            .map((filter) => filter.join(":"))
-            .join(",");
+            .map((filter) => filter.join(':'))
+            .join(',');
 
         const loadedFollowers = await this.client.get<string>(`/profile/${this.uuid}/${section}`, {
             params: {
@@ -375,12 +455,12 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
                 this.parseFollowers(data)
             ));
 
-        const followers = loadedFollowers.reduce<IPlayerContext["followers"]>((acc, follower) => {
-            if (!acc.filter(({ username }) => username === follower.username).length) {
-                acc.push(follower);
+        const followers = loadedFollowers.reduce<PlayerContext['followers']>((followers, follower) => {
+            if (!followers.filter(({ username }) => username === follower.username).length) {
+                followers.push(follower);
             }
 
-            return acc;
+            return followers;
         }, this[section]);
 
         this.payload = {
@@ -395,20 +475,20 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
     /**
      * @hidden
      */
-    private parseFollowers(data: string): IPlayerContext["followers"] {
+    private parseFollowers(data: string): PlayerContext['followers'] {
         const $ = cheerio.load(data);
 
-        const uuid = $("tbody > input[name='profile']")
+        const uuid = $('tbody > input[name=\'profile\']')
             .map((index, { attribs: { value: uuid } }) => (
                 uuid
             ))
             .get();
 
-        const names = $("tbody > tr")
+        const names = $('tbody > tr')
             .map((index, element) => {
                 const $ = cheerio.load(element.children);
 
-                const children = $("td");
+                const children = $('td');
 
                 const name = cheerio.load(children.get(2));
                 const username = name.text();
@@ -440,12 +520,12 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
     /**
      * @hidden
      */
-    private parseUsernameHistory(element: cheerio.Cheerio<cheerio.Element>): IPlayerContext["names"] {
+    private parseUsernameHistory(element: Cheerio<Element>): PlayerContext['names'] {
         return element.map((index, element) => {
             const $ = cheerio.load(element);
 
-            const name = $("a").get(0);
-            const time = $("time").get(0);
+            const name = $('a').get(0);
+            const time = $('time').get(0);
 
             if (name) {
                 // @ts-ignore
@@ -470,22 +550,22 @@ export class PlayerContext extends Context<IPlayerContext> implements IPlayerCon
     /**
      * @hidden
      */
-    [kSerializeData](): IPlayerContext {
+    [kSerializeData](): any {
         return pickProperties(this, [
-            "id",
-            "uuid",
-            "username",
-            "url",
-            "views",
-            "names",
-            "skins",
-            "capes",
-            "friends",
-            "followers",
-            "following",
-            "followingDate",
-            "badlion",
-            "servers"
+            'id',
+            'uuid',
+            'username',
+            'url',
+            'views',
+            'names',
+            'skins',
+            'capes',
+            'friends',
+            'followers',
+            'following',
+            'followingDate',
+            'badlion',
+            'servers'
         ]);
     }
 }

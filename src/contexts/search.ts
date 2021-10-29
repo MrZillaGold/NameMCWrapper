@@ -1,36 +1,49 @@
-import * as cheerio from "cheerio";
+import * as cheerio from 'cheerio';
 
-import { Context } from "./context";
-import { SkinContext } from "./skin";
-import { PlayerContext } from "./player";
-import { ServerContext } from "./server";
+import { Context, IContextOptions } from './context';
+import { SkinContext } from './skin';
+import { PlayerContext } from './player';
+import { ServerContext } from './server';
 
-import { kSerializeData, pickProperties } from "../utils";
+import { kSerializeData, pickProperties } from '../utils';
 
-import { ISearchContext, ISearchContextOptions, NameStatus } from "../interfaces";
+export interface ISearchContextOptions extends IContextOptions {
+    data?: string | cheerio.Element | cheerio.Element[];
+}
 
-export class SearchContext extends Context<ISearchContext> implements ISearchContext {
+/**
+ * NameMC Search Name Status
+ */
+export enum NameStatus {
+    AVAILABLE = 'available',
+    AVAILABLE_LATER = 'available_later',
+    UNAVAILABLE = 'unavailable',
+    INVALID = 'invalid'
+}
+export type NameStatusUnion = `${NameStatus}`;
+
+export class SearchContext extends Context<SearchContext> {
 
     /**
      * Search Query
      */
-    readonly query: ISearchContext["query"] = "";
+    readonly query: string = '';
     /**
      * Query name info
      */
-    readonly name: ISearchContext["name"] = {
+    readonly name = {
         /**
          * Name status
          */
-        status: NameStatus.INVALID,
+        status: NameStatus.INVALID as NameStatus | NameStatusUnion,
         /**
          * Name availability timestamp
          */
-        availabilityTime: null,
+        availabilityTime: null as null | number,
         /**
          * Name availability time
          */
-        availabilityAt: null,
+        availabilityAt: null as null | number,
         /**
          * Name searches
          */
@@ -39,15 +52,15 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
     /**
      * Query players
      */
-    readonly players: ISearchContext["players"] = [];
+    readonly players: PlayerContext[] = [];
     /**
      * Query servers
      */
-    readonly servers: ISearchContext["servers"] = [];
+    readonly servers: ServerContext[] = [];
     /**
      * Query skin tag
      */
-    readonly skin: ISearchContext["skin"] = null;
+    readonly skin: SkinContext | null = null;
 
     /**
      * @hidden
@@ -63,11 +76,11 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
 
         const $ = cheerio.load(data);
 
-        const [skinTagCol, mainCol] = $("main > div > div.col-12")
+        const [skinTagCol, mainCol] = $('main > div > div.col-12')
             .map((index, element) => cheerio.load(element))
             .get();
 
-        const skin = skinTagCol("div.card-body")
+        const skin = skinTagCol('div.card-body')
             .get(0);
 
         if (skin) {
@@ -77,43 +90,45 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
             });
         }
 
-        mainCol("div.card.mb-3, div:not(.ad-container).mb-3")
+        mainCol('div.card.mb-3, div:not(.ad-container).mb-3')
             .get()
             .forEach((element) => {
                 const $ = cheerio.load(element);
 
-                const statusBar = $("div#status-bar");
+                const statusBar = $('div#status-bar');
 
                 if (statusBar.length) {
-                    this.name.status = statusBar.hasClass("bg-success") ?
+                    this.name.status = statusBar.hasClass('bg-success') ?
                         NameStatus.AVAILABLE
                         :
-                        statusBar.hasClass("bg-info") ?
+                        statusBar.hasClass('bg-info') ?
                             NameStatus.AVAILABLE_LATER
                             :
-                            statusBar.hasClass("bg-warning") ?
+                            statusBar.hasClass('bg-warning') ?
                                 NameStatus.UNAVAILABLE
                                 :
                                 NameStatus.INVALID;
 
-                    const availabilityTime = statusBar.find("time");
+                    const availabilityTime = statusBar.find('time');
 
                     if (availabilityTime.length) {
-                        this.name.availabilityAt = availabilityTime.attr()
-                            .datetime;
+                        this.name.availabilityAt = Number(
+                            availabilityTime.attr()
+                                .datetime
+                        );
                         this.name.availabilityTime = new Date(this.name.availabilityAt)
                             .getTime();
                     }
 
                     this.name.searches = parseInt(
-                        statusBar.find("div.tabular")
+                        statusBar.find('div.tabular')
                             .text()
                     );
 
                     return;
                 }
 
-                const servers = $("div.table-responsive tr");
+                const servers = $('div.table-responsive tr');
 
                 if (servers.length) {
                     this.servers.push(
@@ -133,7 +148,7 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
                 this.players.push(
                     new PlayerContext({
                         ...this,
-                        data: $("div.card").get(0),
+                        data: $('div.card').get(0),
                         isSearch: true
                     })
                 );
@@ -198,13 +213,13 @@ export class SearchContext extends Context<ISearchContext> implements ISearchCon
     /**
      * @hidden
      */
-    [kSerializeData](): ISearchContext {
+    [kSerializeData](): any {
         return pickProperties(this, [
-            "query",
-            "name",
-            "players",
-            "servers",
-            "skin"
+            'query',
+            'name',
+            'players',
+            'servers',
+            'skin'
         ]);
     }
 }

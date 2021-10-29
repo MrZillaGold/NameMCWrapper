@@ -1,4 +1,4 @@
-import { IParams } from "./";
+import { IParams } from './';
 
 export interface IServerLikesParams extends IParams {
     /**

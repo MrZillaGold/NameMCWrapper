@@ -1,13 +1,11 @@
-import * as cheerio from "cheerio";
-import * as axios from "axios";
+import cheerio from 'cheerio';
+import { AxiosInstance } from 'axios';
 
-import { API } from "./API";
-import { Options } from "./Options";
-import { ServerContext, SkinContext } from "./contexts";
+import { API } from './API';
+import { Options } from './Options';
+import { ServerContext, SkinContext } from './contexts';
 
-import { profileSkinsRegExp } from "./utils";
-
-import AxiosInstance = axios.AxiosInstance;
+import { profileSkinsRegExp } from './utils';
 
 /**
  * @hidden
@@ -24,7 +22,7 @@ export abstract class DataParser {
     protected parseSkins(data: string): SkinContext[] {
         const $ = cheerio.load(data);
 
-        return $("div.card-body.position-relative.text-center.checkered.p-1")
+        return $('div.card-body.position-relative.text-center.checkered.p-1')
             .map((index, card) => new SkinContext({
                 data: card,
                 ...this
@@ -38,7 +36,7 @@ export abstract class DataParser {
     protected parseServers(data: string): ServerContext[] {
         const $ = cheerio.load(data);
 
-        return $("a.card-link")
+        return $('a.card-link')
             .map((index, data) => new ServerContext({
                 data,
                 ...this
@@ -52,7 +50,7 @@ export abstract class DataParser {
     protected getProfileId(data: string): string {
         const $ = cheerio.load(data);
 
-        const [profileId] = $("div.card-header.py-1 > strong > a")
+        const [profileId] = $('div.card-header.py-1 > strong > a')
             .map((index, element) => {
                 const isProfileSkinsUrl = profileSkinsRegExp.exec(element.attribs.href);
 

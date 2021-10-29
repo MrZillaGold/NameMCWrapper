@@ -1,8 +1,34 @@
-import { inspectable } from "inspectable";
+import { inspectable } from 'inspectable';
+import { AxiosInstance } from 'axios';
 
-import { ContextUnion, IContextOptions } from "../interfaces";
+import { Options } from '../Options';
+import { API } from '../API';
 
-import { applyPayload, kSerializeData } from "../utils";
+import { SkinContext } from './skin';
+import { RendersContext } from './renders';
+import { ServerContext } from './server';
+import { SearchContext } from './search';
+import { PlayerContext } from './player';
+import { CapeContext } from './cape';
+
+import { applyPayload, kSerializeData } from '../utils';
+
+export interface IContextOptions<P = any | void> {
+    options: Options;
+    client: AxiosInstance;
+    api: API;
+    payload?: {
+        [K in keyof P]?: P[keyof P];
+    };
+}
+
+export type ContextUnion =
+    SkinContext
+    | CapeContext
+    | RendersContext
+    | PlayerContext
+    | ServerContext
+    | SearchContext;
 
 /**
  * @hidden
@@ -14,19 +40,19 @@ export class Context<T extends ContextUnion> {
      *
      * @hidden
      */
-    readonly options: IContextOptions["options"];
+    readonly options: IContextOptions['options'];
     /**
      * Class for API Requests
      *
      * @hidden
      */
-    readonly api: IContextOptions["api"];
+    readonly api: IContextOptions['api'];
     /**
      * Axios Client for requests
      *
      * @hidden
      */
-    readonly client: IContextOptions["client"];
+    readonly client: IContextOptions['client'];
 
     /**
      * @hidden
@@ -76,6 +102,6 @@ export class Context<T extends ContextUnion> {
 inspectable(Context, {
     serialize: (instance) => instance.toJSON(),
     stringify: (instance, payload, context): string => (
-        `${context.stylize(instance.constructor.name, "special")} ${context.inspect(payload)}`
+        `${context.stylize(instance.constructor.name, 'special')} ${context.inspect(payload)}`
     )
 });

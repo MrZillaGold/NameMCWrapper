@@ -1,74 +1,135 @@
-import { Context } from "./context";
+import { Context, IContextOptions } from './context';
+import { Model, ModelUnion } from './skin';
+import { Hash } from './player';
 
-import { steveSkinHash, kSerializeData, pickProperties } from "../utils";
+import { steveSkinHash, kSerializeData, pickProperties } from '../utils';
 
-import { IRendersContext, IRendersContextOptions, Model } from "../interfaces";
-
-export class RendersContext extends Context<IRendersContext> implements IRendersContext {
-
+export interface IRendersContextOptions extends IContextOptions<RendersContext> {
     /**
      * Skin id
      */
-    readonly skin: IRendersContextOptions["skin"] = steveSkinHash;
+    skin: Hash;
     /**
      * Cape hash
      */
-    readonly cape: IRendersContextOptions["cape"] = "";
+    cape?: Hash;
     /**
      * Skin model
      */
-    readonly model: IRendersContextOptions["model"] = Model.UNKNOWN;
+    model?: Model | ModelUnion;
     /**
      * Image render width
      */
-    readonly width: IRendersContextOptions["width"] = 600;
+    width?: number;
     /**
      * Image render height
      */
-    readonly height: IRendersContextOptions["height"] = 300;
-    /**
-     * Image render scale
-     */
-    readonly scale: IRendersContextOptions["scale"] = 4;
-    /**
-     * Show skin overlay
-     */
-    readonly overlay: IRendersContextOptions["overlay"] = true;
+    height?: number;
     /**
      * Model horizontal rotation angle
      */
-    readonly theta: IRendersContextOptions["theta"] = 30;
+    theta?: number;
     /**
      * Model vertical rotation angle
      */
-    readonly phi: IRendersContextOptions["phi"] = 20;
+    phi?: number;
     /**
      * Model animation time
      */
-    readonly time: IRendersContextOptions["time"] = 90;
+    time?: number;
+    /**
+     * Image render scale
+     */
+    scale?: number;
+    /**
+     * Show skin overlay
+     */
+    overlay?: boolean;
     /**
      * Model HEX shadow color
      *
      * @see {@link https://www.color-hex.com/ | HEX Color generator}
      */
-    readonly shadow_color: IRendersContextOptions["shadow_color"] = "000";
+    shadow_color?: string;
     /**
      * Model shadow color
      */
-    readonly shadow_radius: IRendersContextOptions["shadow_radius"] = 0;
+    shadow_radius?: number;
     /**
      * Model horizontal shadow offset
      */
-    readonly shadow_x: IRendersContextOptions["shadow_x"] = 0;
+    shadow_x?: number;
     /**
      * Model vertical shadow offset
      */
-    readonly shadow_y: IRendersContextOptions["shadow_y"] = 0;
+    shadow_y?: number;
+}
+
+export class RendersContext extends Context<RendersContext> {
+
+    /**
+     * Skin id
+     */
+    readonly skin: IRendersContextOptions['skin'] = steveSkinHash;
+    /**
+     * Cape hash
+     */
+    readonly cape: IRendersContextOptions['cape'] = '';
+    /**
+     * Skin model
+     */
+    readonly model: IRendersContextOptions['model'] = Model.UNKNOWN;
+    /**
+     * Image render width
+     */
+    readonly width: IRendersContextOptions['width'] = 600;
+    /**
+     * Image render height
+     */
+    readonly height: IRendersContextOptions['height'] = 300;
+    /**
+     * Image render scale
+     */
+    readonly scale: IRendersContextOptions['scale'] = 4;
+    /**
+     * Show skin overlay
+     */
+    readonly overlay: IRendersContextOptions['overlay'] = true;
+    /**
+     * Model horizontal rotation angle
+     */
+    readonly theta: IRendersContextOptions['theta'] = 30;
+    /**
+     * Model vertical rotation angle
+     */
+    readonly phi: IRendersContextOptions['phi'] = 20;
+    /**
+     * Model animation time
+     */
+    readonly time: IRendersContextOptions['time'] = 90;
+    /**
+     * Model HEX shadow color
+     *
+     * @see {@link https://www.color-hex.com/ | HEX Color generator}
+     */
+    readonly shadow_color: IRendersContextOptions['shadow_color'] = '000';
+    /**
+     * Model shadow color
+     */
+    readonly shadow_radius: IRendersContextOptions['shadow_radius'] = 0;
+    /**
+     * Model horizontal shadow offset
+     */
+    readonly shadow_x: IRendersContextOptions['shadow_x'] = 0;
+    /**
+     * Model vertical shadow offset
+     */
+    readonly shadow_y: IRendersContextOptions['shadow_y'] = 0;
 
     /**
      * @hidden
      */
-    protected endpoint = this.options.getEndpoint({ domain: "r.n-mc.co" });
+    protected endpoint = this.options.getEndpoint({ domain: 'r.n-mc.co' });
 
     /**
      * @hidden
@@ -90,9 +151,18 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
     }
 
     /**
-     * Get body render model
+     * Get body render models
      */
-    get body(): IRendersContext["body"] {
+    get body(): ({
+        /**
+         * Body front render model url
+         */
+        front: string;
+        /**
+         * Body front & back render model url
+         */
+        front_and_back: string;
+    }) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { endpoint, options, client, api, payload, ...params } = this;
 
@@ -107,16 +177,16 @@ export class RendersContext extends Context<IRendersContext> implements IRenders
     /**
      * Get face render model url
      */
-    get face(): IRendersContext["face"] {
+    get face(): string {
         const { endpoint, skin, overlay, scale } = this;
 
         return `${endpoint}/skin/face.png?skin=${skin}&overlay=${overlay}&scale=${scale}`;
     }
 
-    [kSerializeData](): IRendersContext {
+    [kSerializeData](): any {
         return pickProperties(this, [
-            "body",
-            "face"
+            'body',
+            'face'
         ]);
     }
 }

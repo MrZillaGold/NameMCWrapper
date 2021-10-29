@@ -1,43 +1,91 @@
-import * as cheerio from "cheerio";
+import * as cheerio from 'cheerio';
 
-import { Context } from "./context";
-import { RendersContext } from "./renders";
-import { WrapperError } from "../WrapperError";
+import { Context, IContextOptions } from './context';
+import { RendersContext } from './renders';
+import { Hash } from './player';
+import { WrapperError } from '../error';
 
-import { kSerializeData, pickProperties, skinRegExp } from "../utils";
+import { kSerializeData, pickProperties, skinRegExp } from '../utils';
 
-import { ISkinContext, ISkinContextOptions, Model, Transformation, TransformationUnion } from "../interfaces";
+export interface ISkinContextOptions extends IContextOptions<SkinContext> {
+    data?: string | cheerio.Element | cheerio.Element[];
+    type?: 'extended';
+}
 
-export class SkinContext extends Context<ISkinContext> implements ISkinContext {
+/**
+ * Skin model type
+ */
+export enum Model {
+    UNKNOWN = 'unknown',
+    CLASSIC = 'classic',
+    SLIM = 'slim'
+}
+export type ModelUnion = `${Model}`;
+
+/**
+ * Skin transformation type
+ */
+export enum Transformation {
+    GRAYSCALE = 'grayscale',
+    INVERT = 'invert',
+    ROTATE_HUE_180 = 'rotate-hue-180',
+    ROTATE_HEAD_LEFT = 'rotate-head-left',
+    ROTATE_HEAD_RIGHT = 'rotate-head-right',
+    HAT_PUMPKIN_MASK_1 = 'hat-pumpkin-mask-1',
+    HAT_PUMPKIN_MASK_2 = 'hat-pumpkin-mask-2',
+    HAT_PUMPKIN_MASK_3 = 'hat-pumpkin-mask-3',
+    HAT_PUMPKIN_MASK_4 = 'hat-pumpkin-mask-4',
+    HAT_PUMPKIN = 'hat-pumpkin',
+    HAT_PUMPKIN_CREEPER =  'hat-pumpkin-creeper',
+    HAT_SANTA = 'hat-santa'
+}
+export type TransformationUnion = `${Transformation}`;
+
+export interface ITransformSkinOptions {
+    /**
+     * Skin id
+     */
+    skin: Hash;
+    /**
+     * Skin transformation type
+     */
+    transformation?: Transformation | TransformationUnion;
+    /**
+     * Skin model
+     */
+    model?: Model | ModelUnion;
+}
+
+export class SkinContext extends Context<SkinContext> {
 
     /**
      * Skin id
      */
-    readonly id: ISkinContext["id"] = "";
+    readonly id: string = '';
     /**
      * Skin name
      */
-    readonly name: ISkinContext["name"] = "";
+    readonly name: string = '';
     /**
      * Skin model
      */
-    readonly model: ISkinContext["model"] = Model.UNKNOWN;
+    readonly model: Model | ModelUnion = Model.UNKNOWN;
     /**
      * Skin tags
      */
-    readonly tags: ISkinContext["tags"] = [];
+    readonly tags: string[] = [];
     /**
      * Skin rating
      */
-    readonly rating: ISkinContext["rating"] = 0;
+    readonly rating: number = 0;
     /**
      * Skin creation timestamp
      */
-    readonly createdAt: ISkinContext["createdAt"] = 0;
+    readonly createdAt: number = 0;
     /**
      * Skin transformation type
      */
-    readonly transformation: ISkinContext["transformation"] = null;
+    readonly transformation: Transformation | TransformationUnion | null = null;
 
     /**
      * Payload loaded
@@ -58,12 +106,12 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
         }
 
         switch (type) {
-            case "extended": {
+            case 'extended': {
                 this.extended = true;
 
                 const $ = cheerio.load(data);
 
-                const { attribs: { href } } = $("#render-button.btn")
+                const { attribs: { href } } = $('#render-button.btn')
                     .get(0);
 
                 const skin = SkinContext.parseSkinLink(href);
@@ -75,7 +123,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                     this.model = model;
                     this.rating = this.parseSkinRating($);
                     this.createdAt = this.parseSkinTime($);
-                    this.tags = $("div.card-body.text-center.py-1 > a.badge.badge-pill")
+                    this.tags = $('div.card-body.text-center.py-1 > a.badge.badge-pill')
                         .map((index, element) => {
                             // @ts-ignore
                             const { children: [{ data: tag }] } = element;
@@ -90,20 +138,20 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
             default: {
                 // @ts-ignore
                 const cardLinkHash = (data as cheerio.Element)?.parent?.attribs.href
-                    .replace(skinRegExp, "$1");
+                    .replace(skinRegExp, '$1');
                 const cardHeader = (data as cheerio.Element)?.parent?.children
                     // @ts-ignore
-                    .filter(({ name, attribs: { class: className = "" } = {} }) => name === "div" && className.includes("card-header"))[0];
+                    .filter(({ name, attribs: { class: className = '' } = {} }) => name === 'div' && className.includes('card-header'))[0];
                 const cardName = cardHeader ?
                     // @ts-ignore
                     (cardHeader as cheerio.NodeWithChildren).children[0]?.data as string
                     :
-                    "";
+                    '';
 
                 const $ = cheerio.load(data as string);
 
-                const [{ id, model }] = $("div > img.drop-shadow")
-                    .map((index, { attribs: { "data-src": src } }) => {
+                const [{ id, model }] = $('div > img.drop-shadow')
+                    .map((index, { attribs: { 'data-src': src } }) => {
                         const skin = SkinContext.parseSkinLink(src);
 
                         return {
@@ -125,14 +173,14 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
     /**
      * Get skin url
      */
-    get url(): ISkinContext["url"] {
+    get url(): string {
         return `${this.options.getEndpoint()}/texture/${this.id}.png`;
     }
 
     /**
      * Get skin renders
      */
-    get renders(): ISkinContext["renders"] {
+    get renders(): RendersContext {
         const { options, client, api } = this;
 
         return new RendersContext({
@@ -171,17 +219,17 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
      * @see {@link https://namemc.com/skin/ee40191789e621d3 | Check "Tools" card}
      */
     transform(transformation: Transformation | TransformationUnion): Promise<SkinContext> {
-        return this.client.post("/transform-skin", `skin=${this.id}&transformation=${transformation}`, {
+        return this.client.post('/transform-skin', `skin=${this.id}&transformation=${transformation}`, {
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                origin: "https://ru.namemc.com"
+                'Content-Type': 'application/x-www-form-urlencoded',
+                origin: 'https://ru.namemc.com'
             }
         })
             .then(({ request }) => {
                 const [, hash] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
 
                 if (!hash) {
-                    throw new WrapperError("NO_USEFUL");
+                    throw new WrapperError('NO_USEFUL');
                 }
 
                 this.payload = {
@@ -195,7 +243,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
             })
             .catch((error) => {
                 throw error?.response?.status === 404 ?
-                    new WrapperError("NOT_FOUND", this.id)
+                    new WrapperError('NOT_FOUND', this.id)
                     :
                     error;
             });
@@ -214,14 +262,14 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                 const skin = new SkinContext({
                     ...this,
                     data,
-                    type: "extended",
+                    type: 'extended',
                     payload: {
                         name: this.name
                     }
                 });
 
                 if (!skin.id) {
-                    throw new WrapperError("NO_USEFUL");
+                    throw new WrapperError('NO_USEFUL');
                 }
 
                 return skin;
@@ -235,15 +283,15 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
     /**
      * @hidden
      */
-    static parseSkinLink(link: string): Pick<ISkinContext, "id" | "model"> | void {
+    static parseSkinLink(link: string): Pick<SkinContext, 'id' | 'model'> | void {
         const { searchParams } = new URL(link);
 
-        const id = searchParams.get("id");
+        const id = searchParams.get('id');
 
         if (id) {
             return {
                 id,
-                model: searchParams.get("model") as Model || Model.UNKNOWN
+                model: searchParams.get('model') as Model || Model.UNKNOWN
             };
         }
     }
@@ -252,7 +300,7 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
      * @hidden
      */
     protected parseSkinRating($: cheerio.CheerioAPI): number {
-        const ratingElement = $(".position-absolute.bottom-0.right-0.text-muted")
+        const ratingElement = $('.position-absolute.bottom-0.right-0.text-muted')
             .get(0)
             ?.children || null;
 
@@ -266,16 +314,16 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
                 // @ts-ignore Invalid lib types
                 .data
             :
-            "0";
+            '0';
 
-        return Number(rating.replace(/[^\d]+([\d]+)/, "$1"));
+        return Number(rating.replace(/[^\d]+([\d]+)/, '$1'));
     }
 
     /**
      * @hidden
      */
     protected parseSkinTime($: cheerio.CheerioAPI): number {
-        const date = $(".position-absolute.bottom-0.left-0.text-muted.title-time")
+        const date = $('.position-absolute.bottom-0.left-0.text-muted.title-time')
             .get(0)
             .attribs
             .title;
@@ -287,19 +335,19 @@ export class SkinContext extends Context<ISkinContext> implements ISkinContext {
     /**
      * @hidden
      */
-    [kSerializeData](): ISkinContext {
+    [kSerializeData](): any {
         return pickProperties(this, [
-            "id",
-            "name",
-            "url",
-            "model",
-            "isSlim",
-            "transformation",
-            "isTransformed",
-            "renders",
-            "tags",
-            "rating",
-            "createdAt"
+            'id',
+            'name',
+            'url',
+            'model',
+            'isSlim',
+            'transformation',
+            'isTransformed',
+            'renders',
+            'tags',
+            'rating',
+            'createdAt'
         ]);
     }
 }

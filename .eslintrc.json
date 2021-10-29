@@ -30,7 +30,7 @@
     ],
     "quotes": [
       "error",
-      "double"
+      "single"
     ],
     "semi": [
       "error",
@@ -56,9 +56,6 @@
       1
     ],
     "no-new-wrappers": [
-      "error"
-    ],
-    "no-return-await": [
       "error"
     ],
     "brace-style": [
