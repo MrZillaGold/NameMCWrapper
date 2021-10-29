@@ -1,8 +1,8 @@
 import { inspectable } from 'inspectable';
 import { AxiosInstance } from 'axios';
 
-import { Options } from '../Options';
-import { API } from '../API';
+import { Options } from '../options';
+import { API } from '../api';
 
 import { SkinContext } from './skin';
 import { RendersContext } from './renders';

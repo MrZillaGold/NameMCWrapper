@@ -1,8 +1,8 @@
 import cheerio from 'cheerio';
 import { AxiosInstance } from 'axios';
 
-import { API } from './API';
-import { Options } from './Options';
+import { API } from './api';
+import { Options } from './options';
 import { ServerContext, SkinContext } from './contexts';
 
 import { profileSkinsRegExp } from './utils';
