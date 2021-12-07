@@ -129,7 +129,7 @@ export class RendersContext extends Context<RendersContext> {
     /**
      * @hidden
      */
-    protected endpoint = this.options.getEndpoint({ domain: 'r.n-mc.co' });
+    protected endpoint = this.options.getEndpoint({ subdomain: 'render' });
 
     /**
      * @hidden
