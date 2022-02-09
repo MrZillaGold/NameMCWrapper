@@ -1,4 +1,4 @@
-import { Model, ModelUnion } from './contexts';
+import { Model, ModelUnion, RendersContext } from './contexts';
 
 import { applyPayload } from './utils';
 
@@ -86,9 +86,6 @@ export interface ICloudProxyResponse {
     userAgent: string;
 }
 
-/**
- * @hidden
- */
 export class Options implements IOptions {
 
     readonly proxy: IOptions['proxy'] = '';
@@ -117,8 +114,8 @@ export class Options implements IOptions {
         const { proxy, endpoint, rendersIgnoreProxy, cloudProxy } = this;
 
         const prefix =
-            (rendersIgnoreProxy && subdomain === 'render')
-            || (cloudProxy && proxy) ?
+            (rendersIgnoreProxy && domain === RendersContext.DOMAIN) ||
+            (cloudProxy && proxy) ?
                 ''
                 : proxy ?
                     `${proxy}/`
