@@ -289,7 +289,9 @@ export class SkinContext extends Context<SkinContext> {
         const id = searchParams.get('id');
 
         if (id) {
-            RendersContext.DOMAIN = host;
+            if (RendersContext.DOMAIN !== host) {
+                RendersContext.DOMAIN = host;
+            }
 
             return {
                 id,
