@@ -284,11 +284,13 @@ export class SkinContext extends Context<SkinContext> {
      * @hidden
      */
     static parseSkinLink(link: string): Pick<SkinContext, 'id' | 'model'> | void {
-        const { searchParams } = new URL(link);
+        const { searchParams, host } = new URL(link);
 
         const id = searchParams.get('id');
 
         if (id) {
+            RendersContext.DOMAIN = host;
+
             return {
                 id,
                 model: searchParams.get('model') as Model || Model.UNKNOWN

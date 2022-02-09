@@ -4,132 +4,82 @@ import { Hash } from './player';
 
 import { steveSkinHash, kSerializeData, pickProperties } from '../utils';
 
-export interface IRendersContextOptions extends IContextOptions<RendersContext> {
-    /**
-     * Skin id
-     */
-    skin: Hash;
-    /**
-     * Cape hash
-     */
-    cape?: Hash;
-    /**
-     * Skin model
-     */
-    model?: Model | ModelUnion;
-    /**
-     * Image render width
-     */
-    width?: number;
-    /**
-     * Image render height
-     */
-    height?: number;
-    /**
-     * Model horizontal rotation angle
-     */
-    theta?: number;
-    /**
-     * Model vertical rotation angle
-     */
-    phi?: number;
-    /**
-     * Model animation time
-     */
-    time?: number;
-    /**
-     * Image render scale
-     */
-    scale?: number;
-    /**
-     * Show skin overlay
-     */
-    overlay?: boolean;
-    /**
-     * Model HEX shadow color
-     *
-     * @see {@link https://www.color-hex.com/ | HEX Color generator}
-     */
-    shadow_color?: string;
-    /**
-     * Model shadow color
-     */
-    shadow_radius?: number;
-    /**
-     * Model horizontal shadow offset
-     */
-    shadow_x?: number;
-    /**
-     * Model vertical shadow offset
-     */
-    shadow_y?: number;
-}
+type RenderOptions = Pick<RendersContext, 'skin'> & Partial<Omit<RendersContext, 'skin' | keyof IContextOptions>>;
+
+export interface IRendersContextOptions extends IContextOptions<RenderOptions>, RenderOptions {}
 
 export class RendersContext extends Context<RendersContext> {
 
     /**
      * Skin id
      */
-    readonly skin: IRendersContextOptions['skin'] = steveSkinHash;
+    readonly skin: Hash = steveSkinHash;
     /**
      * Cape hash
      */
-    readonly cape: IRendersContextOptions['cape'] = '';
+    readonly cape: Hash = '';
     /**
      * Skin model
      */
-    readonly model: IRendersContextOptions['model'] = Model.UNKNOWN;
+    readonly model: Model | ModelUnion = Model.UNKNOWN;
     /**
      * Image render width
      */
-    readonly width: IRendersContextOptions['width'] = 600;
+    readonly width: number = 600;
     /**
      * Image render height
      */
-    readonly height: IRendersContextOptions['height'] = 300;
+    readonly height: number = 300;
     /**
      * Image render scale
      */
-    readonly scale: IRendersContextOptions['scale'] = 4;
+    readonly scale: number = 4;
     /**
      * Show skin overlay
      */
-    readonly overlay: IRendersContextOptions['overlay'] = true;
+    readonly overlay: boolean = true;
     /**
      * Model horizontal rotation angle
      */
-    readonly theta: IRendersContextOptions['theta'] = 30;
+    readonly theta: number = 30;
     /**
      * Model vertical rotation angle
      */
-    readonly phi: IRendersContextOptions['phi'] = 20;
+    readonly phi: number = 20;
     /**
      * Model animation time
      */
-    readonly time: IRendersContextOptions['time'] = 90;
+    readonly time: number = 90;
     /**
      * Model HEX shadow color
      *
      * @see {@link https://www.color-hex.com/ | HEX Color generator}
      */
-    readonly shadow_color: IRendersContextOptions['shadow_color'] = '000';
+    readonly shadow_color: string = '000';
     /**
      * Model shadow color
      */
-    readonly shadow_radius: IRendersContextOptions['shadow_radius'] = 0;
+    readonly shadow_radius: number = 0;
     /**
      * Model horizontal shadow offset
      */
-    readonly shadow_x: IRendersContextOptions['shadow_x'] = 0;
+    readonly shadow_x: number = 0;
     /**
      * Model vertical shadow offset
      */
-    readonly shadow_y: IRendersContextOptions['shadow_y'] = 0;
+    readonly shadow_y: number = 0;
 
     /**
      * @hidden
      */
-    protected endpoint = this.options.getEndpoint({ subdomain: 'render' });
+    protected endpoint = this.options.getEndpoint({
+        domain: RendersContext.DOMAIN
+    });
+
+    /**
+     * NameMC renders domain
+     */
+    static DOMAIN = 'r.nmc1.net';
 
     /**
      * @hidden
