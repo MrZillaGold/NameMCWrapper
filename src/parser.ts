@@ -23,10 +23,12 @@ export abstract class DataParser {
         const $ = cheerio.load(data);
 
         return $('div.card-body.position-relative.text-center.checkered.p-1')
-            .map((index, card) => new SkinContext({
-                data: card,
-                ...this
-            }))
+            .map((index, card) => (
+                new SkinContext({
+                    data: card,
+                    ...this
+                })
+            ))
             .get();
     }
 
