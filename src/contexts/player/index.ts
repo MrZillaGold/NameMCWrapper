@@ -427,10 +427,16 @@ export class PlayerContext extends Context<PlayerContext> {
             return Number(id) || 0;
         }
 
-        const { attribs: { href } } = $(`a[href^="/profile/${this.username}"].nav-link`)
+        const link = $(`a[href^="/profile/${this.username}"].nav-link`)
             .get(0);
 
-        return Number(href.split('.').pop()) || 0;
+        if (link) {
+            const { attribs: { href } } = link;
+
+            return Number(href.split('.').pop()) || 0;
+        }
+
+        return 0;
     }
 
     /**
