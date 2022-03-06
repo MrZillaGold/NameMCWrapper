@@ -109,7 +109,7 @@ export class SkinContext extends Context<SkinContext> {
             return;
         }
 
-        const $ = cheerio.load(data);
+        const $ = cheerio.load(isExtended ? data : '');
 
         if (isExtended) {
             this.#extended = true;
@@ -263,28 +263,23 @@ export class SkinContext extends Context<SkinContext> {
                 model: model as Model
             };
         } else {
-            const cardLinkHash = ((data as  Element)?.parent as Element)?.attribs.href
+            const id = ((data as  Element)?.parent as Element)?.attribs.href
                 .replace(skinRegExp, '$1');
 
-            const cardHeader = ((data as Element)?.parent?.children as Element[])
-                .filter(({ name, attribs: { class: className = '' } = {} }) => (
-                    name === 'div' && className.includes('card-header')
-                ))[0];
-            const cardName = cardHeader ?
-                ((cardHeader as Element).children[0] as unknown as Text)?.data as string
-                :
-                '';
+            const $header = cheerio.load(((data as Element)?.parent?.children as Element[]));
+            const name = $header('.card-header')
+                .text();
 
-            const $ = cheerio.load(data!);
+            const $body = cheerio.load(data!);
 
-            const { attribs: { 'data-src': src } } = $('div > img.drop-shadow')
+            const { attribs: { 'data-src': src } } = $body('div > img.drop-shadow')
                 .get(0);
 
             const skin = SkinContext.parseSkinLink(src);
 
             return {
-                id: cardLinkHash,
-                name: cardName,
+                id,
+                name,
                 model: Model.UNKNOWN,
                 ...skin
             };
