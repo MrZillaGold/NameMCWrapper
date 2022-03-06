@@ -129,20 +129,20 @@ export class PlayerContext extends Context<PlayerContext> {
          */
         login_streak: {
             /**
-             * Current value
+             * Current streak
              */
             current: number;
             /**
-             * Max value
+             * Max streak
              */
             max: number;
         };
         /**
-         * Last game server
+         * Last login server
          */
         last_server: string;
         /**
-         * Last online
+         * Last online timestamp
          */
         last_online: number;
         /**
