@@ -1,11 +1,6 @@
 export function convertDate(fullDate: string): number {
-    const [date, time] = fullDate.split(', ');
-
-    const ISODate = date
-        .split('.')
-        .reverse()
-        .join('-');
-
-    return new Date(`${ISODate}T${time}`)
-        .getTime();
+    return new Date(
+        fullDate.replace(/[^\d\w\s/:]/g, '')
+    )
+        .getTime() || 0;
 }
