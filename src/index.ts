@@ -98,7 +98,7 @@ export class NameMC extends DataParser {
                 {}
         });
 
-        this.addInterceptors();
+        this.#addInterceptors();
     }
 
     /**
@@ -365,7 +365,7 @@ export class NameMC extends DataParser {
     /**
      * @hidden
      */
-    private addInterceptors(): void {
+    #addInterceptors(): void {
         const { proxy, cloudProxy } = this.options;
 
         if (proxy && cloudProxy) {
