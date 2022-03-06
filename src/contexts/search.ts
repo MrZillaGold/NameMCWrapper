@@ -6,6 +6,7 @@ import { PlayerContext } from './player';
 import { ServerContext } from './server';
 
 import { kSerializeData, pickProperties } from '../utils';
+import { CheerioAPI } from 'cheerio';
 
 export interface ISearchContextOptions extends IContextOptions {
     data?: string | cheerio.Element | cheerio.Element[];
@@ -80,78 +81,38 @@ export class SearchContext extends Context<SearchContext> {
             .map((index, element) => cheerio.load(element))
             .get();
 
-        const skin = skinTagCol('div.card-body')
-            .get(0);
+        const hasMainCol = Boolean(mainCol);
 
-        if (skin) {
-            this.skin = new SkinContext({
-                ...this,
-                data: skin
-            });
+        if (hasMainCol) {
+            const skin = skinTagCol('div.card-body')
+                .get(0);
+
+            if (skin) {
+                this.skin = new SkinContext({
+                    ...this,
+                    data: skin
+                });
+            }
         }
 
-        mainCol('div.card.mb-3, div:not(.ad-container).mb-3')
+        (hasMainCol ? mainCol : skinTagCol)('div.card.mb-3, div:not(.ad-container).mb-3')
             .get()
             .forEach((element) => {
                 const $ = cheerio.load(element);
 
-                const statusBar = $('div#status-bar');
+                const hasStatusBar = this.#parseStatusBar($);
 
-                if (statusBar.length) {
-                    this.name.status = statusBar.hasClass('bg-success') ?
-                        NameStatus.AVAILABLE
-                        :
-                        statusBar.hasClass('bg-info') ?
-                            NameStatus.AVAILABLE_LATER
-                            :
-                            statusBar.hasClass('bg-warning') ?
-                                NameStatus.UNAVAILABLE
-                                :
-                                NameStatus.INVALID;
-
-                    const availabilityTime = statusBar.find('time');
-
-                    if (availabilityTime.length) {
-                        this.name.availabilityAt = Number(
-                            availabilityTime.attr()
-                                .datetime
-                        );
-                        this.name.availabilityTime = new Date(this.name.availabilityAt)
-                            .getTime();
-                    }
-
-                    this.name.searches = parseInt(
-                        statusBar.find('div.tabular')
-                            .text()
-                    );
-
+                if (hasStatusBar) {
                     return;
                 }
 
-                const servers = $('div.table-responsive tr');
+                const hasServers = this.#parseServers($);
 
-                if (servers.length) {
-                    this.servers.push(
-                        ...servers.map((index, element) => (
-                            new ServerContext({
-                                ...this,
-                                data: element,
-                                isSearch: true
-                            })
-                        ))
-                            .get()
-                    );
-
+                if (hasServers) {
                     return;
                 }
 
-                this.players.push(
-                    new PlayerContext({
-                        ...this,
-                        data: $('div.card').get(0),
-                        isSearch: true
-                    })
-                );
+                this.#parsePlayers($);
             });
     }
 
@@ -221,5 +182,76 @@ export class SearchContext extends Context<SearchContext> {
             'servers',
             'skin'
         ]);
+    }
+
+    #parseStatusBar($: CheerioAPI): boolean {
+        const statusBar = $('div#status-bar');
+
+        if (statusBar.length) {
+            this.name.status = statusBar.hasClass('bg-success') ?
+                NameStatus.AVAILABLE
+                :
+                statusBar.hasClass('bg-info') ?
+                    NameStatus.AVAILABLE_LATER
+                    :
+                    statusBar.hasClass('bg-warning') ?
+                        NameStatus.UNAVAILABLE
+                        :
+                        NameStatus.INVALID;
+
+            const availabilityTime = statusBar.find('time');
+
+            if (availabilityTime.length) {
+                this.name.availabilityAt = Number(
+                    availabilityTime.attr()
+                        .datetime
+                );
+                this.name.availabilityTime = new Date(this.name.availabilityAt)
+                    .getTime();
+            }
+
+            this.name.searches = parseInt(
+                statusBar.find('div.tabular')
+                    .text()
+            );
+
+            return true;
+        }
+
+        return false;
+    }
+
+    #parseServers($: CheerioAPI): boolean {
+        const servers = $('div.table-responsive tr');
+
+        if (servers.length) {
+            this.servers.push(
+                ...servers.map((index, element) => (
+                    new ServerContext({
+                        ...this,
+                        data: element,
+                        isSearch: true
+                    })
+                ))
+                    .get()
+            );
+
+            return true;
+        }
+
+        return false;
+    }
+
+    #parsePlayers($: CheerioAPI): void {
+        const data = $('div.card')
+            .get(0);
+
+        this.players.push(
+            new PlayerContext({
+                ...this,
+                data,
+                isSearch: true
+            })
+        );
     }
 }
