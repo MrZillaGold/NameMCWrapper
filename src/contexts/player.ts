@@ -75,10 +75,6 @@ export class PlayerContext extends Context<PlayerContext> {
      */
     readonly username: string = '';
     /**
-     * Profile short url
-     */
-    readonly url: string = '';
-    /**
      * Profile views
      */
     readonly views: number = 0;
@@ -137,7 +133,11 @@ export class PlayerContext extends Context<PlayerContext> {
 
         this.skins = this.#parseSkins($, isSearch);
 
-        if (!isSearch) {
+        if (isSearch) {
+            this.names = this.#parseUsernameHistory(
+                $('tr')
+            );
+        } else {
             this.capes = this.#parseCapes($);
             this.servers = this.#parseServers($);
 
@@ -146,14 +146,10 @@ export class PlayerContext extends Context<PlayerContext> {
             this.uuid = uuid;
             this.views = views;
             this.names = names;
-        } else {
-            this.id = this.#parseId($);
-            this.names = this.#parseUsernameHistory(
-                $('tr')
-            );
         }
 
         this.username = this.names[this.names.length - 1].username;
+        this.id = this.#parseId($, isSearch);
     }
 
     /**
@@ -178,7 +174,7 @@ export class PlayerContext extends Context<PlayerContext> {
             return;
         }
 
-        if (!(this.username && this.uuid && this.url && this.id)) {
+        if (!(this.username && this.uuid && this.id)) {
             const username = this.uuid || this.username;
 
             if (!username.match(nameRegExp)) {
@@ -462,19 +458,26 @@ export class PlayerContext extends Context<PlayerContext> {
         };
     }
 
-    #parseId($: CheerioAPI): number {
-        const { attribs: { href } } = $('div.card-header a')
-            .get(0);
+    #parseId($: CheerioAPI, isSearch?: boolean): number {
+        if (isSearch) {
+            const { attribs: { href } } = $('div.card-header a')
+                .get(0);
 
-        const match = href.match(profileRegExp);
+            const match = href.match(profileRegExp);
 
-        if (!match) {
-            return 0;
+            if (!match) {
+                return 0;
+            }
+
+            const [,, id] = match;
+
+            return Number(id) || 0;
         }
 
-        const [,, id] = match;
+        const { attribs: { href } } = $(`a[href^="/profile/${this.username}"].nav-link`)
+            .get(0);
 
-        return Number(id) || 0;
+        return Number(href.split('.').pop()) || 0;
     }
 
     /**
@@ -485,7 +488,6 @@ export class PlayerContext extends Context<PlayerContext> {
             'id',
             'uuid',
             'username',
-            'url',
             'views',
             'names',
             'skins',
