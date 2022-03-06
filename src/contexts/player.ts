@@ -1,9 +1,9 @@
-import cheerio, { Node, Element, Cheerio } from 'cheerio';
+import cheerio, { Node, Element, Cheerio, CheerioAPI } from 'cheerio';
 
 import { WrapperError } from '../error';
 import { Context, SkinContext, CapeContext, ServerContext, IContextOptions, Model } from './';
 
-import { kSerializeData, serverRegExp, parseDuration, pickProperties, convertDate, nameRegExp, profileRegExp } from '../utils';
+import { kSerializeData, serverRegExp, pickProperties, convertDate, nameRegExp, profileRegExp } from '../utils';
 import { IFriend } from '../api';
 
 export interface IPlayerContextOptions extends IContextOptions {
@@ -114,48 +114,12 @@ export class PlayerContext extends Context<PlayerContext> {
      * Following date, available when receiving player followers/following
      */
     readonly followingDate: number = 0;
-    /**
-     * Badlion Client statistics
-     *
-     * @see {@link https://www.badlion.net/forum/thread/309559 | Announce from Badlion Client}
-     */
-    readonly badlion: {
-        /**
-         * Total time spent in the game
-         */
-        play_time: number;
-        /**
-         * Login streak
-         */
-        login_streak: {
-            /**
-             * Current streak
-             */
-            current: number;
-            /**
-             * Max streak
-             */
-            max: number;
-        };
-        /**
-         * Last login server
-         */
-        last_server: string;
-        /**
-         * Last online timestamp
-         */
-        last_online: number;
-        /**
-         * Used game version
-         */
-        version: string;
-    } | null = null;
 
     /**
      * Payload loaded
      * @hidden
      */
-    private extended = false;
+    #extended = false;
 
     /**
      * @hidden
@@ -171,177 +135,20 @@ export class PlayerContext extends Context<PlayerContext> {
 
         const $ = cheerio.load(data);
 
-        this.skins = $(isSearch ? 'img.skin-2d' : 'canvas.skin-2d.skin-button') // @ts-ignore
-            .map((index, { attribs: { 'data-id': hash, 'data-model': model = Model.UNKNOWN, title, src } }) => (
-                new SkinContext({
-                    ...this,
-                    payload: isSearch ?
-                        SkinContext.parseSkinLink(src)
-                        :
-                        {
-                            id: hash,
-                            model,
-                            createdAt: convertDate(title)
-                        }
-                })
-            ))
-            .get();
+        this.skins = this.#parseSkins($, isSearch);
 
         if (!isSearch) {
-            this.capes = $('canvas.cape-2d')
-                .map((index, { attribs: { 'data-cape': hash } }) => new CapeContext({
-                    ...this,
-                    hash
-                }))
-                .get();
+            this.capes = this.#parseCapes($);
+            this.servers = this.#parseServers($);
 
-            this.servers = $('a > img.server-icon')
-                .map((index, element) => {
-                    // @ts-ignore
-                    const ip = element.parent?.attribs?.href
-                        .replace(serverRegExp, '$1');
-                    // @ts-ignore
-                    const title = element.next?.data || '';
-                    const { attribs: { src: icon } } = element;
+            const { uuid, views, names } = this.#parseInfoColumns($);
 
-                    return new ServerContext({
-                        ...this,
-                        extended: false,
-                        payload: {
-                            ip,
-                            title,
-                            icon
-                        }
-                    });
-                })
-                .get();
-
-            const rawBadlionStatistic: any[] = $('div.card.badlion > div.card-body > div.row.no-gutters')
-                .get();
-
-            if (rawBadlionStatistic.length === 4) {
-                rawBadlionStatistic.splice(1, 0, {
-                    current: 0,
-                    max: 0
-                });
-            }
-
-            const badlion: any[] = rawBadlionStatistic.map((element, index) => {
-                const $ = cheerio.load(element);
-
-                switch (index) {
-                    case 0: {
-                        return parseDuration(
-                            $('div.col-12')
-                                .text()
-                        );
-                    }
-                    case 1: {
-                        if (element?.current) {
-                            return element;
-                        }
-
-                        const [current, max] = $('div.col-12').text()
-                            .match(/([\d]+)/g) || [0, 0];
-
-                        return {
-                            current: Number(current),
-                            max: Number(max)
-                        };
-                    }
-                    case 3: {
-                        const time = $('div.col-12 > time').get(0);
-                        const lastOnline = time?.attribs?.datetime || null;
-
-                        return lastOnline ?
-                            new Date(lastOnline)
-                                .getTime()
-                            :
-                            null;
-                    }
-                    case 2:
-                    case 4: {
-                        return $('div.col-12').text();
-                    }
-                }
-            });
-
-            const [baseInfoRaw, usernameHistoryRaw] = $('div.card.mb-3 > div.card-body')
-                .map((index, element) => {
-                    const $ = cheerio.load(element);
-
-                    const body = $('div.card-body');
-
-                    switch (index) {
-                        case 0:
-                            return body.children('div.row.no-gutters');
-                        case 1:
-                            return body.find('tr:not([class])')
-                                .map((index, element) => {
-                                    element.children.push(element.next as Node);
-
-                                    return element;
-                                });
-                    }
-                })
-                .get();
-
-            const baseInfo = baseInfoRaw.map((index, element) => {
-                const $ = cheerio.load(element);
-
-                switch (index) {
-                    case 0:
-                    case 1:
-                        return $('div.col-12 > samp')
-                            .text();
-                    case 2: {
-                        const link = $('div.col-12 > a')
-                            .text();
-
-                        return `https://${link}`;
-                    }
-                    case 3: {
-                        const views = parseInt(
-                            $('div.col-auto')
-                                .text()
-                        );
-
-                        return Number(views);
-                    }
-                }
-            })
-                .get() as [string, string, string, number];
-
-            const usernameHistory = this.parseUsernameHistory(usernameHistoryRaw);
-
-            const [uuid, , url, views] = baseInfo;
-
-            this.id = Number(url.split('.').pop());
             this.uuid = uuid;
-            this.url = url;
             this.views = views;
-            this.names = usernameHistory;
-
-            if (badlion.length) {
-                const [play_time, login_streak, last_server, last_online, version] = badlion;
-
-                this.badlion = {
-                    play_time,
-                    login_streak,
-                    last_server,
-                    last_online,
-                    version
-                };
-            }
+            this.names = names;
         } else {
-            const [, , id] = $('div.card-header a')
-                .get(0)
-                .attribs
-                .href
-                .match(profileRegExp) as RegExpMatchArray;
-
-            this.id = Number(id);
-            this.names = this.parseUsernameHistory(
+            this.id = this.#parseId($);
+            this.names = this.#parseUsernameHistory(
                 $('tr')
             );
         }
@@ -353,14 +160,7 @@ export class PlayerContext extends Context<PlayerContext> {
      * Check payload loaded
      */
     get isExtended(): boolean {
-        return this.extended;
-    }
-
-    /**
-     * Does the player use Badlion Client
-     */
-    get usesBadlion(): boolean {
-        return Boolean(this.badlion);
+        return this.#extended;
     }
 
     /**
@@ -410,14 +210,14 @@ export class PlayerContext extends Context<PlayerContext> {
 
         this.setupPayload();
 
-        this.extended = true;
+        this.#extended = true;
     }
 
     /**
      * Get player followers
      */
     getFollowers(options: IGetFollowersOptions): Promise<PlayerContext['followers']> {
-        return this.loadFollowers({
+        return this.#loadFollowers({
             ...options,
             section: FOLLOWERS
         });
@@ -427,7 +227,7 @@ export class PlayerContext extends Context<PlayerContext> {
      * Get player following
      */
     getFollowing(options: IGetFollowersOptions): Promise<PlayerContext['followers']> {
-        return this.loadFollowers({
+        return this.#loadFollowers({
             ...options,
             section: FOLLOWING
         });
@@ -436,8 +236,8 @@ export class PlayerContext extends Context<PlayerContext> {
     /**
      * @hidden
      */
-    private async loadFollowers({ section, page = 1, sort = {} }: ILoadFollowersOptions): Promise<PlayerContext['followers']> {
-        if (!this.extended) {
+    async #loadFollowers({ section, page = 1, sort = {} }: ILoadFollowersOptions): Promise<PlayerContext['followers']> {
+        if (!this.#extended) {
             await this.loadPayload();
         }
 
@@ -452,7 +252,7 @@ export class PlayerContext extends Context<PlayerContext> {
             }
         })
             .then(({ data }) => (
-                this.parseFollowers(data)
+                this.#parseFollowers(data)
             ));
 
         const followers = loadedFollowers.reduce<PlayerContext['followers']>((followers, follower) => {
@@ -475,7 +275,7 @@ export class PlayerContext extends Context<PlayerContext> {
     /**
      * @hidden
      */
-    private parseFollowers(data: string): PlayerContext['followers'] {
+    #parseFollowers(data: string): PlayerContext['followers'] {
         const $ = cheerio.load(data);
 
         const uuid = $('tbody > input[name=\'profile\']')
@@ -520,7 +320,7 @@ export class PlayerContext extends Context<PlayerContext> {
     /**
      * @hidden
      */
-    private parseUsernameHistory(element: Cheerio<Element>): PlayerContext['names'] {
+    #parseUsernameHistory(element: Cheerio<Element>): PlayerContext['names'] {
         return element.map((index, element) => {
             const $ = cheerio.load(element);
 
@@ -550,6 +350,136 @@ export class PlayerContext extends Context<PlayerContext> {
     /**
      * @hidden
      */
+    #parseServers($: CheerioAPI): PlayerContext['servers'] {
+        return $('a > img.server-icon')
+            .map((index, element) => {
+                const ip = (element.parent as Element)?.attribs?.href
+                    .replace(serverRegExp, '$1');
+
+                const title = (element.next as Text | null)?.data || '';
+                const { attribs: { src: icon } } = element;
+
+                return new ServerContext({
+                    ...this,
+                    extended: false,
+                    payload: {
+                        ip,
+                        title,
+                        icon
+                    }
+                });
+            })
+            .get();
+    }
+
+    /**
+     * @hidden
+     */
+    #parseCapes($: CheerioAPI): PlayerContext['capes'] {
+        return $('canvas.cape-2d')
+            .map((index, { attribs: { 'data-cape': hash } }) => (
+                new CapeContext({
+                    ...this,
+                    hash
+                })
+            ))
+            .get();
+    }
+
+    /**
+     * @hidden
+     */
+    #parseSkins($: CheerioAPI, isSearch?: boolean): PlayerContext['skins'] {
+        return $(isSearch ? 'img.skin-2d' : 'canvas.skin-2d.skin-button')
+            .map((index, { attribs: { 'data-id': hash, 'data-model': model = Model.UNKNOWN, title, src } }) => (
+                new SkinContext({
+                    ...this,
+                    payload: isSearch ?
+                        SkinContext.parseSkinLink(src)
+                        :
+                        {
+                            model,
+                            id: hash,
+                            createdAt: convertDate(title)
+                        }
+                })
+            ))
+            .get();
+    }
+
+    /**
+     * @hidden
+     */
+    #parseInfoColumns($: CheerioAPI): Pick<PlayerContext, 'uuid' | 'views' | 'names'> {
+        const [baseInfoRaw, usernameHistoryRaw] = $('div.card.mb-3 > div.card-body')
+            .map((index, element) => {
+                const $ = cheerio.load(element);
+
+                const body = $('div.card-body');
+
+                switch (index) {
+                    case 0:
+                        return body.children('div.row.no-gutters');
+                    case 1:
+                        return body.find('tr:not([class])')
+                            .map((index, element) => {
+                                element.children.push(element.next as Node);
+
+                                return element;
+                            });
+                }
+            })
+            .get();
+
+        const baseInfo = baseInfoRaw.map((index, element) => {
+            const $ = cheerio.load(element);
+
+            switch (index) {
+                case 0:
+                case 1:
+                    return $('div.col-12 > samp')
+                        .text();
+                case 2: {
+                    const views = parseInt(
+                        $('div.col-auto')
+                            .text()
+                    );
+
+                    return Number(views);
+                }
+            }
+        })
+            .get() as [string, string, number];
+
+        const names = this.#parseUsernameHistory(usernameHistoryRaw);
+
+        const [uuid, , views] = baseInfo;
+
+        return {
+            uuid,
+            views,
+            names
+        };
+    }
+
+    #parseId($: CheerioAPI): number {
+        const { attribs: { href } } = $('div.card-header a')
+            .get(0);
+
+        const match = href.match(profileRegExp);
+
+        if (!match) {
+            return 0;
+        }
+
+        const [,, id] = match;
+
+        return Number(id) || 0;
+    }
+
+    /**
+     * @hidden
+     */
     [kSerializeData](): any {
         return pickProperties(this, [
             'id',
@@ -564,7 +494,6 @@ export class PlayerContext extends Context<PlayerContext> {
             'followers',
             'following',
             'followingDate',
-            'badlion',
             'servers'
         ]);
     }
