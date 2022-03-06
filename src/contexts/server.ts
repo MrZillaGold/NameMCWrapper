@@ -1,4 +1,4 @@
-import cheerio, { Element } from 'cheerio';
+import cheerio, { CheerioAPI, Element } from 'cheerio';
 
 import { Context, IContextOptions } from './context';
 import { Username } from './player';
@@ -91,7 +91,7 @@ export class ServerContext extends Context<ServerContext> {
      * Payload loaded
      * @hidden
      */
-    private extended = false;
+    #extended = false;
 
     /**
      * @hidden
@@ -110,47 +110,7 @@ export class ServerContext extends Context<ServerContext> {
         if (isSearch) {
             this.payload.players = {};
 
-            $('td')
-                .get()
-                .forEach((element, index) => {
-                    const $ = cheerio.load(element);
-
-                    const image = $('img');
-                    const row = $('td');
-                    const title = $('a');
-
-                    switch (index) {
-                        case 0:
-                            this.payload.icon = image
-                                .attr()
-                                .src;
-                            break;
-                        case 1:
-                            this.payload.country = this.parseServerCountry(
-                                image.get(0)
-                            );
-                            break;
-                        case 2:
-                            this.payload.title = title.text();
-                            this.payload.ip = this.parseIP(title.get(0));
-                            break;
-                        case 3:
-                            this.payload.motd = {
-                                clear: row.attr().title,
-                                html: ''
-                            };
-                            break;
-                        case 4:
-                            this.payload.players.online = Number(row.text());
-                            break;
-                        case 6:
-                            this.payload.players.max = Number(row.text());
-                            break;
-                        case 7:
-                            this.payload.rating = Number(row.text().slice(1));
-                            break;
-                    }
-                });
+            this.#parseSearchTableRow($);
 
             this.setupPayload();
 
@@ -158,17 +118,17 @@ export class ServerContext extends Context<ServerContext> {
         }
 
         const serverCard = extended ?
-            this.parseServerCard(
+            this.#parseServerCard(
                 $('div.card.mb-3')
                     .filter((index, element) => element?.attribs?.style?.includes('#0F0F0F'))
                     .get(0),
                 !extended
             )
             :
-            this.parseServerCard(data as Element, !extended);
+            this.#parseServerCard(data as Element, !extended);
 
         if (extended) {
-            this.extended = extended;
+            this.#extended = extended;
 
             const [, infoCard] = $('div.row > div.col-12.col-lg-5')
                 .children()
@@ -190,7 +150,7 @@ export class ServerContext extends Context<ServerContext> {
 
                     if (rowValue.children().length) {
                         return {
-                            country: this.parseServerCountry(
+                            country: this.#parseServerCountry(
                                 rowValue.children('img')
                                     .get(0)
                             )
@@ -235,7 +195,7 @@ export class ServerContext extends Context<ServerContext> {
      * Check payload loaded
      */
     get isExtended(): boolean {
-        return this.extended;
+        return this.#extended;
     }
 
     /**
@@ -271,32 +231,37 @@ export class ServerContext extends Context<ServerContext> {
 
         this.setupPayload();
 
-        this.extended = true;
+        this.#extended = true;
     }
 
     /**
      * @hidden
      */
-    protected parseServerCard(data: Element, isPreview: boolean): Partial<
-        Pick<ServerContext, 'ip' | 'title' | 'country' | 'motd' | 'players' | 'rating' | 'icon'>
+    #parseServerCard(data: Element, isPreview: boolean): Partial<
+        Pick<ServerContext,
+            'ip'
+            | 'title'
+            | 'country'
+            | 'motd'
+            | 'players'
+            | 'rating'
+            | 'icon'
+            >
         > {
         const $ = cheerio.load(data);
 
         const header = $('div.card-header.p-0 > div.row.no-gutters');
-        // @ts-ignore
         const [{ data: title }] = header.find(`div.col.text-center.text-nowrap.text-ellipsis.mc-bold${isPreview ? '.p-1' : '.p-2.mc-white'}`)
             .get(0)
-            .children;
-        // @ts-ignore
+            .children as unknown as Text[];
         const [{ data: rating }] = header.find(`div.col-auto.mc-gray${isPreview ? '.p-1' : '.p-2'}`)
             .get(1)
-            .children;
+            .children as unknown as Text[];
 
         const body = $('div.card-body.p-0 > div.row.no-gutters.flex-nowrap.align-items-center');
 
-        const icon = body.find(`div.col-auto${isPreview ? '.p-1' : '.p-2'} > img`)
-            .attr()
-            .src;
+        const { src: icon } = body.find(`div.col-auto${isPreview ? '.p-1' : '.p-2'} > img`)
+            .attr();
 
         const bodyMotd = body.find(`div.col.mc-reset${isPreview ? '.p-1' : '.p-2'}`)
             .children();
@@ -309,20 +274,14 @@ export class ServerContext extends Context<ServerContext> {
             .attr()
             .title;
         // @ts-ignore
-        let [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: bodyMotdNext }, rawMotd] = bodyMotd.children()
+        const [{ children: [{ data: onlinePlayers }, , { data: maxPlayers }], next: bodyMotdNext = { data: '' } }, rawMotd] = bodyMotd.children()
             .get();
 
-        if (!bodyMotdNext) {
-            bodyMotdNext = {
-                data: ''
-            } as any;
-        }
-
-        // @ts-ignore
-        const { data: textMotd } = bodyMotdNext;
+        const { data: textMotd } = bodyMotdNext as Text;
 
         const motdHtml = typeof rawMotd === 'object' ?
-            cheerio.html(escapeColorsClasses(rawMotd.children as Element[]))
+            cheerio.load(escapeColorsClasses(rawMotd.children as Element[]))
+                .html()
             :
             textMotd;
         const motdClear = isPreview ?
@@ -344,14 +303,14 @@ export class ServerContext extends Context<ServerContext> {
                 online: Number(onlinePlayers),
                 max: Number(maxPlayers)
             },
-            rating: Number(rating.slice(1))
+            rating: parseInt(rating)
         };
 
         if (isPreview) {
             return {
                 ...parsedData,
-                ip: this.parseIP(data),
-                country: this.parseServerCountry(
+                ip: this.#parseIP(data),
+                country: this.#parseServerCountry(
                     header.find('div.col-auto.p-1')
                         .children('img')
                         .get(0)
@@ -365,7 +324,7 @@ export class ServerContext extends Context<ServerContext> {
     /**
      * @hidden
      */
-    protected parseServerCountry(data?: Element): ServerContext['country'] {
+    #parseServerCountry(data?: Element): ServerContext['country'] {
         if (data) {
             const { attribs: { title: name, src: image, alt: emoji } } = data;
 
@@ -382,8 +341,55 @@ export class ServerContext extends Context<ServerContext> {
     /**
      * @hidden
      */
-    protected parseIP(data: Element): ServerContext['ip'] {
+    #parseIP(data: Element): ServerContext['ip'] {
         return data.attribs.href.replace(/\/[^]+\//, '');
+    }
+
+    /**
+     * @hidden
+     */
+    #parseSearchTableRow($: CheerioAPI) {
+        $('td')
+            .get()
+            .forEach((element, index) => {
+                const $ = cheerio.load(element);
+
+                const image = $('img');
+                const row = $('td');
+                const title = $('a');
+
+                switch (index) {
+                    case 0:
+                        this.payload.icon = image
+                            .attr()
+                            .src;
+                        break;
+                    case 1:
+                        this.payload.country = this.#parseServerCountry(
+                            image.get(0)
+                        );
+                        break;
+                    case 2:
+                        this.payload.title = title.text();
+                        this.payload.ip = this.#parseIP(title.get(0));
+                        break;
+                    case 3:
+                        this.payload.motd = {
+                            clear: row.attr().title,
+                            html: ''
+                        };
+                        break;
+                    case 4:
+                        this.payload.players.online = Number(row.text());
+                        break;
+                    case 6:
+                        this.payload.players.max = Number(row.text());
+                        break;
+                    case 7:
+                        this.payload.rating = Number(row.text().slice(1));
+                        break;
+                }
+            });
     }
 
     /**
