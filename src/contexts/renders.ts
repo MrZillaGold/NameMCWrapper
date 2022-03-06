@@ -116,7 +116,7 @@ export class RendersContext extends Context<RendersContext> {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { endpoint, options, client, api, payload, ...params } = this;
 
-        const front = `${endpoint}/skin/body.png?${new URLSearchParams(params as unknown as Record<string, string>)}`;
+        const front = `${endpoint}/3d/skin/body.png?${new URLSearchParams(params as unknown as Record<string, string>)}`;
 
         return {
             front,
@@ -130,7 +130,7 @@ export class RendersContext extends Context<RendersContext> {
     get face(): string {
         const { endpoint, skin, overlay, scale } = this;
 
-        return `${endpoint}/skin/face.png?skin=${skin}&overlay=${overlay}&scale=${scale}`;
+        return `${endpoint}/2d/skin/face.png?skin=${skin}&overlay=${overlay}&scale=${scale}`;
     }
 
     [kSerializeData](): any {
