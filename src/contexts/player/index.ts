@@ -1,64 +1,17 @@
 import cheerio, { Node, Element, Cheerio, CheerioAPI } from 'cheerio';
 
-import { WrapperError } from '../error';
-import { Context, SkinContext, CapeContext, ServerContext, IContextOptions, Model } from './';
+import { WrapperError } from '../../error';
+import { Context, SkinContext, CapeContext, ServerContext, IContextOptions, Model } from '../';
 
-import { kSerializeData, serverRegExp, pickProperties, convertDate, nameRegExp, profileRegExp } from '../utils';
-import { IFriend } from '../api';
+import { kSerializeData, serverRegExp, pickProperties, convertDate, nameRegExp, profileRegExp } from '../../utils';
+
+import { FollowersSection, IGetFollowersOptions, ILoadFollowersOptions, IUsername } from './types';
+import { IFriend } from '../../api';
 
 export interface IPlayerContextOptions extends IContextOptions {
     data?: string | Element | Element[];
     isSearch?: boolean;
 }
-
-export type Username = string;
-export type Hash = string;
-
-export interface IUsername {
-    username: Username;
-    changed_at: string | null;
-    timestamp: number | null;
-}
-
-export enum Sort {
-    ASC = 'asc',
-    DESC = 'desc'
-}
-export type SortUnion = `${Sort}`;
-
-export interface IGetFollowersOptions {
-    /**
-     * Sort filter
-     */
-    sort?: FollowersSort;
-    /**
-     * Page number
-     */
-    page?: number;
-}
-
-export type FollowersSort = Partial<Record<'profile' | 'date' | 'following', Sort | SortUnion>>;
-
-/**
- * @hidden
- */
-export enum FollowersSection {
-    FOLLOWING = 'following',
-    FOLLOWERS = 'followers'
-}
-/**
- * @hidden
- */
-export type FollowersSectionUnion = `${FollowersSection}`;
-
-/**
- * @hidden
- */
-export interface ILoadFollowersOptions extends IGetFollowersOptions {
-    section: FollowersSection | FollowersSectionUnion;
-}
-
-const { FOLLOWING, FOLLOWERS } = FollowersSection;
 
 export class PlayerContext extends Context<PlayerContext> {
 
@@ -215,7 +168,7 @@ export class PlayerContext extends Context<PlayerContext> {
     getFollowers(options: IGetFollowersOptions): Promise<PlayerContext['followers']> {
         return this.#loadFollowers({
             ...options,
-            section: FOLLOWERS
+            section: FollowersSection.FOLLOWERS
         });
     }
 
@@ -225,7 +178,7 @@ export class PlayerContext extends Context<PlayerContext> {
     getFollowing(options: IGetFollowersOptions): Promise<PlayerContext['followers']> {
         return this.#loadFollowers({
             ...options,
-            section: FOLLOWING
+            section: FollowersSection.FOLLOWING
         });
     }
 
@@ -500,3 +453,5 @@ export class PlayerContext extends Context<PlayerContext> {
         ]);
     }
 }
+
+export * from './types';

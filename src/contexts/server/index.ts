@@ -1,26 +1,16 @@
 import cheerio, { CheerioAPI, Element } from 'cheerio';
 
-import { Context, IContextOptions } from './context';
-import { Username } from './player';
-import { WrapperError } from '../error';
+import { Context, IContextOptions } from '../context';
+import { WrapperError } from '../../error';
 
-import { escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from '../utils';
+import { escapeColorsClasses, escapeHtml, getUUID, kSerializeData, pickProperties } from '../../utils';
+
+import { ICheckServerLikeOptions } from './types';
 
 export interface IServerContextOptions extends IContextOptions {
     data?: string | Element | Element[];
     extended?: boolean;
     isSearch?: boolean;
-}
-
-export interface ICheckServerLikeOptions {
-    /**
-     * Server IP
-     */
-    ip: string;
-    /**
-     * Player username
-     */
-    username: Username;
 }
 
 export class ServerContext extends Context<ServerContext> {
@@ -409,3 +399,5 @@ export class ServerContext extends Context<ServerContext> {
         ]);
     }
 }
+
+export * from './types';

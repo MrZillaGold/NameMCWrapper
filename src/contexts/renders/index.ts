@@ -1,8 +1,8 @@
-import { Context, IContextOptions } from './context';
-import { Model, ModelUnion } from './skin';
-import { Hash } from './player';
+import { Context, IContextOptions } from '../context';
+import { Model, ModelUnion } from '../skin';
+import { Hash } from '../player';
 
-import { steveSkinHash, kSerializeData, pickProperties } from '../utils';
+import { STEVE_SKIN_HASH, kSerializeData, pickProperties } from '../../utils';
 
 type RenderOptions = Pick<RendersContext, 'skin'> & Partial<Omit<RendersContext, 'skin' | keyof IContextOptions>>;
 
@@ -13,7 +13,7 @@ export class RendersContext extends Context<RendersContext> {
     /**
      * Skin id
      */
-    readonly skin: Hash = steveSkinHash;
+    readonly skin: Hash = STEVE_SKIN_HASH;
     /**
      * Cape hash
      */

@@ -1,27 +1,17 @@
-import * as cheerio from 'cheerio';
+import cheerio, { CheerioAPI, Element } from 'cheerio';
 
-import { Context, IContextOptions } from './context';
-import { SkinContext } from './skin';
-import { PlayerContext } from './player';
-import { ServerContext } from './server';
+import { Context, IContextOptions } from '../context';
+import { SkinContext } from '../skin';
+import { PlayerContext } from '../player';
+import { ServerContext } from '../server';
 
-import { kSerializeData, pickProperties } from '../utils';
-import { CheerioAPI } from 'cheerio';
+import { kSerializeData, pickProperties } from '../../utils';
+
+import { NameStatus, NameStatusUnion } from './types';
 
 export interface ISearchContextOptions extends IContextOptions {
-    data?: string | cheerio.Element | cheerio.Element[];
+    data?: string | Element | Element[];
 }
-
-/**
- * NameMC Search Name Status
- */
-export enum NameStatus {
-    AVAILABLE = 'available',
-    AVAILABLE_LATER = 'available_later',
-    UNAVAILABLE = 'unavailable',
-    INVALID = 'invalid'
-}
-export type NameStatusUnion = `${NameStatus}`;
 
 export class SearchContext extends Context<SearchContext> {
 
@@ -264,3 +254,5 @@ export class SearchContext extends Context<SearchContext> {
         );
     }
 }
+
+export * from './types';
