@@ -184,6 +184,9 @@ export class SearchContext extends Context<SearchContext> {
         ]);
     }
 
+    /**
+     * @hidden
+     */
     #parseStatusBar($: CheerioAPI): boolean {
         const statusBar = $('div#status-bar');
 
@@ -221,6 +224,9 @@ export class SearchContext extends Context<SearchContext> {
         return false;
     }
 
+    /**
+     * @hidden
+     */
     #parseServers($: CheerioAPI): boolean {
         const servers = $('div.table-responsive tr');
 
@@ -242,6 +248,9 @@ export class SearchContext extends Context<SearchContext> {
         return false;
     }
 
+    /**
+     * @hidden
+     */
     #parsePlayers($: CheerioAPI): void {
         const data = $('div.card')
             .get(0);
