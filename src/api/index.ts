@@ -3,7 +3,9 @@ import axios, { AxiosInstance } from 'axios';
 import { IFriend, IParams, IServerLikesParams } from './methods';
 
 // @ts-ignore
-import { version, homepage } from '../../package.json';
+import packageMeta from '../../package.json' assert { type: 'json' };
+
+const { version, homepage } = packageMeta;
 
 export interface IRequestOptions {
     group: Group;
