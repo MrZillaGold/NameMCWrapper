@@ -33,7 +33,7 @@ export enum Style {
     ITALIC = 'font-style: italic;'
 }
 
-export function escapeColorsClasses(elements: Element[]): any[] {
+export function escapeColorsClasses(elements: Element[]): Element[] {
     return elements.map((element) => {
         if (element.children && element.children.length !== 1) {
             return escapeColorsClasses(element.children as Element[]);
@@ -58,5 +58,5 @@ export function escapeColorsClasses(elements: Element[]): any[] {
 
         return element;
     })
-        .flat(Infinity);
+        .flat(Infinity) as Element[];
 }
