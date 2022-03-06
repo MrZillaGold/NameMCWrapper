@@ -4,5 +4,4 @@ export * from './convertDate';
 export * from './escapeColorsClasses';
 export * from './escapeHtml';
 export * from './getUUID';
-export * from './parseDuration';
 export * from './pickProperties';
