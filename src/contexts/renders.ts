@@ -79,7 +79,7 @@ export class RendersContext extends Context<RendersContext> {
     /**
      * NameMC renders domain
      */
-    static DOMAIN = 'r.nmc1.net';
+    static DOMAIN = 's.namemc.com';
 
     /**
      * @hidden
