@@ -386,7 +386,7 @@ export class ServerContext extends Context<ServerContext> {
                         this.payload.players.max = Number(row.text());
                         break;
                     case 7:
-                        this.payload.rating = Number(row.text().slice(1));
+                        this.payload.rating = parseInt(row.text());
                         break;
                 }
             });
