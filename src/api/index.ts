@@ -3,7 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 import { IFriend, IParams, IServerLikesParams } from './methods';
 
 // @ts-ignore
-import packageMeta from '../../package.json' assert { type: 'json' };
+import * as packageMeta from '../../package.json' assert { type: 'json' };
 
 const { version, homepage } = packageMeta;
 
