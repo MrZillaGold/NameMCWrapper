@@ -1,15 +1,15 @@
-import * as cheerio from 'cheerio';
+import cheerio, { CheerioAPI, Element } from 'cheerio';
 
 import { Context, IContextOptions } from './context';
 import { RendersContext } from './renders';
 import { Hash } from './player';
 import { WrapperError } from '../error';
 
-import { kSerializeData, pickProperties, skinRegExp } from '../utils';
+import { convertDate, kSerializeData, pickProperties, skinRegExp } from '../utils';
 
 export interface ISkinContextOptions extends IContextOptions<SkinContext> {
-    data?: string | cheerio.Element | cheerio.Element[];
-    type?: 'extended';
+    data?: string | Element | Element[];
+    isExtended?: boolean;
 }
 
 /**
@@ -79,6 +79,10 @@ export class SkinContext extends Context<SkinContext> {
      */
     readonly rating: number = 0;
     /**
+     * Skin favorite count
+     */
+    readonly favorite: number = 0;
+    /**
      * Skin creation timestamp
      */
     readonly createdAt: number = 0;
@@ -91,12 +95,12 @@ export class SkinContext extends Context<SkinContext> {
      * Payload loaded
      * @hidden
      */
-    private extended = false;
+    #extended = false;
 
     /**
      * @hidden
      */
-    constructor({ data, type, ...options }: ISkinContextOptions) {
+    constructor({ data, isExtended, ...options }: ISkinContextOptions) {
         super(options);
 
         this.setupPayload();
@@ -105,68 +109,32 @@ export class SkinContext extends Context<SkinContext> {
             return;
         }
 
-        switch (type) {
-            case 'extended': {
-                this.extended = true;
+        const $ = cheerio.load(data);
 
-                const $ = cheerio.load(data);
+        if (isExtended) {
+            this.#extended = true;
 
-                const { attribs: { href } } = $('#render-button.btn')
-                    .get(0);
+            const { id, model } = this.#parseSkin($, data, isExtended);
 
-                const skin = SkinContext.parseSkinLink(href);
+            this.id = id;
+            this.model = model;
+            this.createdAt = this.#parseSkinTime($);
+            this.tags = this.#parseSkinTags($);
+        } else {
+            const { id, model, name } = this.#parseSkin($, data, isExtended);
 
-                if (skin) {
-                    const { id, model } = skin;
+            this.id = id;
+            this.model = model;
+            this.name = name;
+        }
 
-                    this.id = id;
-                    this.model = model;
-                    this.rating = this.parseSkinRating($);
-                    this.createdAt = this.parseSkinTime($);
-                    this.tags = $('div.card-body.text-center.py-1 > a.badge.badge-pill')
-                        .map((index, element) => {
-                            // @ts-ignore
-                            const { children: [{ data: tag }] } = element;
+        const counters = this.#parseSkinCounters($);
 
-                            return tag;
-                        })
-                        .get();
-                }
+        if (counters) {
+            const { rating, favorite } = counters;
 
-                break;
-            }
-            default: {
-                // @ts-ignore
-                const cardLinkHash = (data as cheerio.Element)?.parent?.attribs.href
-                    .replace(skinRegExp, '$1');
-                const cardHeader = (data as cheerio.Element)?.parent?.children
-                    // @ts-ignore
-                    .filter(({ name, attribs: { class: className = '' } = {} }) => name === 'div' && className.includes('card-header'))[0];
-                const cardName = cardHeader ?
-                    // @ts-ignore
-                    (cardHeader as cheerio.NodeWithChildren).children[0]?.data as string
-                    :
-                    '';
-
-                const $ = cheerio.load(data as string);
-
-                const [{ id, model }] = $('div > img.drop-shadow')
-                    .map((index, { attribs: { 'data-src': src } }) => {
-                        const skin = SkinContext.parseSkinLink(src);
-
-                        return {
-                            id: cardLinkHash,
-                            model: Model.UNKNOWN,
-                            ...skin
-                        };
-                    })
-                    .get();
-
-                this.id = id;
-                this.model = model;
-                this.name = cardName;
-                this.rating = this.parseSkinRating($);
-            }
+            this.rating = rating;
+            this.favorite = favorite;
         }
     }
 
@@ -203,7 +171,7 @@ export class SkinContext extends Context<SkinContext> {
      * Check payload loaded
      */
     get isExtended(): boolean {
-        return this.extended;
+        return this.#extended;
     }
 
     /**
@@ -262,7 +230,7 @@ export class SkinContext extends Context<SkinContext> {
                 const skin = new SkinContext({
                     ...this,
                     data,
-                    type: 'extended',
+                    isExtended: true,
                     payload: {
                         name: this.name
                     }
@@ -277,7 +245,50 @@ export class SkinContext extends Context<SkinContext> {
 
         this.setupPayload();
 
-        this.extended = true;
+        this.#extended = true;
+    }
+
+    /**
+     * @hidden
+     */
+    #parseSkin($: CheerioAPI, data?: ISkinContextOptions['data'], isExtended?: true): Pick<SkinContext, 'id' | 'model'> & Partial<Pick<SkinContext, 'name'>>;
+    #parseSkin($: CheerioAPI, data?: ISkinContextOptions['data'], isExtended?: false): Pick<SkinContext, 'id' | 'model' | 'name'>;
+    #parseSkin($: CheerioAPI, data?: ISkinContextOptions['data'], isExtended?: ISkinContextOptions['isExtended']): Pick<SkinContext, 'id' | 'model'> & Partial<Pick<SkinContext, 'name'>> {
+        if (isExtended) {
+            const { attribs: { 'data-id': id, 'data-model': model } } = $('.skin-3d')
+                .get(0);
+
+            return {
+                id,
+                model: model as Model
+            };
+        } else {
+            const cardLinkHash = ((data as  Element)?.parent as Element)?.attribs.href
+                .replace(skinRegExp, '$1');
+
+            const cardHeader = ((data as Element)?.parent?.children as Element[])
+                .filter(({ name, attribs: { class: className = '' } = {} }) => (
+                    name === 'div' && className.includes('card-header')
+                ))[0];
+            const cardName = cardHeader ?
+                ((cardHeader as Element).children[0] as unknown as Text)?.data as string
+                :
+                '';
+
+            const $ = cheerio.load(data!);
+
+            const { attribs: { 'data-src': src } } = $('div > img.drop-shadow')
+                .get(0);
+
+            const skin = SkinContext.parseSkinLink(src);
+
+            return {
+                id: cardLinkHash,
+                name: cardName,
+                model: Model.UNKNOWN,
+                ...skin
+            };
+        }
     }
 
     /**
@@ -303,37 +314,42 @@ export class SkinContext extends Context<SkinContext> {
     /**
      * @hidden
      */
-    protected parseSkinRating($: cheerio.CheerioAPI): number {
+    #parseSkinCounters($: CheerioAPI): Pick<SkinContext, 'rating' | 'favorite'> | void {
         const ratingElement = $('.position-absolute.bottom-0.right-0.text-muted')
             .get(0)
-            ?.children || null;
+            ?.children;
 
-        const rating = ratingElement ?
-            (
-                ratingElement.length > 1 ?
-                    ratingElement[1]
-                    :
-                    ratingElement[0]
-            )
-                // @ts-ignore Invalid lib types
-                .data
-            :
-            '0';
+        if (!ratingElement) {
+            return;
+        }
 
-        return Number(rating.replace(/[^\d]+([\d]+)/, '$1'));
+        const [{ data: favoriteCount }, , { data: rating }] = ratingElement as unknown as Text[];
+
+        return {
+            rating: parseInt(rating),
+            favorite: parseInt(favoriteCount)
+        };
     }
 
     /**
      * @hidden
      */
-    protected parseSkinTime($: cheerio.CheerioAPI): number {
-        const date = $('.position-absolute.bottom-0.left-0.text-muted.title-time')
-            .get(0)
-            .attribs
-            .title;
+    #parseSkinTime($: CheerioAPI): number {
+        const { attribs: { title } } = $('.position-absolute.bottom-0.left-0.text-muted.title-time')
+            .get(0);
 
-        return new Date(date)
-            .getTime();
+        return convertDate(title);
+    }
+
+    #parseSkinTags($: CheerioAPI): SkinContext['tags'] {
+        return $('div.card-body.text-center.py-1 > a.badge.badge-pill')
+            .map((index, element) => {
+                // @ts-ignore
+                const { children: [{ data: tag }] } = element;
+
+                return tag;
+            })
+            .get();
     }
 
     /**
@@ -351,6 +367,7 @@ export class SkinContext extends Context<SkinContext> {
             'renders',
             'tags',
             'rating',
+            'favorite',
             'createdAt'
         ]);
     }
