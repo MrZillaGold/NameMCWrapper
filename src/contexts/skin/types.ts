@@ -1,8 +1,11 @@
+import { CheerioAPI } from 'cheerio';
+
+import { Hash } from '../player';
+import { ISkinContextOptions } from './';
+
 /**
  * Skin model type
  */
-import { Hash } from '../player';
-
 export enum Model {
     UNKNOWN = 'unknown',
     CLASSIC = 'classic',
@@ -42,4 +45,10 @@ export interface ITransformSkinOptions {
      * Skin model
      */
     model?: Model | ModelUnion;
+}
+
+export interface IParseSkinOptions<E extends boolean = boolean> {
+    $?: CheerioAPI;
+    data?: ISkinContextOptions['data'];
+    isExtended?: E;
 }

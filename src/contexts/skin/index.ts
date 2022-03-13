@@ -5,7 +5,7 @@ import { RendersContext } from '../renders';
 import { WrapperError } from '../../error';
 
 import { convertDate, kSerializeData, pickProperties, skinRegExp } from '../../utils';
-import { Model, ModelUnion, Transformation, TransformationUnion } from './types';
+import { IParseSkinOptions, Model, ModelUnion, Transformation, TransformationUnion } from './types';
 
 export interface ISkinContextOptions extends IContextOptions<SkinContext> {
     data?: string | Element | Element[];
@@ -65,23 +65,31 @@ export class SkinContext extends Context<SkinContext> {
             return;
         }
 
-        const $ = cheerio.load(isExtended ? data : '');
+        if (!isExtended) {
+            const { id, model, name } = this.#parseSkin({
+                data,
+                isExtended
+            });
+
+            this.id = id;
+            this.model = model;
+            this.name = name;
+        }
+
+        const $ = cheerio.load(data);
 
         if (isExtended) {
             this.#extended = true;
 
-            const { id, model } = this.#parseSkin($, data, isExtended);
+            const { id, model } = this.#parseSkin({
+                $,
+                isExtended
+            });
 
             this.id = id;
             this.model = model;
             this.createdAt = this.#parseSkinTime($);
             this.tags = this.#parseSkinTags($);
-        } else {
-            const { id, model, name } = this.#parseSkin($, data, isExtended);
-
-            this.id = id;
-            this.model = model;
-            this.name = name;
         }
 
         const counters = this.#parseSkinCounters($);
@@ -90,7 +98,10 @@ export class SkinContext extends Context<SkinContext> {
             const { rating, favorite } = counters;
 
             this.rating = rating;
-            this.favorite = favorite;
+
+            if (favorite) {
+                this.favorite = favorite;
+            }
         }
     }
 
@@ -207,11 +218,11 @@ export class SkinContext extends Context<SkinContext> {
     /**
      * @hidden
      */
-    #parseSkin($: CheerioAPI, data?: ISkinContextOptions['data'], isExtended?: true): Pick<SkinContext, 'id' | 'model'> & Partial<Pick<SkinContext, 'name'>>;
-    #parseSkin($: CheerioAPI, data?: ISkinContextOptions['data'], isExtended?: false): Pick<SkinContext, 'id' | 'model' | 'name'>;
-    #parseSkin($: CheerioAPI, data?: ISkinContextOptions['data'], isExtended?: ISkinContextOptions['isExtended']): Pick<SkinContext, 'id' | 'model'> & Partial<Pick<SkinContext, 'name'>> {
+    #parseSkin({ $, data, isExtended }: IParseSkinOptions<true>): Pick<SkinContext, 'id' | 'model'> & Partial<Pick<SkinContext, 'name'>>;
+    #parseSkin({ $, data, isExtended }: IParseSkinOptions<false>): Pick<SkinContext, 'id' | 'model' | 'name'>;
+    #parseSkin({ $, data, isExtended }: IParseSkinOptions): Pick<SkinContext, 'id' | 'model'> & Partial<Pick<SkinContext, 'name'>> {
         if (isExtended) {
-            const { attribs: { 'data-id': id, 'data-model': model } } = $('.skin-3d')
+            const { attribs: { 'data-id': id, 'data-model': model } } = $!('.skin-3d')
                 .get(0);
 
             return {
@@ -265,20 +276,36 @@ export class SkinContext extends Context<SkinContext> {
     /**
      * @hidden
      */
-    #parseSkinCounters($: CheerioAPI): Pick<SkinContext, 'rating' | 'favorite'> | void {
+    #parseSkinCounters($: CheerioAPI): (Pick<SkinContext, 'rating'> & Partial<Pick<SkinContext, 'favorite'>>) | void {
         const ratingElement = $('.position-absolute.bottom-0.right-0.text-muted')
-            .get(0)
-            ?.children;
+            .get(0);
 
-        if (!ratingElement) {
+        const counters = ratingElement?.children;
+
+        if (!ratingElement || !counters) {
             return;
         }
 
-        const [{ data: favoriteCount }, , { data: rating }] = ratingElement as unknown as Text[];
+        if (counters) {
+            if (counters.length > 1) {
+                const [{ data: favoriteCount }, , { data: rating }] = ratingElement as unknown as Text[];
+
+                return {
+                    rating: parseInt(rating),
+                    favorite: parseInt(favoriteCount)
+                };
+            } else {
+                // @ts-ignore invalid lib types
+                const { children: [{ data: rating }] } = ratingElement;
+
+                return {
+                    rating: parseInt(rating)
+                };
+            }
+        }
 
         return {
-            rating: parseInt(rating),
-            favorite: parseInt(favoriteCount)
+            rating: parseInt((ratingElement as unknown as Text)?.data)
         };
     }
 
