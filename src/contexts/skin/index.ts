@@ -161,14 +161,14 @@ export class SkinContext extends Context<SkinContext> {
             }
         })
             .then(({ request }) => {
-                const [, hash] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
+                const [, id] = (request?.res?.responseUrl || request.responseURL).match(skinRegExp);
 
-                if (!hash) {
+                if (!id) {
                     throw new WrapperError('NO_USEFUL');
                 }
 
                 this.payload = {
-                    hash,
+                    id,
                     transformation
                 };
 
