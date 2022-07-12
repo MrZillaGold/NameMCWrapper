@@ -5,8 +5,8 @@ import { Context, SkinContext, CapeContext, ServerContext, IContextOptions, Mode
 
 import { kSerializeData, serverRegExp, pickProperties, convertDate, nameRegExp, profileRegExp } from '../../utils';
 
-import { FollowersSection, IGetFollowersOptions, ILoadFollowersOptions, IUsername } from './types';
 import { IFriend } from '../../api';
+import { FollowersSection, IGetFollowersOptions, ILoadFollowersOptions, IUsername } from './types';
 
 export interface IPlayerContextOptions extends IContextOptions {
     data?: string | Element | Element[];
@@ -149,13 +149,6 @@ export class PlayerContext extends Context<PlayerContext> {
                     throw new WrapperError('NOT_FOUND', username);
                 });
         }
-
-        this.payload = await this.api.profile.friends({
-            target: this.uuid
-        })
-            .then((friends) => ({
-                friends
-            }));
 
         this.setupPayload();
 
@@ -360,11 +353,19 @@ export class PlayerContext extends Context<PlayerContext> {
      * @hidden
      */
     #parseInfoColumns($: CheerioAPI): Pick<PlayerContext, 'uuid' | 'views' | 'names'> {
-        const [baseInfoRaw, usernameHistoryRaw] = $('div.card.mb-3 > div.card-body')
+        const columns = $('div.card.mb-3 > div.card-body');
+
+        const hasClaimColumn = Boolean(columns.find('[href="/claim-your-profile"]').length);
+
+        const [baseInfoRaw, usernameHistoryRaw] = columns
             .map((index, element) => {
                 const $ = cheerio.load(element);
 
                 const body = $('div.card-body');
+
+                if (hasClaimColumn) {
+                    index--;
+                }
 
                 switch (index) {
                     case 0:

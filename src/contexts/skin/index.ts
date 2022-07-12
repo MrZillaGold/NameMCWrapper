@@ -280,28 +280,36 @@ export class SkinContext extends Context<SkinContext> {
         const ratingElement = $('.position-absolute.bottom-0.right-0.text-muted')
             .get(0);
 
-        const counters = ratingElement?.children;
+        const counters = ratingElement?.children as unknown as Text[];
 
         if (!ratingElement || !counters) {
             return;
         }
 
-        if (counters) {
-            if (counters.length > 1) {
-                const [{ data: favoriteCount }, , { data: rating }] = ratingElement as unknown as Text[];
-
-                return {
-                    rating: parseInt(rating),
-                    favorite: parseInt(favoriteCount)
-                };
-            } else {
-                // @ts-ignore invalid lib types
-                const { children: [{ data: rating }] } = ratingElement;
+        if (counters?.length) {
+            // https://ru.namemc.com/minecraft-skins/tag
+            if (counters.length === 2) {
+                const [, { data: rating }] = counters;
 
                 return {
                     rating: parseInt(rating)
                 };
             }
+
+            if (counters.length === 3) {
+                const [{ data: favoriteCount }, , { data: rating }] = counters;
+
+                return {
+                    rating: parseInt(rating),
+                    favorite: parseInt(favoriteCount)
+                };
+            }
+
+            const [{ data: rating }] = counters;
+
+            return {
+                rating: parseInt(rating)
+            };
         }
 
         return {
