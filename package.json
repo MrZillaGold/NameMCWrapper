@@ -1,6 +1,6 @@
 {
   "name": "namemcwrapper",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "ES6 Promise based wrapper for NameMC.com",
   "main": "./dist/index.js",
   "exports": "./dist/index.js",
@@ -34,7 +34,7 @@
   "homepage": "https://github.com/MrZillaGold/NameMCWrapper#readme",
   "dependencies": {
     "axios": "^0.27.2",
-    "cheerio": "1.0.0-rc.10",
+    "cheerio": "1.0.0-rc.12",
     "inspectable": "^1.1.1"
   },
   "devDependencies": {
